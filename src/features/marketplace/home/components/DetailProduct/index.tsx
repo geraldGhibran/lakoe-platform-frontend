@@ -7,6 +7,7 @@ import {
   Container,
   Flex,
   Heading,
+  List,
   Image,
   SimpleGrid,
   Stack,
@@ -56,7 +57,7 @@ export default function DetailProduct() {
     <Container maxW={'7xl'}>
       <SimpleGrid
         columns={{ base: 1, lg: 2 }}
-        wordSpacing={{ base: 8, md: 10 }}
+        borderSpacing={{ base: 8, md: 10 }}
         py={{ base: 18, md: 24 }}
       >
         <Flex>
@@ -119,16 +120,16 @@ export default function DetailProduct() {
               </Text>
 
               <SimpleGrid columns={{ base: 1, md: 2 }} wordSpacing={10}>
-                {/* <List wordSpacing={2}>
-                  <ListItem>Chronograph</ListItem>
-                  <ListItem>Master Chronometer Certified</ListItem>{' '}
-                  <ListItem>Tachymeter</ListItem>
-                </List>
-                <List wordSpacing={2}>
-                  <ListItem>Anti‑magnetic</ListItem>
-                  <ListItem>Chronometer</ListItem>
-                  <ListItem>Small seconds</ListItem>
-                </List> */}
+                <List.Root wordSpacing={2}>
+                  <List.Item>Chronograph</List.Item>
+                  <List.Item>Master Chronometer Certified</List.Item>{' '}
+                  <List.Item>Tachymeter</List.Item>
+                </List.Root>
+                <List.Root wordSpacing={2}>
+                  <List.Item>Anti‑magnetic</List.Item>
+                  <List.Item>Chronometer</List.Item>
+                  <List.Item>Small seconds</List.Item>
+                </List.Root>
                 <Demo />
               </SimpleGrid>
             </Box>
@@ -142,52 +143,52 @@ export default function DetailProduct() {
               >
                 Product Details
               </Text>
-              {/* 
-              <List wordSpacing={2}>
-                <ListItem>
+
+              <List.Root wordSpacing={2}>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Between lugs:
                   </Text>{' '}
                   20 mm
-                </ListItem>
-                <ListItem>
+                </List.Item>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Bracelet:
                   </Text>{' '}
                   leather strap
-                </ListItem>
-                <ListItem>
+                </List.Item>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Case:
                   </Text>{' '}
                   Steel
-                </ListItem>
-                <ListItem>
+                </List.Item>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Case diameter:
                   </Text>{' '}
                   42 mm
-                </ListItem>
-                <ListItem>
+                </List.Item>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Dial color:
                   </Text>{' '}
                   Black
-                </ListItem>
-                <ListItem>
+                </List.Item>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Crystal:
                   </Text>{' '}
-                  Domed, scratch‑resistant sapphire crystal with anti‑reflective treatment
-                  inside
-                </ListItem>
-                <ListItem>
+                  Domed, scratch‑resistant sapphire crystal with anti‑reflective
+                  treatment inside
+                </List.Item>
+                <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Water resistance:
                   </Text>{' '}
                   5 bar (50 metres / 167 feet){' '}
-                </ListItem>
-              </List> */}
+                </List.Item>
+              </List.Root>
             </Box>
           </Stack>
 
