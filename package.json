@@ -15,6 +15,9 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
+    "@chakra-ui/avatar": "^2.3.0",
+    "@chakra-ui/icons": "^2.2.4",
+    "@chakra-ui/menu": "^2.2.1",
     "@chakra-ui/react": "^3.2.0",
     "@emotion/react": "^11.13.5",
     "axios": "^1.7.7",
