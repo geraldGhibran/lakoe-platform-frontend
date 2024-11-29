@@ -1,16 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom';
-import MarketplaceHomePage from '@/features/marketplace/home/pages/home';
 import AdminHomePage from '@/features/admin/home/home';
 import Withdraw from '@/features/admin/withdraw/withdraw';
+import DetailProductPage from '@/features/marketplace/home/pages/home';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <MarketplaceHomePage />,
+    element: <DetailProductPage />,
   },
   {
-    path: '/marketplace',
-    element: <MarketplaceHomePage />,
+    path: '/detail-product/:id',
+    element: <DetailProductPage />,
   },
 
   {
