@@ -1,9 +1,9 @@
-import { Button } from '@/components/Button/Button';
+import ProductList from '@/features/product/components';
 
 function App() {
   return (
     <div>
-      <Button label="Click me" onClick={() => {}} />
+      <ProductList />
     </div>
   );
 }
