@@ -7,57 +7,24 @@ import {
   Container,
   Flex,
   Heading,
-  List,
   Image,
+  List,
+  ListItem,
   SimpleGrid,
   Stack,
+  // Divider,
+  StackSeparator,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { MdLocalShipping } from 'react-icons/md';
-import { createListCollection } from '@chakra-ui/react';
-import {
-  SelectContent,
-  SelectItem,
-  SelectLabel,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-} from '@/components/ui/select';
-
-const Demo = () => {
-  return (
-    <SelectRoot collection={frameworks} size="sm" width="320px">
-      <SelectLabel>Select framework</SelectLabel>
-      <SelectTrigger>
-        <SelectValueText placeholder="Select movie" />
-      </SelectTrigger>
-      <SelectContent>
-        {frameworks.items.map((movie) => (
-          <SelectItem item={movie} key={movie.value}>
-            {movie.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </SelectRoot>
-  );
-};
-
-const frameworks = createListCollection({
-  items: [
-    { label: 'React.js', value: 'react' },
-    { label: 'Vue.js', value: 'vue' },
-    { label: 'Angular', value: 'angular' },
-    { label: 'Svelte', value: 'svelte' },
-  ],
-});
 
 export default function DetailProduct() {
   return (
     <Container maxW={'7xl'}>
       <SimpleGrid
         columns={{ base: 1, lg: 2 }}
-        borderSpacing={{ base: 8, md: 10 }}
+        gap={{ base: 8, md: 10 }}
         py={{ base: 18, md: 24 }}
       >
         <Flex>
@@ -73,7 +40,7 @@ export default function DetailProduct() {
             h={{ base: '100%', sm: '400px', lg: '500px' }}
           />
         </Flex>
-        <Stack wordSpacing={{ base: 6, md: 10 }}>
+        <Stack gap={{ base: 6, md: 10 }}>
           <Box as={'header'}>
             <Heading
               lineHeight={1.1}
@@ -91,8 +58,15 @@ export default function DetailProduct() {
             </Text>
           </Box>
 
-          <Stack wordSpacing={{ base: 4, sm: 6 }} direction={'column'}>
-            <VStack wordSpacing={{ base: 4, sm: 6 }}>
+          <StackSeparator
+            gap={{ base: 4, sm: 6 }}
+            direction={'column'}
+            // divideX={}
+            // divider={
+            //   <Divider borderColor={useColorModeValue('gray.200', 'gray.600')} />
+            // }
+          >
+            <VStack gap={{ base: 4, sm: 6 }}>
               <Text
                 color={useColorModeValue('gray.500', 'gray.400')}
                 fontSize={'2xl'}
@@ -119,18 +93,17 @@ export default function DetailProduct() {
                 Features
               </Text>
 
-              <SimpleGrid columns={{ base: 1, md: 2 }} wordSpacing={10}>
-                <List.Root wordSpacing={2}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={10}>
+                <List.Root gap={2}>
                   <List.Item>Chronograph</List.Item>
                   <List.Item>Master Chronometer Certified</List.Item>{' '}
-                  <List.Item>Tachymeter</List.Item>
+                  <ListItem>Tachymeter</ListItem>
                 </List.Root>
-                <List.Root wordSpacing={2}>
+                <List.Root gap={2}>
                   <List.Item>Anti‑magnetic</List.Item>
                   <List.Item>Chronometer</List.Item>
                   <List.Item>Small seconds</List.Item>
                 </List.Root>
-                <Demo />
               </SimpleGrid>
             </Box>
             <Box>
@@ -144,7 +117,7 @@ export default function DetailProduct() {
                 Product Details
               </Text>
 
-              <List.Root wordSpacing={2}>
+              <List.Root gap={2}>
                 <List.Item>
                   <Text as={'span'} fontWeight={'bold'}>
                     Between lugs:
@@ -190,7 +163,7 @@ export default function DetailProduct() {
                 </List.Item>
               </List.Root>
             </Box>
-          </Stack>
+          </StackSeparator>
 
           <Button
             rounded={'none'}

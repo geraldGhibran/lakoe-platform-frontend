@@ -1,13 +1,13 @@
 import { createBrowserRouter } from 'react-router-dom';
-import MarketplaceHomePage from '@/features/marketplace/home/pages/home';
+import DetailProductPage from '@/features/marketplace/home/pages/home';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <MarketplaceHomePage />,
+    element: <DetailProductPage />,
   },
   {
-    path: '/marketplace',
-    element: <MarketplaceHomePage />,
+    path: '/detail-product/:id',
+    element: <DetailProductPage />,
   },
 ]);
