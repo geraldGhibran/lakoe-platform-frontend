@@ -1,8 +1,9 @@
-import { createBrowserRouter } from 'react-router-dom';
 import AdminHomePage from '@/features/admin/home/home';
 import Withdraw from '@/features/admin/withdraw/withdraw';
 import DetailProductPage from '@/features/marketplace/home/pages/home';
+import AddProductPage from '@/features/marketplace/pages/add-product';
 import ProductList from '@/features/product/components';
+import { createBrowserRouter } from 'react-router-dom';
 
 export const router = createBrowserRouter([
   {
@@ -26,5 +27,9 @@ export const router = createBrowserRouter([
   {
     path: '/products',
     element: <ProductList />,
+  },
+  {
+    path: '/addproduk',
+    element: <AddProductPage />,
   },
 ]);
