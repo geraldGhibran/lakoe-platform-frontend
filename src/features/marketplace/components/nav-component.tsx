@@ -10,96 +10,108 @@ import {
   Stack,
   useDisclosure,
 } from '@chakra-ui/react';
+import { Icon } from '@iconify/react';
+import { useState } from 'react';
 
-// import { useColorModeValue } from "@/components/ui/color-mode";
-
-interface Props {
+interface NavLinkProps {
   children: React.ReactNode;
+  icon: string;
+  path: string;
+  isActive: boolean;
+  onClick: () => void;
 }
 
-const Links = ['Dashboard', 'Projects', 'Team'];
+const Links = [
+  { name: 'Dashboard', icon: 'lucide:home', path: '/dashboard' },
+  { name: 'Produk', icon: 'bi:box-fill', path: '/produk' },
+  { name: 'Pesanan', icon: 'solar:bag-5-outline', path: '/pesanan' },
+  { name: 'Pengaturan', icon: 'mdi:cog', path: '/pengaturan' },
+];
 
-const NavLink = (props: Props) => {
-  const { children } = props;
+const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
+  // Panggilan useColorModeValue dipindahkan ke luar JSX
+  const hoverBg = useColorModeValue('gray.200', 'gray.700');
+  const linkColor = useColorModeValue('gray.800', 'white');
+  const iconColor = isActive ? 'blue' : linkColor;
 
   return (
     <Link
       as="a"
-      px={2}
-      py={1}
+      display="flex"
+      alignItems="center"
+      px={20}
+      py={5}
       rounded={'md'}
+      href={path}
+      onClick={onClick}
       _hover={{
         textDecoration: 'none',
-        bg: useColorModeValue('gray.200', 'gray.700'),
+        bg: hoverBg,
       }}
-      href={'#'}
+      color={isActive ? 'blue.500' : linkColor}
     >
+      <Icon
+        icon={icon}
+        width="24"
+        height="24"
+        style={{
+          marginRight: '12px',
+          color: iconColor,
+        }}
+      />
       {children}
     </Link>
   );
 };
 
 export default function NavComponent() {
-  const { open, onOpen, onClose } = useDisclosure();
+  const { isopen, onOpen, onClose } = useDisclosure();
+  const [activePath, setActivePath] = useState<string>('/produk');
 
   return (
-    <>
-      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <IconButton
-            aria-label={'Open Menu'}
-            display={{ md: 'none' }}
-            onClick={open ? onClose : onOpen}
-          />
-          <HStack wordSpacing={8} alignItems={'center'}>
-            <Box>Logo</Box>
-            <HStack
-              as={'nav'}
-              wordSpacing={4}
-              display={{ base: 'none', md: 'flex' }}
-            >
+    <Box px={4}>
+      <Flex h={'50vh'} justifyContent={'space-between'}>
+        <IconButton
+          aria-label={'Open Menu'}
+          display={{ md: 'none' }}
+          onClick={isopen ? onClose : onOpen}
+        />
+        <HStack alignItems={'center'}>
+          <HStack as={'nav'} display={{ base: 'none', md: 'flex' }}>
+            <Flex direction={'column'}>
               {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
+                <NavLink
+                  key={link.name}
+                  icon={link.icon}
+                  path={link.path}
+                  isActive={activePath === link.path}
+                  onClick={() => setActivePath(link.path)}
+                >
+                  {link.name}
+                </NavLink>
               ))}
-            </HStack>
+            </Flex>
           </HStack>
-          {/* <Flex alignItems={'center'}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={'full'}
-                fontVariant={'link'}
-                cursor={'pointer'}
-                minW={0}>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
-                />
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Link 1</MenuItem>
-                <MenuItem>Link 2</MenuItem>
-                <MenuDivider />
-                <MenuItem>Link 3</MenuItem>
-              </MenuList>
-            </Menu>
-          </Flex> */}
-        </Flex>
+        </HStack>
+      </Flex>
 
-        {open ? (
-          <Box pb={4} display={{ md: 'none' }}>
-            <Stack as={'nav'} wordSpacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
-            </Stack>
-          </Box>
-        ) : null}
-      </Box>
-
-      <Box p={4}>Main Content Here</Box>
-    </>
+      {isopen && (
+        <Box pb={4} display={{ md: 'none' }}>
+          <Stack as={'nav'}>
+            {Links.map((link) => (
+              <NavLink
+                key={link.name}
+                icon={link.icon}
+                path={link.path}
+                isActive={activePath === link.path}
+                onClick={() => setActivePath(link.path)}
+              >
+                {link.name}
+              </NavLink>
+            ))}
+          </Stack>
+        </Box>
+      )}
+    </Box>
   );
 }

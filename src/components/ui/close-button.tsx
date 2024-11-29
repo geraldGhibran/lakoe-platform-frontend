@@ -4,7 +4,6 @@ import * as React from 'react';
 import { LuX } from 'react-icons/lu';
 
 export type CloseButtonProps = ChakraCloseButtonProps;
-
 export const CloseButton = React.forwardRef<
   HTMLButtonElement,
   CloseButtonProps
