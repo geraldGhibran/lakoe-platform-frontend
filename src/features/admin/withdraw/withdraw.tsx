@@ -12,7 +12,7 @@ export default function Withdraw() {
                 <Table.ColumnHeader>No</Table.ColumnHeader>
                 <Table.ColumnHeader>Logo</Table.ColumnHeader>
                 <Table.ColumnHeader>Store Name</Table.ColumnHeader>
-
+                <Table.ColumnHeader>Date Request</Table.ColumnHeader>
                 <Table.ColumnHeader>Withdraw Amount</Table.ColumnHeader>
                 <Table.ColumnHeader textAlign={'center'}>
                   Action
@@ -28,6 +28,7 @@ export default function Withdraw() {
                     <Avatar src={item.image} />
                   </Table.Cell>
                   <Table.Cell>{item.name}</Table.Cell>
+                  <Table.Cell>123</Table.Cell>
                   <Table.Cell>{item.totalProduct}</Table.Cell>
                   <Table.Cell textAlign={'center'}>
                     <Button borderRadius={'full'} mr={1}>
