@@ -1,7 +1,7 @@
 import AdminHomePage from '@/features/admin/home/home';
 import Withdraw from '@/features/admin/withdraw/withdraw';
 import DetailProductPage from '@/features/marketplace/home/pages/home';
-import AddProductPage from '@/features/marketplace/pages/add-product';
+import AddProductPage from '@/features/product/components/addProduct';
 import ProductList from '@/features/product/components';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ export const router = createBrowserRouter([
     element: <ProductList />,
   },
   {
-    path: '/addproduk',
+    path: '/add-product',
     element: <AddProductPage />,
   },
 ]);
