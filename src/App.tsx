@@ -1,10 +1,12 @@
-import ProductList from '@/features/product/components';
+import { Provider } from '@/components/ui/provider';
+import { RouterProvider } from 'react-router-dom';
+import { router } from './routes';
 
 function App() {
   return (
-    <div>
-      <ProductList />
-    </div>
+    <Provider>
+      <RouterProvider router={router} />
+    </Provider>
   );
 }
 
