@@ -11,23 +11,25 @@ import {
   Heading,
   HStack,
   Image,
-  // ListItem,
   Separator,
   SimpleGrid,
   Span,
   Stack,
-  // Divider,
   StackSeparator,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useState } from 'react';
+import { WhatsappButton } from '../WhatsappButton';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/store/auth';
 
 export default function DetailProduct() {
   const [value, setValue] = useState('1');
 
-  // const { addItem, quantity, removeItem } = useCartStore();
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
   const { count, increaseCount, decreaseCount } = useStore();
   return (
     <Container maxW={'7xl'}>
@@ -143,6 +145,17 @@ export default function DetailProduct() {
                   <Button colorPalette="blue" variant="solid">
                     <Icon icon="mdi:plus" /> Kerangjang{' '}
                     <Icon icon="mdi:arrow-right" />
+                  </Button>
+                  <WhatsappButton />
+                  <Button
+                    onClick={() => {
+                      logout();
+                      navigate('/login');
+                    }}
+                    mt={'auto'}
+                  >
+                    {' '}
+                    <Icon icon="mdi:logout" />{' '}
                   </Button>
                 </HStack>
               </SimpleGrid>
