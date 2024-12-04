@@ -1,12 +1,14 @@
-import { Provider } from '@/components/ui/provider';
 import { RouterProvider } from 'react-router-dom';
+import { Providers } from './provider';
 import { router } from './routes';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   return (
-    <Provider>
+    <Providers>
+      <Toaster />
       <RouterProvider router={router} />
-    </Provider>
+    </Providers>
   );
 }
 

@@ -8,6 +8,8 @@ import ProductList from '@/features/product/components';
 import { createBrowserRouter } from 'react-router-dom';
 import CartPage from '@/features/marketplace/home/pages/Cart';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
+import { SellerRoute } from './SellerRoute';
+import { AdminRoute } from './AdminRoute';
 
 export const router = createBrowserRouter([
   {
@@ -27,28 +29,37 @@ export const router = createBrowserRouter([
     element: <CheckoutPage />,
   },
   {
-    path: '/admin',
-    element: <AdminHomePage />,
-  },
-  {
-    path: '/admin/withdraw',
-    element: <Withdraw />,
-  },
-  {
-    path: '/products',
-    element: <ProductList />,
-  },
-  {
-    path: '/add-product',
-    element: <AddProductPage />,
-  },
-
-  {
     path: '/login',
     element: <LoginForm />,
   },
   {
     path: '/register',
     element: <RegisterForm />,
+  },
+  {
+    element: <AdminRoute />,
+    children: [
+      {
+        path: '/admin',
+        element: <AdminHomePage />,
+      },
+      {
+        path: '/admin/withdraw',
+        element: <Withdraw />,
+      },
+    ],
+  },
+  {
+    element: <SellerRoute />,
+    children: [
+      {
+        path: '/products',
+        element: <ProductList />,
+      },
+      {
+        path: '/add-product',
+        element: <AddProductPage />,
+      },
+    ],
   },
 ]);
