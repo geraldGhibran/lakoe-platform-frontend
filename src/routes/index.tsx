@@ -1,6 +1,8 @@
 import AdminHomePage from '@/features/admin/home/home';
 import Withdraw from '@/features/admin/withdraw/withdraw';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
+import { LoginForm } from '@/features/auth/components/login-form';
+import { RegisterForm } from '@/features/auth/components/register-form';
 import AddProductPage from '@/features/product/components/addProduct';
 import ProductList from '@/features/product/components';
 import { createBrowserRouter } from 'react-router-dom';
@@ -39,5 +41,14 @@ export const router = createBrowserRouter([
   {
     path: '/add-product',
     element: <AddProductPage />,
+  },
+
+  {
+    path: '/login',
+    element: <LoginForm />,
+  },
+  {
+    path: '/register',
+    element: <RegisterForm />,
   },
 ]);
