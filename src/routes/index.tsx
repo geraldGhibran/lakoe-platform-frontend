@@ -1,17 +1,22 @@
 import AdminHomePage from '@/features/admin/home/home';
 import Withdraw from '@/features/admin/withdraw/withdraw';
-import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
-import AddProductPage from '@/features/product/components/addProduct';
-import ProductList from '@/features/product/components';
-import { createBrowserRouter } from 'react-router-dom';
 import CartPage from '@/features/marketplace/home/pages/Cart';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
-import { SellerRoute } from './SellerRoute';
+import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
+import ProductList from '@/features/product/components';
+import AddProductPage from '@/features/product/components/addProduct';
+import { createBrowserRouter } from 'react-router-dom';
 import { AdminRoute } from './AdminRoute';
+import { SellerRoute } from './SellerRoute';
 
 export const router = createBrowserRouter([
+  // {
+  //   path: '/test',
+  //   element: <Test />,
+  // },
+
   {
     path: '/',
     element: <DetailProductPage />,

@@ -9,10 +9,6 @@ export const registerSchema = z
       .string()
       .min(3, 'Name must be at least 3 characters long')
       .max(20, 'Name must be at most 20 characters long'),
-    phone: z
-      .number()
-      .min(10, 'Phone number must be at least 10 digits long')
-      .max(15, 'Phone number must be at most 15 digits long'),
     email: z.string().email('Invalid email'),
     password: z
       .string()
