@@ -1,11 +1,12 @@
 // import { useToast } from "@chakra-ui/react";
-import { toaster } from '@/components/ui/toaster-placement';
-import { RegisterSchema, registerSchema } from '@/validation/register-schema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../services/auth';
+// import { toaster } from '@/components/ui/toaster';
+import { RegisterSchema, registerSchema } from '@/validation/register-schema';
+import { toaster } from '@/components/ui/toaster-placement';
 
 export const useRegisterForm = () => {
   const navigate = useNavigate();
