@@ -1,25 +1,36 @@
 'use client';
 
 import { useColorModeValue } from '@/components/ui/color-mode-value';
+import { Radio, RadioGroup } from '@/components/ui/radio';
+import { useStore } from '@/store/counter';
 import {
   Box,
   Button,
   Container,
   Flex,
   Heading,
+  HStack,
   Image,
-  List,
-  ListItem,
+  Separator,
   SimpleGrid,
+  Span,
   Stack,
-  // Divider,
   StackSeparator,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { MdLocalShipping } from 'react-icons/md';
+import { Icon } from '@iconify/react/dist/iconify.js';
+import { useState } from 'react';
+import { WhatsappButton } from '../WhatsappButton';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/store/auth';
 
 export default function DetailProduct() {
+  const [value, setValue] = useState('1');
+
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+  const { count, increaseCount, decreaseCount } = useStore();
   return (
     <Container maxW={'7xl'}>
       <SimpleGrid
@@ -32,7 +43,7 @@ export default function DetailProduct() {
             rounded={'md'}
             alt={'product image'}
             src={
-              'https://images.unsplash.com/photo-1596516109370-29001ec8ec36?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwyODE1MDl8MHwxfGFsbHx8fHx8fHx8fDE2Mzg5MzY2MzE&ixlib=rb-1.2.1&q=80&w=1080'
+              'https://images.unsplash.com/photo-1529810313688-44ea1c2d81d3?q=80&w=1541&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
             }
             fit={'cover'}
             align={'center'}
@@ -47,34 +58,22 @@ export default function DetailProduct() {
               fontWeight={600}
               fontSize={{ base: '2xl', sm: '4xl', lg: '5xl' }}
             >
-              Automatic Watch
+              Sepatu Mantap
             </Heading>
             <Text
               color={useColorModeValue('gray.900', 'gray.400')}
               fontWeight={300}
               fontSize={'2xl'}
             >
-              $350.00 USD
+              Rp350.00 ID
             </Text>
           </Box>
 
-          <StackSeparator
-            gap={{ base: 4, sm: 6 }}
-            direction={'column'}
-            // divideX={}
-            // divider={
-            //   <Divider borderColor={useColorModeValue('gray.200', 'gray.600')} />
-            // }
-          >
-            <VStack gap={{ base: 4, sm: 6 }}>
-              <Text
-                color={useColorModeValue('gray.500', 'gray.400')}
-                fontSize={'2xl'}
-                fontWeight={'300'}
-              >
-                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-                diam nonumy eirmod tempor invidunt ut labore
-              </Text>
+          <StackSeparator gap={{ base: 4, sm: 6 }} direction={'column'}>
+            <Stack gap="4">
+              <Separator size="sm" />
+            </Stack>
+            <VStack mb={4} gap={{ base: 4, sm: 6 }}>
               <Text fontSize={'lg'}>
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad
                 aliquid amet at delectus doloribus dolorum expedita hic, ipsum
@@ -84,108 +83,84 @@ export default function DetailProduct() {
             </VStack>
             <Box>
               <Text
-                fontSize={{ base: '16px', lg: '18px' }}
-                color={useColorModeValue('yellow.500', 'yellow.300')}
+                fontSize={{ base: '26px', lg: '28px' }}
+                color={useColorModeValue('black.500', 'black.300')}
                 fontWeight={'500'}
-                textTransform={'uppercase'}
                 mb={'4'}
               >
-                Features
+                Pilih Warna
               </Text>
-
-              <SimpleGrid columns={{ base: 1, md: 2 }} gap={10}>
-                <List.Root gap={2}>
-                  <List.Item>Chronograph</List.Item>
-                  <List.Item>Master Chronometer Certified</List.Item>{' '}
-                  <ListItem>Tachymeter</ListItem>
-                </List.Root>
-                <List.Root gap={2}>
-                  <List.Item>Anti‑magnetic</List.Item>
-                  <List.Item>Chronometer</List.Item>
-                  <List.Item>Small seconds</List.Item>
-                </List.Root>
+              <SimpleGrid columns={{ base: 1, md: 2 }} mb={6} gap={10}>
+                <RadioGroup
+                  colorPalette={'blue'}
+                  value={value}
+                  onValueChange={(e) => setValue(e.value)}
+                >
+                  <HStack gap="6">
+                    <Radio value="1">Merah</Radio>
+                    <Radio value="2">Biru</Radio>
+                  </HStack>
+                </RadioGroup>
               </SimpleGrid>
+              <Stack gap="4">
+                <Separator size="sm" />
+              </Stack>
             </Box>
             <Box>
               <Text
-                fontSize={{ base: '16px', lg: '18px' }}
-                color={useColorModeValue('yellow.500', 'yellow.300')}
+                fontSize={{ base: '26px', lg: '28px' }}
+                color={useColorModeValue('black.500', 'black.300')}
                 fontWeight={'500'}
-                textTransform={'uppercase'}
                 mb={'4'}
               >
-                Product Details
+                Jumlah
               </Text>
+              <SimpleGrid columns={{ base: 1, md: 2 }} mb={6} gap={10}>
+                <HStack gap="6">
+                  <Button colorPalette={'red'} onClick={() => decreaseCount()}>
+                    <Text>-</Text>
+                  </Button>
+                  <Span rounded={'full'}>
+                    <Text fontSize={'lg'}>{count}</Text>
+                  </Span>
 
-              <List.Root gap={2}>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Between lugs:
-                  </Text>{' '}
-                  20 mm
-                </List.Item>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Bracelet:
-                  </Text>{' '}
-                  leather strap
-                </List.Item>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Case:
-                  </Text>{' '}
-                  Steel
-                </List.Item>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Case diameter:
-                  </Text>{' '}
-                  42 mm
-                </List.Item>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Dial color:
-                  </Text>{' '}
-                  Black
-                </List.Item>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Crystal:
-                  </Text>{' '}
-                  Domed, scratch‑resistant sapphire crystal with anti‑reflective
-                  treatment inside
-                </List.Item>
-                <List.Item>
-                  <Text as={'span'} fontWeight={'bold'}>
-                    Water resistance:
-                  </Text>{' '}
-                  5 bar (50 metres / 167 feet){' '}
-                </List.Item>
-              </List.Root>
+                  <Button
+                    colorPalette={'green'}
+                    onClick={() => increaseCount()}
+                  >
+                    <Text>+</Text>
+                  </Button>
+                </HStack>
+              </SimpleGrid>
+              <Stack gap="4">
+                <Separator size="sm" />
+              </Stack>
+            </Box>
+            <Box>
+              <SimpleGrid columns={{ base: 1, md: 2 }} mt={6} mb={6} gap={10}>
+                <HStack gap="6">
+                  <Button colorPalette="gray" variant="solid">
+                    <Icon icon="mdi:cart" /> Langsung Beli
+                  </Button>
+                  <Button colorPalette="blue" variant="solid">
+                    <Icon icon="mdi:plus" /> Kerangjang{' '}
+                    <Icon icon="mdi:arrow-right" />
+                  </Button>
+                  <WhatsappButton />
+                  <Button
+                    onClick={() => {
+                      logout();
+                      navigate('/login');
+                    }}
+                    mt={'auto'}
+                  >
+                    {' '}
+                    <Icon icon="mdi:logout" />{' '}
+                  </Button>
+                </HStack>
+              </SimpleGrid>
             </Box>
           </StackSeparator>
-
-          <Button
-            rounded={'none'}
-            w={'full'}
-            mt={8}
-            size={'lg'}
-            py={'7'}
-            bg={useColorModeValue('gray.900', 'gray.50')}
-            color={useColorModeValue('white', 'gray.900')}
-            textTransform={'uppercase'}
-            _hover={{
-              transform: 'translateY(2px)',
-              boxShadow: 'lg',
-            }}
-          >
-            Add to cart
-          </Button>
-
-          <Stack direction="row" alignItems="center" justifyContent={'center'}>
-            <MdLocalShipping />
-            <Text>2-3 business days delivery</Text>
-          </Stack>
         </Stack>
       </SimpleGrid>
     </Container>

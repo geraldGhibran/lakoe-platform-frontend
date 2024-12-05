@@ -1,27 +1,18 @@
-import { registerSchema, RegisterSchema } from '@/validation/register-schema';
-import { Box, Button, Flex, Input, Stack, Text } from '@chakra-ui/react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Box, Flex, Image, Input, Stack, Text } from '@chakra-ui/react';
+import { Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
+import { useRegisterForm } from '../hooks/use-register';
 
 export function RegisterForm() {
   const navigate = useNavigate();
-  const { control } = useForm<RegisterSchema>({
-    resolver: zodResolver(registerSchema),
-  });
+  const { control, onSubmit, errors, isSubmitting } = useRegisterForm();
   return (
-    <>
-      <Flex
-        display={'flex'}
-        flexDirection={'row'}
-        h={'100vh'}
-        w={'100vw'}
-        justifyContent={'center'}
-        alignContent={'center'}
-      >
+    <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+      <Flex p={8} flex={1} align={'center'} justify={'center'}>
         <Box p={'125px 0px'}>
           <Box p={'40px'} h={'350px'} w={'400px'} borderRadius={'10px'}>
-            <form>
+            <form onSubmit={onSubmit}>
               <Stack gap={4}>
                 <Text fontSize={'4xl'} fontWeight={'bold'}>
                   Register
@@ -38,7 +29,16 @@ export function RegisterForm() {
                     />
                   )}
                 />
-
+                {errors.email && (
+                  <Text
+                    color={'red.500'}
+                    fontSize={'xs'}
+                    marginTop={'2'}
+                    fontWeight={'medium'}
+                  >
+                    {errors.email.message}
+                  </Text>
+                )}
                 <Controller
                   name="password"
                   control={control}
@@ -52,6 +52,16 @@ export function RegisterForm() {
                     />
                   )}
                 />
+                {errors.password && (
+                  <Text
+                    color={'red.500'}
+                    fontSize={'xs'}
+                    marginTop={'2'}
+                    fontWeight={'medium'}
+                  >
+                    {errors.password.message}
+                  </Text>
+                )}
                 <Controller
                   name="name"
                   control={control}
@@ -76,8 +86,21 @@ export function RegisterForm() {
                     />
                   )}
                 />
-
-                <Button type="submit" borderRadius={'10px'}>
+                {errors.name && (
+                  <Text
+                    color={'red.500'}
+                    fontSize={'xs'}
+                    marginTop={'2'}
+                    fontWeight={'medium'}
+                  >
+                    {errors.name.message}
+                  </Text>
+                )}
+                <Button
+                  loading={isSubmitting}
+                  type="submit"
+                  borderRadius={'10px'}
+                >
                   Register
                 </Button>
                 <Text>
@@ -98,6 +121,15 @@ export function RegisterForm() {
           </Box>
         </Box>
       </Flex>
-    </>
+      <Flex flex={1}>
+        <Image
+          alt={'Login Image'}
+          objectFit={'cover'}
+          src={
+            'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1494&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+          }
+        />
+      </Flex>
+    </Stack>
   );
 }
