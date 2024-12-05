@@ -118,7 +118,7 @@ export default function SideBar() {
                         marginRight: '12px',
                         color: location.pathname.startsWith('/settings')
                           ? 'blue'
-                          : 'gray.800',
+                          : 'gray.800', // Static icon color
                       }}
                     />
                     Pengaturan{' '}
