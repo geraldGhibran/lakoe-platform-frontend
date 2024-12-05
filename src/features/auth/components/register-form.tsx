@@ -38,6 +38,7 @@ export function RegisterForm() {
                     />
                   )}
                 />
+
                 <Controller
                   name="password"
                   control={control}
@@ -59,7 +60,19 @@ export function RegisterForm() {
                       {...field}
                       {...fieldState}
                       border={'2px solid black'}
-                      placeholder="Name"
+                      placeholder="Fullname"
+                    />
+                  )}
+                />
+                <Controller
+                  name="phone"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Input
+                      {...field}
+                      {...fieldState}
+                      border={'2px solid black'}
+                      placeholder="Phone"
                     />
                   )}
                 />
