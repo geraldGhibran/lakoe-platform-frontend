@@ -12,7 +12,7 @@ export const registerSchema = z
     email: z.string().email('Invalid email'),
     password: z
       .string()
-      .min(4, 'Password must be at least 4 characters long')
+      .min(6, 'Password must be at least 4 characters long')
       .max(20, 'Password must be at most 20 characters long'),
     // .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)
   })
