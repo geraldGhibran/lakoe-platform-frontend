@@ -4,12 +4,14 @@ import Withdraw from '@/features/admin/withdraw/withdraw';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import CartPage from '@/features/marketplace/home/pages/Cart';
+import OrderPage from '@/features/order/orderPage';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
 import { createBrowserRouter } from 'react-router-dom';
 import { SellerRoute } from './SellerRoute';
+import StoreSetting from '@/features/Setting/pages/storeSetting';
 
 export const router = createBrowserRouter([
   {
@@ -60,6 +62,14 @@ export const router = createBrowserRouter([
       {
         path: '/add-product',
         element: <AddProductPage />,
+      },
+      {
+        path: '/order',
+        element: <OrderPage />,
+      },
+      {
+        path: '/settings',
+        element: <StoreSetting />,
       },
     ],
   },

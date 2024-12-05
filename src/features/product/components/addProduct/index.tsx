@@ -56,10 +56,10 @@ export default function AddProductPage() {
 
   return (
     <Stack direction="row">
-      <Box w="30%">
+      <Box w="30%" position={'fixed'}>
         <SideBar />
       </Box>
-      <Box bg="gray.100" minH="270vh" w="60%" p={5}>
+      <Box bg="gray.100" minH="270vh" w="60%" p={5} ml="30%">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
             px={10}

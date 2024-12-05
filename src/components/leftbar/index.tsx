@@ -9,12 +9,6 @@ import {
   Stack,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-  MenuTrigger,
-} from '@/components/ui/menu';
 import { Icon } from '@iconify/react';
 import { useLocation } from 'react-router-dom';
 
@@ -29,12 +23,12 @@ interface NavLinkProps {
 const Links = [
   { name: 'Dashboard', icon: 'lucide:home', path: '/admin' },
   { name: 'Produk', icon: 'bi:box-fill', path: '/add-product' },
-  { name: 'Pesanan', icon: 'solar:bag-5-outline', path: '/orders' },
+  { name: 'Pesanan', icon: 'solar:bag-5-outline', path: '/order' },
 ];
 
 const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
-  const hoverBg = 'gray.200'; // Static color for light mode hover
-  const linkColor = 'gray.800'; // Static color for light mode text
+  const hoverBg = 'gray.200';
+  const linkColor = 'gray.800';
   const iconColor = isActive ? 'blue' : linkColor;
 
   return (
@@ -45,7 +39,6 @@ const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
       px={20}
       py={5}
       rounded={'md'}
-      overflow={'hidden'}
       href={path}
       onClick={onClick}
       _hover={{
@@ -73,7 +66,7 @@ export default function SideBar() {
   const location = useLocation();
 
   return (
-    <Box px={4} w={'100%'}>
+    <Box px={4} w={'417px'} bg={'white'} h={'100vh'}>
       <Flex h={'50vh'} justifyContent={'space-between'}>
         <IconButton
           aria-label={'Open Menu'}
@@ -94,51 +87,42 @@ export default function SideBar() {
                   {link.name}
                 </NavLink>
               ))}
-              <MenuRoot>
-                <MenuTrigger asChild>
-                  <Link
-                    display="flex"
-                    alignItems="center"
-                    px={20}
-                    py={5}
-                    rounded={'md'}
-                    _hover={{
-                      bg: 'gray.200', // Static hover background color
-                    }}
-                    color={
-                      location.pathname.startsWith('/settings')
-                        ? 'blue.500'
-                        : 'gray.800' // Static color for default link text
-                    }
-                  >
-                    <Icon
-                      icon="mdi:cog"
-                      width="24"
-                      height="24"
-                      style={{
-                        marginRight: '12px',
-                        color: location.pathname.startsWith('/settings')
-                          ? 'blue'
-                          : 'gray.800', // Static icon color
-                      }}
-                    />
-                    Pengaturan{' '}
-                    <Icon
-                      style={{
-                        marginLeft: '100px',
-                        width: '24px',
-                        height: '24px',
-                      }}
-                      icon="gridicons:dropdown"
-                    />
-                  </Link>
-                </MenuTrigger>
-                <MenuContent style={{ width: 415 }}>
-                  <MenuItem value="profile">Profile</MenuItem>
-                  <MenuItem value="account">Account</MenuItem>
-                  <MenuItem value="security">Security</MenuItem>
-                </MenuContent>
-              </MenuRoot>
+              <Link
+                display="flex"
+                alignItems="center"
+                px={20}
+                py={5}
+                rounded={'md'}
+                _hover={{
+                  bg: 'gray.200',
+                }}
+                color={
+                  location.pathname.startsWith('/settings')
+                    ? 'blue.500'
+                    : 'gray.800'
+                }
+              >
+                <Icon
+                  icon="mdi:cog"
+                  width="24"
+                  height="24"
+                  style={{
+                    marginRight: '12px',
+                    color: location.pathname.startsWith('/settings')
+                      ? 'blue'
+                      : 'gray.800',
+                  }}
+                />
+                Pengaturan{' '}
+                <Icon
+                  style={{
+                    marginLeft: '100px',
+                    width: '24px',
+                    height: '24px',
+                  }}
+                  icon="gridicons:dropdown"
+                />
+              </Link>
             </Flex>
           </HStack>
         </HStack>
@@ -160,6 +144,16 @@ export default function SideBar() {
           </Stack>
         </Box>
       )}
+      <Box mt={'340px'}>
+        <NavLink
+          icon="gg:profile"
+          path="/"
+          isActive={location.pathname === '/profile'}
+          onClick={() => {}}
+        >
+          Profile
+        </NavLink>
+      </Box>
     </Box>
   );
 }
