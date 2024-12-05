@@ -70,19 +70,7 @@ export function RegisterForm() {
                       {...field}
                       {...fieldState}
                       border={'2px solid black'}
-                      placeholder="Fullname"
-                    />
-                  )}
-                />
-                <Controller
-                  name="phone"
-                  control={control}
-                  render={({ field, fieldState }) => (
-                    <Input
-                      {...field}
-                      {...fieldState}
-                      border={'2px solid black'}
-                      placeholder="Phone"
+                      placeholder="Name"
                     />
                   )}
                 />
