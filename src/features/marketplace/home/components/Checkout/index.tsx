@@ -21,7 +21,7 @@ export default function CheckoutComponent() {
       >
         <GridItem colSpan={{ base: 1, md: 3 }} my="auto">
           <Text textStyle="4xl" mb={4}>
-            Checkout
+            Checkouts
           </Text>
           <Stack>
             <CheckoutForm />
