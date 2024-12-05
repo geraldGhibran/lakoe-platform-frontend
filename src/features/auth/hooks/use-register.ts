@@ -4,7 +4,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { signUp } from '../services/auth';
-import { toaster } from '@/components/ui/toaster';
+import { toaster } from '@/components/ui/toaster-placement';
 import { RegisterSchema, registerSchema } from '@/validation/register-schema';
 
 export const useRegisterForm = () => {

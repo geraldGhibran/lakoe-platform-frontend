@@ -9,12 +9,6 @@ import {
   Stack,
   useDisclosure,
 } from '@chakra-ui/react';
-import {
-  MenuContent,
-  MenuItem,
-  MenuRoot,
-  MenuTrigger,
-} from '@/components/ui/menu';
 import { Icon } from '@iconify/react';
 import { useLocation } from 'react-router-dom';
 
@@ -93,66 +87,42 @@ export default function SideBar() {
                   {link.name}
                 </NavLink>
               ))}
-              <MenuRoot>
-                <MenuTrigger asChild>
-                  <Link
-                    display="flex"
-                    alignItems="center"
-                    px={20}
-                    py={5}
-                    rounded={'md'}
-                    _hover={{
-                      bg: 'gray.200',
-                    }}
-                    color={
-                      location.pathname.startsWith('/settings')
-                        ? 'blue.500'
-                        : 'gray.800'
-                    }
-                  >
-                    <Icon
-                      icon="mdi:cog"
-                      width="24"
-                      height="24"
-                      style={{
-                        marginRight: '12px',
-                        color: location.pathname.startsWith('/settings')
-                          ? 'blue'
-                          : 'gray.800', // Static icon color
-                      }}
-                    />
-                    Pengaturan{' '}
-                    <Icon
-                      style={{
-                        marginLeft: '100px',
-                        width: '24px',
-                        height: '24px',
-                      }}
-                      icon="gridicons:dropdown"
-                    />
-                  </Link>
-                </MenuTrigger>
-                <MenuContent width={400}>
-                  <Box pl={2} ml={14}>
-                    <MenuItem value="profile">
-                      <Icon icon="ph:dot-fill" width="30" height="30" />
-                      <Box fontSize={'15px'}>Atur Toko</Box>
-                    </MenuItem>
-                  </Box>
-                  <Box pl={2} ml={14}>
-                    <MenuItem value="account">
-                      <Icon icon="ph:dot-fill" width="30" height="30" />
-                      <Box fontSize={'15px'}>Pengiriman</Box>
-                    </MenuItem>
-                  </Box>
-                  <Box pl={2} ml={14}>
-                    <MenuItem value="security">
-                      <Icon icon="ph:dot-fill" width="30" height="30" />
-                      <Box fontSize={'15px'}>Metode Pembayaran</Box>
-                    </MenuItem>
-                  </Box>
-                </MenuContent>
-              </MenuRoot>
+              <Link
+                display="flex"
+                alignItems="center"
+                px={20}
+                py={5}
+                rounded={'md'}
+                _hover={{
+                  bg: 'gray.200',
+                }}
+                color={
+                  location.pathname.startsWith('/settings')
+                    ? 'blue.500'
+                    : 'gray.800'
+                }
+              >
+                <Icon
+                  icon="mdi:cog"
+                  width="24"
+                  height="24"
+                  style={{
+                    marginRight: '12px',
+                    color: location.pathname.startsWith('/settings')
+                      ? 'blue'
+                      : 'gray.800',
+                  }}
+                />
+                Pengaturan{' '}
+                <Icon
+                  style={{
+                    marginLeft: '100px',
+                    width: '24px',
+                    height: '24px',
+                  }}
+                  icon="gridicons:dropdown"
+                />
+              </Link>
             </Flex>
           </HStack>
         </HStack>

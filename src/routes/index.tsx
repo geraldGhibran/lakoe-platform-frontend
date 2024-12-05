@@ -7,9 +7,12 @@ import AddProductPage from '@/features/product/components/addProduct';
 import ProductList from '@/features/product/components';
 import { createBrowserRouter } from 'react-router-dom';
 import CartPage from '@/features/marketplace/home/pages/Cart';
+import OrderPage from '@/features/order/orderPage';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
+
 import { SellerRoute } from './SellerRoute';
 import { AdminRoute } from './AdminRoute';
+import StoreSetting from '@/features/Setting/pages/storeSetting';
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +62,14 @@ export const router = createBrowserRouter([
       {
         path: '/add-product',
         element: <AddProductPage />,
+      },
+      {
+        path: '/order',
+        element: <OrderPage />,
+      },
+      {
+        path: '/settings',
+        element: <StoreSetting />,
       },
     ],
   },
