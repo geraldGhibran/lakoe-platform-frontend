@@ -1,7 +1,11 @@
-import { Box, Stack, Text } from '@chakra-ui/react';
+import { Box, Stack, TextProps } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
+import { ReactNode } from 'react';
 
-function NotFoundCard() {
+interface NotFoundCardProps extends TextProps {
+  children?: ReactNode;
+}
+function NotFoundCard({ children, ...Props }: NotFoundCardProps) {
   return (
     <>
       <Stack
@@ -33,8 +37,9 @@ function NotFoundCard() {
               width={'40px'}
             />
             <Box>
-              <Text>Oops, produk yang kamu cari tidak ditemukan</Text>
-              <Text>Coba kata kunci lain atau tambahkan produk baru</Text>
+              {children && <Box {...Props}>{children}</Box>}
+              {/* <Text>Oops, produk yang kamu cari tidak ditemukan</Text>
+              <Text>Coba kata kunci lain atau tambahkan produk baru</Text> */}
             </Box>
           </Stack>
         </Stack>
