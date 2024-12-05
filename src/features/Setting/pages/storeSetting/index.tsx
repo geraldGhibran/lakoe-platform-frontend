@@ -7,7 +7,6 @@ import LocationMain from '../../component/location/main-location';
 
 export default function StoreSetting() {
   const [value, setValue] = useState<string | null>('first');
-
   return (
     <Flex direction={'row'}>
       <Box width={'30%'}>

@@ -10,9 +10,27 @@ import {
 import { Field } from '@/components/ui/field';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
+import { StoreSchema } from '../../schemas/storeSchema';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
+interface typeStoreSchemas {
+  StoreName: string;
+  StoreSlogan: string;
+  StoreDescription: string;
+}
 export default function StoreInformation() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const onSubmit = (data: typeStoreSchemas) => {
+    console.log('Form data:', data);
+  };
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<typeStoreSchemas>({
+    resolver: zodResolver(StoreSchema),
+  });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,30 +50,60 @@ export default function StoreInformation() {
       <Text fontSize={'2xl'} fontWeight={'bold'} py={3}>
         Informasi Toko
       </Text>
-      <Stack direction={'row'} w={'100%'} py={2}>
-        <Box w={'50%'}>
-          <Field label="Nama Toko" pb={3}>
-            <Input placeholder="Masukan Nama Toko"></Input>
-          </Field>
-          <Field label="Slogan">
-            <Input placeholder="Masukan Slogan"></Input>
-          </Field>
-        </Box>
-        <Box w={'50%'}>
-          <Field label="Deskripsi">
-            <Textarea
-              placeholder="Masukan deskripsi lengkap produk kamu"
-              variant="outline"
-              h={'120px'}
-            />
-          </Field>
-          <Box my={5} display={'flex'} justifyContent={'end'}>
-            <Button bgColor={'#0086B4'} borderRadius={'100px'} color={'white'}>
-              Simpan
-            </Button>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Stack direction={'row'} w={'100%'} py={2}>
+          <Box w={'50%'}>
+            <Field label="Nama Toko" pb={3}>
+              <Input
+                placeholder="Masukan Nama Toko"
+                {...register('StoreName')}
+              ></Input>
+            </Field>
+            {errors.StoreName && (
+              <Text color={'red.500'}>
+                {errors.StoreName.message as string}
+              </Text>
+            )}
+            <Field label="Slogan">
+              <Input
+                placeholder="Masukan Slogan"
+                {...register('StoreSlogan')}
+              ></Input>
+            </Field>
+            {errors.StoreSlogan && (
+              <Text color={'red.500'}>
+                {errors.StoreSlogan.message as string}
+              </Text>
+            )}
           </Box>
-        </Box>
-      </Stack>
+          <Box w={'50%'}>
+            <Field label="Deskripsi">
+              <Textarea
+                placeholder="Masukan deskripsi lengkap produk kamu"
+                variant="outline"
+                h={'120px'}
+                {...register('StoreDescription')}
+              />
+            </Field>
+            {errors.StoreDescription && (
+              <Text color={'red.500'}>
+                {errors.StoreDescription.message as string}
+              </Text>
+            )}
+
+            <Box my={5} display={'flex'} justifyContent={'end'}>
+              <Button
+                bgColor={'#0086B4'}
+                borderRadius={'100px'}
+                color={'white'}
+                type="submit"
+              >
+                Simpan
+              </Button>
+            </Box>
+          </Box>
+        </Stack>
+      </form>
       <Box>
         <Text fontSize={'2xl'} fontWeight={'bold'} py={3}>
           Logo Toko
