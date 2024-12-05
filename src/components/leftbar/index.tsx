@@ -66,7 +66,7 @@ export default function SideBar() {
   const location = useLocation();
 
   return (
-    <Box px={4} w={'100%'}>
+    <Box px={4} w={'417px'} bg={'white'} h={'100vh'}>
       <Flex h={'50vh'} justifyContent={'space-between'}>
         <IconButton
           aria-label={'Open Menu'}
