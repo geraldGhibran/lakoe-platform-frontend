@@ -28,7 +28,7 @@ interface NavLinkProps {
 
 const Links = [
   { name: 'Dashboard', icon: 'lucide:home', path: '/admin' },
-  { name: 'Produk', icon: 'bi:box-fill', path: '/add-product' },
+  { name: 'Produk', icon: 'bi:box-fill', path: '/products ' },
   { name: 'Pesanan', icon: 'solar:bag-5-outline', path: '/orders' },
 ];
 
@@ -73,7 +73,7 @@ export default function SideBar() {
   const location = useLocation();
 
   return (
-    <Box px={4} w={'100%'}>
+    <Box px={4} w={'417px'} bg={'white'} h={'100vh'}>
       <Flex h={'50vh'} justifyContent={'space-between'}>
         <IconButton
           aria-label={'Open Menu'}
