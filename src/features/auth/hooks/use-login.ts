@@ -45,7 +45,13 @@ export const useSigninForm = () => {
         description: 'You have successfully logged in.',
       });
 
-      navigate('/');
+      if (user.role === 'ADMIN') {
+        navigate('/admin');
+      }
+
+      if (user.role === 'SELLER') {
+        navigate('/products');
+      }
     },
     onError: () => {
       toaster.create({

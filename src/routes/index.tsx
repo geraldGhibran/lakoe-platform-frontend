@@ -1,4 +1,5 @@
 import AdminHomePage from '@/features/admin/home/home';
+import { AdminLayout } from '@/features/admin/layout/admin-layout';
 import Withdraw from '@/features/admin/withdraw/withdraw';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
@@ -8,15 +9,9 @@ import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPa
 import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
 import { createBrowserRouter } from 'react-router-dom';
-import { AdminRoute } from './AdminRoute';
 import { SellerRoute } from './SellerRoute';
 
 export const router = createBrowserRouter([
-  // {
-  //   path: '/test',
-  //   element: <Test />,
-  // },
-
   {
     path: '/',
     element: <DetailProductPage />,
@@ -42,14 +37,15 @@ export const router = createBrowserRouter([
     element: <RegisterForm />,
   },
   {
-    element: <AdminRoute />,
+    path: 'admin',
+    element: <AdminLayout />,
     children: [
       {
-        path: '/admin',
+        index: true,
         element: <AdminHomePage />,
       },
       {
-        path: '/admin/withdraw',
+        path: 'withdraw',
         element: <Withdraw />,
       },
     ],
