@@ -7,6 +7,7 @@ import { Store } from '@/types/store';
 import { StoreSchema } from '../schemas/storeSchema';
 import { updateStoreData } from '../services/store';
 import { useGetStoreDetail } from './useGetStoreDetail';
+import { useState } from 'react';
 
 interface typeStoreSchemas {
   name: string;
@@ -18,6 +19,7 @@ interface typeStoreSchemas {
 export const useHandleEditProfile = () => {
   const { user } = useAuthStore();
   const { data: storeDetail } = useGetStoreDetail(Number(user?.id));
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -41,14 +43,13 @@ export const useHandleEditProfile = () => {
       mutationFn: async (data: Store) => {
         const formData = new FormData();
 
-        // Append text fields
+        console.log('data anjing nggak ketemu', data);
+
         formData.append('name', data.name);
         formData.append('slogan', data?.slogan || '');
         if (data.description) formData.append('description', data.description);
 
-        if (data.logo_img?.[0]) {
-          formData.append('logo_img', data.logo_img[0]);
-        }
+        if (data.logo_img?.[0]) formData.append('logo_img', data.logo_img[0]);
 
         return await updateStoreData(formData, Number(user?.id));
       },
@@ -75,10 +76,35 @@ export const useHandleEditProfile = () => {
       },
     });
 
-  const handleFileChange = (file: File) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // const handleFileChange = (file: File) => {
+  //     if (file) {
+  //         const reader = new FileReader();
+  //         reader.onloadend = () => {
+  //             setValue('logo_img', [file]);
+  //             setImagePreview(reader.result as string);
+  //         };
+  //         reader.readAsDataURL(file);
+  //     }
+  // };
+
+  const handleFileChange = (type: 'logo_img', file: File) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      setValue('logo_img', [file]);
+      if (type === 'logo_img') {
+        setValue('logo_img', [file]);
+        setImagePreview(reader.result as string);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -93,5 +119,8 @@ export const useHandleEditProfile = () => {
     register,
     handleFileChange,
     onSubmit,
+    imagePreview,
+    handleImageChange,
+    setImagePreview,
   };
 };
