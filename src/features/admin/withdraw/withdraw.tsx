@@ -4,8 +4,8 @@ import { Box, Button, Table } from '@chakra-ui/react';
 export default function Withdraw() {
   return (
     <>
-      <Box p={5}>
-        <Table.ScrollArea borderWidth="1px" rounded="md" height="100h">
+      <Box>
+        <Table.ScrollArea borderWidth="1px" rounded="md" height="100%">
           <Table.Root size="sm" stickyHeader>
             <Table.Header>
               <Table.Row bg="bg.subtle">

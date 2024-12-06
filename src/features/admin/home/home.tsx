@@ -5,19 +5,14 @@ import {
   Button,
   Grid,
   GridItem,
-  Heading,
   StatLabel,
   Table,
 } from '@chakra-ui/react';
 
 export default function AdminHomePage() {
   return (
-    <>
+    <Box bg={'white'}>
       <Box color={'black'} p={5}>
-        <Heading size="md" mb={4}>
-          Dashboard
-        </Heading>
-
         {/* Top Stats */}
         <Grid templateColumns="repeat(4, 1fr)" gap={4} mb={6}>
           <GridItem p={4} bg="blue.50" borderRadius="md">
@@ -50,7 +45,7 @@ export default function AdminHomePage() {
         </Grid>
       </Box>
       <Box>
-        <Table.ScrollArea borderWidth="1px" rounded="md" height="300px">
+        <Table.ScrollArea borderWidth="1px" rounded="md" height="500px">
           <Table.Root size="sm" stickyHeader>
             <Table.Header>
               <Table.Row bg="bg.subtle">
@@ -66,7 +61,7 @@ export default function AdminHomePage() {
               </Table.Row>
             </Table.Header>
 
-            <Table.Body bg={'red'}>
+            <Table.Body>
               {items.map((item, index) => (
                 <Table.Row key={item.id}>
                   <Table.Cell>{index + 1}</Table.Cell>
@@ -85,7 +80,7 @@ export default function AdminHomePage() {
           </Table.Root>
         </Table.ScrollArea>
       </Box>
-    </>
+    </Box>
   );
 }
 
