@@ -11,7 +11,6 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
-import { useState } from 'react';
 import { useHandleEditProfile } from '../../hooks/useEditStore';
 import { useGetStoreDetail } from '../../hooks/useGetStoreDetail';
 
@@ -22,9 +21,16 @@ export default function StoreInformation() {
 
   const { data: storeDetail, isLoading } = useGetStoreDetail(Number(user?.id));
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-  const { onSubmit, register, errors } = useHandleEditProfile();
+  const {
+    onSubmit,
+    register,
+    errors,
+    handleFileChange,
+    imagePreview,
+    setImagePreview,
+  } = useHandleEditProfile();
 
   if (isLoading) {
     return (
@@ -76,7 +82,7 @@ export default function StoreInformation() {
       <Text fontSize={'2xl'} fontWeight={'bold'} py={3}>
         {storeDetail.name}
       </Text>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} encType="multipart/form-data">
         <Stack direction={'row'} w={'100%'} py={2}>
           <Box w={'50%'}>
             <Field label="Nama Toko" pb={3}>
@@ -128,94 +134,107 @@ export default function StoreInformation() {
             </Box>
           </Box>
         </Stack>
-      </form>
-      <Box>
-        <Text fontSize={'2xl'} fontWeight={'bold'} py={3}>
-          Logo Toko
-        </Text>
-        <Box
-          border={'1px solid gray'}
-          w={'200px'}
-          h={'200px'}
-          borderRadius={'10px'}
-          overflow="hidden"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          bg="gray.100"
-          position="relative"
-        >
-          {imagePreview ? (
-            <>
+        <Box>
+          <Text fontSize={'2xl'} fontWeight={'bold'} py={3}>
+            Logo Toko
+          </Text>
+          <Box
+            border={'1px solid gray'}
+            w={'200px'}
+            h={'200px'}
+            borderRadius={'10px'}
+            overflow="hidden"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            bg="gray.100"
+            position="relative"
+          >
+            {imagePreview ? (
+              <>
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  objectFit="cover"
+                  w="100%"
+                  h="100%"
+                />
+                <Box
+                  position="absolute"
+                  bottom={29}
+                  right={20}
+                  bgColor="white"
+                  p={2}
+                  borderRadius="full"
+                  boxShadow="sm"
+                  cursor="pointer"
+                  onClick={handleRemoveImage}
+                >
+                  <Icon
+                    icon="pajamas:remove"
+                    color="red"
+                    width="20px"
+                    height="20px"
+                  />
+                </Box>
+              </>
+            ) : (
               <Image
-                src={imagePreview}
+                src={storeDetail.logo_img}
                 alt="Preview"
                 objectFit="cover"
                 w="100%"
                 h="100%"
               />
-              <Box
-                position="absolute"
-                bottom={29}
-                right={20}
-                bgColor="white"
-                p={2}
-                borderRadius="full"
-                boxShadow="sm"
-                cursor="pointer"
-                onClick={handleRemoveImage}
-              >
-                <Icon
-                  icon="pajamas:remove"
-                  color="red"
-                  width="20px"
-                  height="20px"
-                />
-              </Box>
-            </>
-          ) : (
-            <Image
-              src={storeDetail.logo_img}
-              alt="Preview"
-              objectFit="cover"
-              w="100%"
-              h="100%"
-            />
-          )}
-          <Box
-            position={'absolute'}
-            bgColor={'white'}
-            right={5}
-            bottom={7}
-            borderRadius={'full'}
-            p={2}
-          >
-            <Icon
-              icon="uil:image-upload"
-              color="green"
-              width="20px"
-              height="20px"
-              aria-label="Upload Gambar"
-              onClick={() => document.getElementById('image-upload')?.click()}
-            />
+            )}
+            <Box
+              position={'absolute'}
+              bgColor={'white'}
+              right={5}
+              bottom={7}
+              borderRadius={'full'}
+              p={2}
+            >
+              <Icon
+                icon="uil:image-upload"
+                color="green"
+                width="20px"
+                height="20px"
+                aria-label="Upload Gambar"
+                onClick={() => document.getElementById('logo-upload')?.click()}
+              />
+            </Box>
           </Box>
-        </Box>
-        <Input
+          <Input
+            id="logo-upload"
+            type="file"
+            accept="image/*"
+            {...register('logo_img', {
+              onChange: (e) => {
+                if (e.target.files?.[0]) {
+                  handleFileChange('logo_img', e.target.files[0]);
+                }
+              },
+            })}
+            display="none"
+          />
+          {/* <Input
           id="image-upload"
           type="file"
           accept="image/*"
           hidden
-          // onChange={handleImageChange}
-          // onChange={(e) => {
-          //   if (e.target.files?.[0]) {
-          //     handleFileChange(
-          //       "logo_img",
-          //       e.target.files[0]
-          //     );
-          //   }
-          // }}
-        />
-      </Box>
+        onChange={handleImageChange}
+        onChange={(e) => {
+          if (e.target.files?.[0]) {
+            handleFileChange(
+              "logo_img",
+              e.target.files[0]
+            );
+          }
+        }}
+        /> */}
+        </Box>
+      </form>
     </Box>
   );
 }
