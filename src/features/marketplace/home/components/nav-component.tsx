@@ -11,8 +11,6 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
-// import { useColorModeValue } from "@/components/ui/color-mode";
-
 interface Props {
   children: React.ReactNode;
 }

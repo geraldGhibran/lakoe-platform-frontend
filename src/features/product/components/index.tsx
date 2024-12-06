@@ -20,6 +20,7 @@ import NotFoundCard from './notFound';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useNavigate } from 'react-router-dom';
 import SideBar from '@/components/leftbar';
+import { useAuthStore } from '@/store/auth';
 
 function ProductList() {
   const navigate = useNavigate();
@@ -40,6 +41,9 @@ function ProductList() {
       { label: 'termurah', value: 'termurah' },
     ],
   });
+
+  const { user } = useAuthStore();
+  console.log('user', user);
   return (
     <>
       <Stack direction={'row'} gap={5} bg={'#F4F4F5'} height={'100vh'}>
