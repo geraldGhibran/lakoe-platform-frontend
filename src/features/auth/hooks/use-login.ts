@@ -23,11 +23,14 @@ export const useSigninForm = () => {
   });
 
   const mutation = useMutation({
+    mutationKey: ['login'],
     mutationFn: async (data: LoginSchema) => {
       return await signIn(data);
     },
     onSuccess: (data) => {
-      const { user, token } = data;
+      const { user, result } = data;
+
+      const token = result;
 
       setUser(user);
       setToken(token);

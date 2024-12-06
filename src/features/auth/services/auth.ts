@@ -5,7 +5,8 @@ import { RegisterSchema } from '@/validation/register-schema';
 
 interface SignInResponse {
   user: UserType;
-  token: string;
+  token?: string;
+  result: string;
 }
 
 export const signIn = async (data: LoginSchema) => {
