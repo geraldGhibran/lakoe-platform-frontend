@@ -67,11 +67,7 @@ export default function HeaderMenu() {
             </SelectTrigger>
             <SelectContent>
               {frameworks.items.map((movie) => (
-                <Checkbox>
-                  <SelectItem item={movie} key={movie.value}>
-                    {movie.label}
-                  </SelectItem>
-                </Checkbox>
+                <Checkbox value={movie.value}>{movie.label}</Checkbox>
               ))}
             </SelectContent>
           </SelectRoot>
