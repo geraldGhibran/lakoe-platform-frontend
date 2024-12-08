@@ -1,14 +1,12 @@
 'use client';
 
+import { Box, Flex, HStack, Link } from '@chakra-ui/react';
 import {
-  Box,
-  Flex,
-  HStack,
-  IconButton,
-  Link,
-  Stack,
-  useDisclosure,
-} from '@chakra-ui/react';
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from '@/components/ui/accordion';
 import { Icon } from '@iconify/react';
 import { useLocation } from 'react-router-dom';
 
@@ -22,60 +20,53 @@ interface NavLinkProps {
 
 const Links = [
   { name: 'Dashboard', icon: 'lucide:home', path: '/admin' },
-  { name: 'Produk', icon: 'bi:box-fill', path: '/add-product' },
+  { name: 'Produk', icon: 'bi:box-fill', path: '/products' },
   { name: 'Pesanan', icon: 'solar:bag-5-outline', path: '/order' },
 ];
 
-const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
-  const hoverBg = 'gray.200';
-  const linkColor = 'gray.800';
-  const iconColor = isActive ? 'blue' : linkColor;
+const SettingsSubLinks = [
+  { name: 'Atur Toko', path: '/settings' },
+  { name: 'Pengiriman', path: '/order' },
+  { name: 'Metode Pembayaran  ', path: '/products' },
+];
 
+const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
+  const linkColor = isActive ? 'blue.500' : 'gray.800';
   return (
     <Link
       as="a"
       display="flex"
       alignItems="center"
       px={20}
-      py={5}
-      rounded={'md'}
+      py={3}
+      rounded="md"
       href={path}
       onClick={onClick}
-      _hover={{
-        textDecoration: 'none',
-        bg: hoverBg,
-      }}
-      color={isActive ? 'blue.500' : linkColor}
+      _hover={{ textDecoration: 'none', bg: 'gray.200' }}
+      color={linkColor}
     >
-      <Icon
-        icon={icon}
-        width="24"
-        height="24"
-        style={{
-          marginRight: '12px',
-          color: iconColor,
-        }}
-      />
+      {icon && (
+        <Icon
+          icon={icon}
+          width="24"
+          height="24"
+          style={{ marginRight: '12px', color: linkColor }}
+        />
+      )}
       {children}
     </Link>
   );
 };
 
 export default function SideBar() {
-  const { open, onOpen, onClose } = useDisclosure();
   const location = useLocation();
 
   return (
-    <Box px={4} w={'417px'} bg={'white'} h={'100vh'}>
-      <Flex h={'50vh'} justifyContent={'space-between'}>
-        <IconButton
-          aria-label={'Open Menu'}
-          display={{ md: 'none' }}
-          onClick={open ? onClose : onOpen}
-        />
-        <HStack alignItems={'center'}>
-          <HStack as={'nav'} display={{ base: 'none', md: 'flex' }}>
-            <Flex direction={'column'}>
+    <Box px={4} w="417px" bg="white" h={'100vh'}>
+      <Flex h="50vh">
+        <HStack>
+          <HStack as="nav" display={{ base: 'none', md: 'flex' }}>
+            <Flex direction="column" w="100%">
               {Links.map((link) => (
                 <NavLink
                   key={link.name}
@@ -87,73 +78,61 @@ export default function SideBar() {
                   {link.name}
                 </NavLink>
               ))}
-              <Link
-                display="flex"
-                alignItems="center"
-                px={20}
-                py={5}
-                rounded={'md'}
-                _hover={{
-                  bg: 'gray.200',
-                }}
-                color={
-                  location.pathname.startsWith('/settings')
-                    ? 'blue.500'
-                    : 'gray.800'
-                }
-              >
-                <Icon
-                  icon="mdi:cog"
-                  width="24"
-                  height="24"
-                  style={{
-                    marginRight: '12px',
-                    color: location.pathname.startsWith('/settings')
-                      ? 'blue'
-                      : 'gray.800',
-                  }}
-                />
-                Pengaturan{' '}
-                <Icon
-                  style={{
-                    marginLeft: '100px',
-                    width: '24px',
-                    height: '24px',
-                  }}
-                  icon="gridicons:dropdown"
-                />
-              </Link>
+              <AccordionRoot collapsible>
+                <AccordionItem key={'pengaturan'} value={'pengaturan'}>
+                  <AccordionItemTrigger
+                    px={20}
+                    py={3}
+                    _hover={{ bg: 'gray.200' }}
+                    color={
+                      SettingsSubLinks.some((subLink) =>
+                        location.pathname.startsWith(subLink.path)
+                      )
+                        ? 'blue.500'
+                        : 'gray.800'
+                    }
+                  >
+                    <Box
+                      flex="1"
+                      textAlign="left"
+                      display="flex"
+                      alignItems="center"
+                    >
+                      <Icon
+                        icon="mdi:cog"
+                        width="24"
+                        height="24"
+                        style={{
+                          marginRight: '12px',
+                          color: SettingsSubLinks.some((subLink) =>
+                            location.pathname.startsWith(subLink.path)
+                          )
+                            ? 'blue'
+                            : 'gray.800',
+                        }}
+                      />
+                      Pengaturan
+                    </Box>
+                  </AccordionItemTrigger>
+                  <AccordionItemContent position={'fixed'}>
+                    {SettingsSubLinks.map((subLink) => (
+                      <NavLink
+                        key={subLink.name}
+                        icon=""
+                        path={subLink.path}
+                        isActive={location.pathname === subLink.path}
+                        onClick={() => {}}
+                      >
+                        {subLink.name}
+                      </NavLink>
+                    ))}
+                  </AccordionItemContent>
+                </AccordionItem>
+              </AccordionRoot>
             </Flex>
           </HStack>
         </HStack>
       </Flex>
-      {open && (
-        <Box pb={4} display={{ md: 'none' }}>
-          <Stack as={'nav'}>
-            {Links.map((link) => (
-              <NavLink
-                key={link.name}
-                icon={link.icon}
-                path={link.path}
-                isActive={location.pathname === link.path}
-                onClick={() => {}}
-              >
-                {link.name}
-              </NavLink>
-            ))}
-          </Stack>
-        </Box>
-      )}
-      <Box mt={'340px'}>
-        <NavLink
-          icon="gg:profile"
-          path="/"
-          isActive={location.pathname === '/profile'}
-          onClick={() => {}}
-        >
-          Profile
-        </NavLink>
-      </Box>
     </Box>
   );
 }
