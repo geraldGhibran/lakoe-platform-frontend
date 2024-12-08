@@ -4,12 +4,13 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogRoot,
   DialogTitle,
   Button,
   Input,
   Stack,
   DialogTrigger,
+  Textarea,
+  Text,
 } from '@chakra-ui/react';
 import { createListCollection } from '@chakra-ui/react';
 import {
@@ -22,101 +23,152 @@ import {
 } from '@/components/ui/select';
 import { Field } from '@/components/ui/field';
 import { useRef } from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { DialogRoot } from '@/components/ui/dialog';
+import LocationConfig from './location-config';
+import { useAddLocation } from '../../hooks/useAddLocation';
 
-export default function AddLocation() {
+const AddLocation = () => {
+  const { provinsi, kabupaten, postalCode, setSelectedProvinsi } =
+    useAddLocation();
+
   const ref = useRef<HTMLInputElement>(null);
-  const frameworks = createListCollection({
-    items: [
-      { label: 'React.js', value: 'react' },
-      { label: 'Vue.js', value: 'vue' },
-      { label: 'Angular', value: 'angular' },
-      { label: 'Svelte', value: 'svelte' },
-    ],
+
+  const provinsiCollection = createListCollection({
+    items: provinsi.map((prov) => ({
+      label: prov.nama,
+      value: prov.id,
+    })),
   });
+
+  const kabupatenCollection = createListCollection({
+    items: kabupaten.map((kab) => ({
+      label: kab.nama,
+      value: kab.id,
+    })),
+  });
+
+  const postalCodeCollection = createListCollection({
+    items: postalCode.map((pos) => ({
+      label: pos.label,
+      value: pos.value,
+    })),
+  });
+
   return (
     <DialogRoot initialFocusEl={() => ref.current}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          bgColor={'white'}
-          borderRadius={'100px'}
-          color={'black'}
+          bgColor="white"
+          borderRadius="100px"
+          color="black"
         >
           Tambah Lokasi
         </Button>
       </DialogTrigger>
-      <DialogContent position={'fixed'}>
+      <DialogContent position="fixed" zIndex={1} top="-7%">
         <DialogHeader>
-          <DialogTitle fontWeight={'bold'}>Tambah Lokasi Baru</DialogTitle>
+          <DialogTitle fontWeight="bold">Tambah Lokasi Baru</DialogTitle>
         </DialogHeader>
         <DialogBody pb="4">
           <Stack gap="4">
             <Field label="Nama Lokasi" required>
-              <Input ref={ref} placeholder="Cth.Toko Alamanda" />
+              <Input ref={ref} placeholder="Cth. Toko Alamanda" />
             </Field>
             <SelectRoot
-              multiple
-              collection={frameworks}
+              collection={provinsiCollection}
               size="sm"
-              width="320px"
+              onValueChange={(details) =>
+                setSelectedProvinsi(
+                  details.value ? Number(details.value) : null
+                )
+              }
             >
-              <SelectLabel>Select framework</SelectLabel>
+              <SelectLabel>Provinsi</SelectLabel>
               <SelectTrigger>
-                <SelectValueText placeholder="Movie" />
+                <SelectValueText placeholder="Pilih Provinsi" />
               </SelectTrigger>
-              <SelectContent style={{ position: 'absolute', zIndex: 10 }}>
-                {frameworks.items.map((movie) => (
-                  <SelectItem item={movie} key={movie.value}>
-                    {movie.label}
+              <SelectContent position="absolute" zIndex={3} w="100%">
+                {provinsiCollection.items.map((prov) => (
+                  <SelectItem item={prov} key={prov.value}>
+                    {prov.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </SelectRoot>
-            <Field label="Judul Pesan" required>
-              <Input ref={ref} placeholder="Judul Pesan" />
+            <SelectRoot
+              collection={kabupatenCollection}
+              size="sm"
+              disabled={!kabupaten.length}
+              onValueChange={(details) => console.log(details.value)}
+            >
+              <SelectLabel>Kabupaten/Kota</SelectLabel>
+              <SelectTrigger>
+                <SelectValueText
+                  placeholder={
+                    kabupaten.length
+                      ? 'Pilih Kabupaten/Kota'
+                      : 'Pilih provinsi terlebih dahulu'
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent position="absolute" zIndex={2} w="100%">
+                {kabupatenCollection.items.map((kab) => (
+                  <SelectItem item={kab} key={kab.value}>
+                    {kab.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+            <SelectRoot collection={postalCodeCollection}>
+              <SelectLabel>Kode Pos</SelectLabel>
+              <SelectTrigger>
+                <SelectValueText placeholder="Masukan Kode Pos" />
+              </SelectTrigger>
+              <SelectContent>
+                {postalCodeCollection.items.map((pos) => (
+                  <SelectItem item={pos} key={pos.value}>
+                    {pos.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </SelectRoot>
+            <Field label="Alamat Lengkap" required>
+              <Textarea placeholder="Masukan Deskripsi Lokasi" />
             </Field>
-            <Field label="Judul Pesan" required>
-              <Input ref={ref} placeholder="Judul Pesan" />
-            </Field>
+            <Text fontWeight={'500'}>Pinpoint Lokasi</Text>
+            <Text color={'#909090'} mt={'-15px'}>
+              Tandai lokasi untuk mempermudah permintaan pickup kurir
+            </Text>
+            <LocationConfig onLocationChange={() => {}} />
           </Stack>
-          <MapContainer
-            center={[51.505, -0.09]}
-            zoom={13}
-            scrollWheelZoom={false}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <Marker position={[51.505, -0.09]}>
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
-            </Marker>
-          </MapContainer>
         </DialogBody>
         <DialogFooter>
           <DialogActionTrigger asChild>
             <Button
               variant="outline"
-              bgColor={'white'}
-              borderRadius={'100px'}
-              color={'black'}
+              bgColor="blue"
+              borderRadius="100px"
+              color="white"
+              type="submit"
+            >
+              Simpan
+            </Button>
+          </DialogActionTrigger>
+          <DialogActionTrigger asChild>
+            <Button
+              variant="outline"
+              bgColor="white"
+              borderRadius="100px"
+              color="black"
             >
               Batalkan
             </Button>
           </DialogActionTrigger>
-          <Button
-            variant="outline"
-            bgColor={'#0086B4'}
-            borderRadius={'100px'}
-            color={'white'}
-          >
-            Simpan
-          </Button>
         </DialogFooter>
       </DialogContent>
     </DialogRoot>
   );
-}
+};
+
+export default AddLocation;

@@ -27,7 +27,7 @@ const Links = [
 const SettingsSubLinks = [
   { name: 'Atur Toko', path: '/settings' },
   { name: 'Pengiriman', path: '/order' },
-  { name: 'Metode Pembayaran  ', path: '/add-product' },
+  { name: 'Metode Pembayaran  ', path: '/products' },
 ];
 
 const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
