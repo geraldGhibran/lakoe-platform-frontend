@@ -1,6 +1,7 @@
 import StoreSetting from '@/features/Setting/pages/storeSetting';
 import AdminHomePage from '@/features/admin/home/home';
 import { AdminLayout } from '@/features/admin/layout/admin-layout';
+import { SellerInfo } from '@/features/admin/seller/seller-info';
 import Withdraw from '@/features/admin/withdraw/withdraw';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
@@ -37,6 +38,18 @@ export const router = createBrowserRouter([
   {
     path: '/register',
     element: <RegisterForm />,
+  },
+  {
+    path: '/test',
+    element: <AdminHomePage />,
+  },
+  {
+    path: '/test1',
+    element: <Withdraw />,
+  },
+  {
+    path: '/test2',
+    element: <SellerInfo />,
   },
   {
     path: 'admin',
