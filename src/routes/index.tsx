@@ -41,18 +41,6 @@ export const router = createBrowserRouter([
     element: <RegisterForm />,
   },
   {
-    path: '/test',
-    element: <AdminHomePage />,
-  },
-  {
-    path: '/test1',
-    element: <Withdraw />,
-  },
-  {
-    path: '/test2',
-    element: <SellerInfo />,
-  },
-  {
     element: <ProtectedRoute />,
     children: [
       {
