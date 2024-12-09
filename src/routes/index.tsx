@@ -67,6 +67,10 @@ export const router = createBrowserRouter([
             path: 'withdraw',
             element: <Withdraw />,
           },
+          {
+            path: 'seller',
+            element: <SellerInfo />,
+          },
         ],
       },
       {

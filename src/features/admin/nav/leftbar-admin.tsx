@@ -23,6 +23,7 @@ interface NavLinkProps {
 const Links = [
   { name: 'Dashboard', icon: 'lucide:home', path: '/admin' },
   { name: 'Withdraw', icon: 'bi:box-fill', path: '/admin/withdraw' },
+  { name: 'Seller', icon: 'game-icons:mining', path: '/admin/seller' },
 ];
 
 const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
