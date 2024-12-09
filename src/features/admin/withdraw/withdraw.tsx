@@ -1,9 +1,35 @@
 import { Avatar } from '@/components/ui/avatar';
-import { Box, Button, Table } from '@chakra-ui/react';
+import { Button } from '@/components/ui/button';
+import { StatRoot, StatValueText } from '@/components/ui/stat';
+import { formatCurrency } from '@/features/add-other/format-currency';
+import { formatDate } from '@/features/add-other/format-date';
+import { Box, Grid, GridItem, StatLabel, Table } from '@chakra-ui/react';
 
 export default function Withdraw() {
   return (
     <>
+      <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={6}>
+        <GridItem p={4} bg="purple.50" borderRadius="md">
+          <StatRoot>
+            <StatLabel>Wait for Withdraw</StatLabel>
+            <StatValueText>{formatCurrency(10000)}</StatValueText>
+          </StatRoot>
+        </GridItem>
+
+        <GridItem p={4} bg="yellow.50" borderRadius="md">
+          <StatRoot>
+            <StatLabel>Pending Withdraw</StatLabel>
+            <StatValueText>{formatCurrency(110000)}</StatValueText>
+          </StatRoot>
+        </GridItem>
+
+        <GridItem p={4} bg="blue.50" borderRadius="md">
+          <StatRoot>
+            <StatLabel>Withdrawed</StatLabel>
+            <StatValueText>{formatCurrency(140000)}</StatValueText>
+          </StatRoot>
+        </GridItem>
+      </Grid>
       <Box>
         <Table.ScrollArea borderWidth="1px" rounded="md" height="100%">
           <Table.Root size="sm" stickyHeader>
@@ -28,8 +54,10 @@ export default function Withdraw() {
                     <Avatar src={item.image} />
                   </Table.Cell>
                   <Table.Cell>{item.name}</Table.Cell>
-                  <Table.Cell>123</Table.Cell>
-                  <Table.Cell>{item.totalProduct}</Table.Cell>
+                  <Table.Cell>{formatDate(item.createdAt)}</Table.Cell>
+                  <Table.Cell>
+                    {formatCurrency(item.withdrawAmmount)}
+                  </Table.Cell>
                   <Table.Cell textAlign={'center'}>
                     <Button borderRadius={'full'} mr={1}>
                       Accept
@@ -58,35 +86,40 @@ const items = [
     id: 1,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Laptop',
-    totalProduct: '4',
-    totalIncome: '11111',
+
+    withdrawAmmount: 11112,
+    createdAt: '2024-11-11T11:01:20.680Z',
   },
   {
     id: 2,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Coffee Maker',
-    totalProduct: '2',
-    totalIncome: '22222',
+
+    withdrawAmmount: 22222,
+    createdAt: '2024-03-11T11:02:20.680Z',
   },
   {
     id: 3,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Desk Chair',
-    totalProduct: '3',
-    totalIncome: '3333',
+
+    withdrawAmmount: 3333,
+    createdAt: '2024-12-11T11:02:20.680Z',
   },
   {
     id: 4,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Smartphone',
-    totalProduct: '11',
-    totalIncome: '4444',
+
+    withdrawAmmount: 4444,
+    createdAt: '2023-12-21T11:02:20.680Z',
   },
   {
     id: 5,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Headphones',
-    totalProduct: '44',
-    totalIncome: '5555',
+
+    withdrawAmmount: 55551,
+    createdAt: '2023-02-21T11:02:20.680Z',
   },
 ];
