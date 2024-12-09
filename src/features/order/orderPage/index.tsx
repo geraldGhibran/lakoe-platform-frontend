@@ -1,6 +1,5 @@
 import { Box, Stack, Tabs, Text } from '@chakra-ui/react';
 import { useState } from 'react';
-import SideBar from '@/components/leftbar';
 import HeaderMenu from '../component/headerMenu';
 import OrderItem from '../component/orderItem';
 
@@ -89,10 +88,7 @@ export default function OrderPage() {
 
   return (
     <Stack direction="row">
-      <Box w="30%" position={'fixed'}>
-        <SideBar />
-      </Box>
-      <Box bg="gray.100" w="60%" p={5} ml="30%">
+      <Box bg="gray.100">
         <Tabs.Root
           bg={'white'}
           value={value}
