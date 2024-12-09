@@ -9,11 +9,11 @@ export function AdminLayout() {
   const location = useLocation();
 
   if (!token) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (user?.role !== 'ADMIN') {
-    return <Navigate to="/products" state={{ from: location }} replace />;
+    return <Navigate to="/dashboard" state={{ from: location }} replace />;
   }
   return (
     <>

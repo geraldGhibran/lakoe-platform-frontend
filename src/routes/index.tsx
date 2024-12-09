@@ -7,7 +7,7 @@ import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { AuthLayout } from '@/features/auth/layout';
 import { Dashboard } from '@/features/seller/dashboard';
-import { SellerLayout } from '@/features/layout/seller-layout';
+import { SellerLayout } from '@/features/seller/layout/seller-layout';
 import CartPage from '@/features/marketplace/home/pages/Cart';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';

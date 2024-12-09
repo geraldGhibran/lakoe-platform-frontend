@@ -2,13 +2,13 @@ import SideBar from '@/components/leftbar';
 import { useAuthStore } from '@/store/auth';
 import { Box, Flex } from '@chakra-ui/react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { Adds } from '../admin/adds/adds';
+import { AddSeller } from '../adds/add1';
 
 export function SellerLayout() {
   const { user, token } = useAuthStore();
   const location = useLocation();
   if (!token) {
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   if (user?.role !== 'SELLER') {
@@ -26,7 +26,7 @@ export function SellerLayout() {
           <Outlet />
         </Box>
         <Box flex={1}>
-          <Adds />
+          <AddSeller />
         </Box>
       </Flex>
     </>
