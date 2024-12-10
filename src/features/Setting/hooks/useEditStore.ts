@@ -43,8 +43,6 @@ export const useHandleEditProfile = () => {
       mutationFn: async (data: Store) => {
         const formData = new FormData();
 
-        console.log('data anjing nggak ketemu', data);
-
         formData.append('name', data.name);
         formData.append('slogan', data?.slogan || '');
         if (data.description) formData.append('description', data.description);
