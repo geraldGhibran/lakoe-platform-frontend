@@ -20,6 +20,7 @@ export default function AdminHomePage() {
     { name: 'Mar', sales: 500 },
     { name: 'Apr', sales: 200 },
     { name: 'May', sales: 350 },
+    { name: 'Jan', sales: 1110 },
   ];
   return (
     <Box bg={'white'}>

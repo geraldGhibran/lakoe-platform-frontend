@@ -1,18 +1,14 @@
-import SideBar from '@/components/leftbar';
 import { Box, Flex, Tabs, Text } from '@chakra-ui/react';
-import StoreInformation from '../../component/storeInformation';
-import Message from '../../component/tamplateMessage';
 import { useState } from 'react';
 import LocationMain from '../../component/location/main-location';
+import StoreInformation from '../../component/storeInformation';
+import Message from '../../component/tamplateMessage';
 
 export default function StoreSetting() {
   const [value, setValue] = useState<string | null>('first');
   return (
     <Flex direction={'row'}>
-      <Box width={'30%'}>
-        <SideBar />
-      </Box>
-      <Box width={'60%'} p={5} bg={'#F8F8F8'}>
+      <Box width={'100%'} bg={'#F8F8F8'}>
         <Tabs.Root
           value={value}
           flex={1}
