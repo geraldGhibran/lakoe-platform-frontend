@@ -15,7 +15,7 @@ import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
 import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
-import Checkout from '@/features/marketplace/home/components/Checkout';
+import Cart from '@/features/marketplace/home/components/Cart';
 
 export const router = createBrowserRouter([
   {
@@ -27,8 +27,8 @@ export const router = createBrowserRouter([
         element: <DetailProduct />,
       },
       {
-        path: 'checkout',
-        element: <Checkout />,
+        path: 'cart',
+        element: <Cart />,
       },
     ],
   },
