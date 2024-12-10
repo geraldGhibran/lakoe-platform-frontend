@@ -11,10 +11,21 @@ interface Kabupaten {
   nama: string;
 }
 
+interface PostalCode {
+  code: number;
+  village: string;
+  district: string;
+  regency: string;
+}
+
 export const useAddLocation = () => {
   const [provinsi, setProvinsi] = useState<Provinsi[]>([]);
   const [kabupaten, setKabupaten] = useState<Kabupaten[]>([]);
+  const [postalCodes, setPostalCodes] = useState<PostalCode[]>([]);
   const [selectedProvinsi, setSelectedProvinsi] = useState<number | null>(null);
+  const [selectedKabupaten, setSelectedKabupaten] = useState<number | null>(
+    null
+  );
 
   useEffect(() => {
     axios
@@ -34,7 +45,6 @@ export const useAddLocation = () => {
       return;
     }
 
-    console.log(`Fetching kabupaten for provinsi ID: ${selectedProvinsi}`);
     axios
       .get(
         `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvinsi}`
@@ -48,20 +58,38 @@ export const useAddLocation = () => {
         setKabupaten([]);
       });
   }, [selectedProvinsi]);
+  useEffect(() => {
+    if (selectedKabupaten === null) {
+      console.log('No Kabupaten selected, skipping postal codes fetch');
+      return;
+    }
 
-  const postalCode = [
-    { label: '10110', value: '10110' },
-    { label: '14230', value: '14230' },
-    { label: '11510', value: '11510' },
-    { label: '12520', value: '12520' },
-    { label: '13410', value: '13410' },
-  ];
+    const selectedKabupatenName = kabupaten.find(
+      (kab) => kab.id === selectedKabupaten
+    )?.nama;
+
+    if (!selectedKabupatenName) {
+      console.log('Kabupaten name not found, skipping postal codes fetch');
+      return;
+    }
+
+    axios
+      .get(`https://kodepos.vercel.app/search/?q=${setSelectedKabupaten}`)
+      .then((response) => {
+        setPostalCodes(response.data || []);
+      })
+      .catch((error) => {
+        console.error('Error fetching postal codes:', error);
+      });
+  }, [selectedKabupaten, kabupaten]);
 
   return {
     provinsi,
     kabupaten,
-    postalCode,
+    postalCodes,
     selectedProvinsi,
     setSelectedProvinsi,
+    selectedKabupaten,
+    setSelectedKabupaten,
   };
 };

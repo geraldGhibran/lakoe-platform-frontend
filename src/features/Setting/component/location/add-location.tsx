@@ -28,7 +28,7 @@ import LocationConfig from './location-config';
 import { useAddLocation } from '../../hooks/useAddLocation';
 
 const AddLocation = () => {
-  const { provinsi, kabupaten, postalCode, setSelectedProvinsi } =
+  const { provinsi, kabupaten, postalCodes, setSelectedProvinsi } =
     useAddLocation();
 
   const ref = useRef<HTMLInputElement>(null);
@@ -48,11 +48,12 @@ const AddLocation = () => {
   });
 
   const postalCodeCollection = createListCollection({
-    items: postalCode.map((pos) => ({
-      label: pos.label,
-      value: pos.value,
+    items: postalCodes.map((pos) => ({
+      label: pos.regency,
+      value: pos.code,
     })),
   });
+  console.log('Postal Codes Collection:', postalCodeCollection.items);
 
   return (
     <DialogRoot initialFocusEl={() => ref.current}>
@@ -127,8 +128,8 @@ const AddLocation = () => {
               </SelectTrigger>
               <SelectContent>
                 {postalCodeCollection.items.map((pos) => (
-                  <SelectItem item={pos} key={pos.value}>
-                    {pos.label}
+                  <SelectItem item={pos} key={pos.label}>
+                    {pos.value}
                   </SelectItem>
                 ))}
               </SelectContent>
