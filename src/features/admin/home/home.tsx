@@ -1,4 +1,6 @@
+import { Avatar } from '@/components/ui/avatar';
 import { StatRoot, StatValueText } from '@/components/ui/stat';
+import { formatCurrency } from '@/features/add-other/format-currency';
 import { Box, Grid, GridItem, Heading, StatLabel } from '@chakra-ui/react';
 import { Tooltip } from 'react-leaflet';
 import {
@@ -18,37 +20,35 @@ export default function AdminHomePage() {
     { name: 'Mar', sales: 500 },
     { name: 'Apr', sales: 200 },
     { name: 'May', sales: 350 },
+    { name: 'Jan', sales: 1110 },
   ];
   return (
     <Box bg={'white'}>
       <Box color={'black'} p={5}>
         {/* Top Stats */}
-        <Grid templateColumns="repeat(4, 1fr)" gap={4} mb={6}>
+        <Grid templateColumns="repeat(2, 1fr)" gap={4} mb={6}>
           <GridItem p={4} bg="blue.50" borderRadius="md">
             <StatRoot>
               <StatLabel>Total Income All Seller</StatLabel>
-              <StatValueText>123</StatValueText>
+              <StatValueText>{formatCurrency(100000)}</StatValueText>
             </StatRoot>
           </GridItem>
 
           <GridItem p={4} bg="green.50" borderRadius="md">
             <StatRoot>
               <StatLabel>Total Income</StatLabel>
-              <StatValueText>123</StatValueText>
+              <StatValueText>{formatCurrency(150000)}</StatValueText>
             </StatRoot>
           </GridItem>
-
-          <GridItem p={4} bg="purple.50" borderRadius="md">
+        </Grid>
+        <Grid templateColumns="repeat(1, 1fr)" gap={4} mb={6}>
+          <GridItem p={10} bg="blue.50" borderRadius="md">
             <StatRoot>
-              <StatLabel>Withdrawed</StatLabel>
-              <StatValueText>123</StatValueText>
-            </StatRoot>
-          </GridItem>
-
-          <GridItem p={4} bg="yellow.50" borderRadius="md">
-            <StatRoot>
-              <StatLabel>Wait for Withdraw</StatLabel>
-              <StatValueText>123</StatValueText>
+              <StatLabel textAlignLast={'center'}>Top Seller #1</StatLabel>
+              <StatValueText justifyContent={'center'} m={3}>
+                <Avatar src="https://bit.ly/dan-abramov" />
+                Jarwo
+              </StatValueText>
             </StatRoot>
           </GridItem>
         </Grid>

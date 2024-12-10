@@ -1,10 +1,11 @@
 import { Avatar } from '@/components/ui/avatar';
+import { formatCurrency } from '@/features/add-other/format-currency';
 import { Button, Table } from '@chakra-ui/react';
 
 export function SellerInfo() {
   return (
     <>
-      <Table.ScrollArea borderWidth="1px" rounded="md" height="500px">
+      <Table.ScrollArea borderWidth="1px" rounded="md" height="100%">
         <Table.Root size="sm" stickyHeader>
           <Table.Header>
             <Table.Row bg="bg.subtle">
@@ -27,9 +28,9 @@ export function SellerInfo() {
                 </Table.Cell>
                 <Table.Cell>{item.name}</Table.Cell>
                 <Table.Cell>{item.totalProduct}</Table.Cell>
-                <Table.Cell>{item.totalIncome}</Table.Cell>
+                <Table.Cell>{formatCurrency(item.totalIncome)}</Table.Cell>
                 <Table.Cell textAlign={'end'}>
-                  <Button>Detail</Button>
+                  <Button>Visit</Button>
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -45,34 +46,34 @@ const items = [
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Laptop',
     totalProduct: '4',
-    totalIncome: '11111',
+    totalIncome: 1111532,
   },
   {
     id: 2,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Coffee Maker',
     totalProduct: '2',
-    totalIncome: '22222',
+    totalIncome: 22222,
   },
   {
     id: 3,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Desk Chair',
     totalProduct: '3',
-    totalIncome: '3333',
+    totalIncome: 3333,
   },
   {
     id: 4,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Smartphone',
     totalProduct: '11',
-    totalIncome: '4444',
+    totalIncome: 444446,
   },
   {
     id: 5,
     image: 'https://randomuser.me/api/portraits/men/70.jpg',
     name: 'Headphones',
     totalProduct: '44',
-    totalIncome: '5555',
+    totalIncome: 555544,
   },
 ];

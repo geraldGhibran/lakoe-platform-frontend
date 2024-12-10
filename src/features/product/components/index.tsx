@@ -1,3 +1,6 @@
+import { Checkbox } from '@/components/ui/checkbox';
+import { InputGroup } from '@/components/ui/input-group';
+import { useAuthStore } from '@/store/auth';
 import {
   Box,
   Button,
@@ -14,13 +17,9 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
-import ListProduct from './listProduct';
-import { InputGroup } from '@/components/ui/input-group';
-import NotFoundCard from './notFound';
-import { Checkbox } from '@/components/ui/checkbox';
 import { useNavigate } from 'react-router-dom';
-import SideBar from '@/components/leftbar';
-import { useAuthStore } from '@/store/auth';
+import ListProduct from './listProduct';
+import NotFoundCard from './notFound';
 
 function ProductList() {
   const navigate = useNavigate();
@@ -47,10 +46,7 @@ function ProductList() {
   return (
     <>
       <Stack direction={'row'} gap={5} bg={'#F4F4F5'} height={'100vh'}>
-        <Box>
-          <SideBar />
-        </Box>
-        <Box width={'894px'} bg={'white'} p={5} mx={'auto'} rounded={'md'}>
+        <Box bg={'white'} p={5} mx={'auto'} rounded={'md'}>
           <Box
             display={'flex'}
             justifyContent={'space-between'}
@@ -83,7 +79,7 @@ function ProductList() {
               </InputGroup>
               <SelectRoot
                 collection={categoryCollectionDummy}
-                w={'240px'}
+                // w={'240px'}
                 size="sm"
               >
                 <SelectTrigger>
@@ -101,7 +97,7 @@ function ProductList() {
               <SelectRoot
                 collection={sortCollectionDummy}
                 size="sm"
-                w={'240px'}
+                // w={'240px'}
               >
                 <SelectTrigger>
                   <SelectValueText placeholder="urutkan" />
@@ -178,7 +174,6 @@ function ProductList() {
             </Tabs.Content>
           </Tabs.Root>
         </Box>
-        <Box width={'417px'}></Box>
       </Stack>
     </>
   );
