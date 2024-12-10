@@ -15,11 +15,18 @@ import OrderPage from '@/features/order/orderPage';
 import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
 import { createBrowserRouter } from 'react-router-dom';
+import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <DetailProductPage />,
+    children: [
+      {
+        index: true,
+        element: <DetailProduct />,
+      },
+    ],
   },
   {
     path: '/detail-product/:id',
