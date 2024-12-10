@@ -14,14 +14,10 @@ import { Icon } from '@iconify/react';
 import { useHandleEditProfile } from '../../hooks/useEditStore';
 import { useGetStoreDetail } from '../../hooks/useGetStoreDetail';
 
-// type SubmitHandler = (e: React.FormEvent<HTMLFormElement>) => Promise<void> | void;
-
 export default function StoreInformation() {
   const { user } = useAuthStore();
 
   const { data: storeDetail, isLoading } = useGetStoreDetail(Number(user?.id));
-
-  // const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const {
     onSubmit,
@@ -64,16 +60,6 @@ export default function StoreInformation() {
     );
   }
 
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onload = () => {
-  //       setImagePreview(reader.result as string);
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
   const handleRemoveImage = () => {
     setImagePreview(null);
   };
@@ -218,21 +204,6 @@ export default function StoreInformation() {
             })}
             display="none"
           />
-          {/* <Input
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          hidden
-        onChange={handleImageChange}
-        onChange={(e) => {
-          if (e.target.files?.[0]) {
-            handleFileChange(
-              "logo_img",
-              e.target.files[0]
-            );
-          }
-        }}
-        /> */}
         </Box>
       </form>
     </Box>

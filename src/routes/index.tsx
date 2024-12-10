@@ -6,6 +6,7 @@ import Withdraw from '@/features/admin/withdraw/withdraw';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import CartPage from '@/features/marketplace/home/pages/Cart';
+import CartTestPage from '@/features/marketplace/home/pages/CartTestPage';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import OrderPage from '@/features/order/orderPage';
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
   {
     path: '/cart',
     element: <CartPage />,
+  },
+  {
+    path: '/cart-test',
+    element: <CartTestPage />,
   },
   {
     path: '/checkout',
