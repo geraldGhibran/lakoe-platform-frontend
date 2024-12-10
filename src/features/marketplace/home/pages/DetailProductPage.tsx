@@ -32,7 +32,7 @@ export default function DetailProductPage() {
           </Button>
         </Link>
         <Flex alignItems="center" gap="10px" justify="center">
-          <Link to="">
+          <Link to="checkout">
             <Button _hover={{ bgColor: 'gainsboro' }} position="relative">
               <Box
                 position="absolute"
