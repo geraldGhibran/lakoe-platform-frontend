@@ -9,13 +9,13 @@ import { AuthLayout } from '@/features/auth/layout';
 import { Dashboard } from '@/features/seller/dashboard';
 import { SellerLayout } from '@/features/seller/layout/seller-layout';
 import CartPage from '@/features/marketplace/home/pages/Cart';
-import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import OrderPage from '@/features/order/orderPage';
 import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
 import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
+import Checkout from '@/features/marketplace/home/components/Checkout';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +26,10 @@ export const router = createBrowserRouter([
         index: true,
         element: <DetailProduct />,
       },
+      {
+        path: 'checkout',
+        element: <Checkout />,
+      },
     ],
   },
   {
@@ -35,10 +39,6 @@ export const router = createBrowserRouter([
   {
     path: '/cart',
     element: <CartPage />,
-  },
-  {
-    path: '/checkout',
-    element: <CheckoutPage />,
   },
   {
     element: <AuthLayout />,
