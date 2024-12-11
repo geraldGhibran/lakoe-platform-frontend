@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const AddLocationSchema = z.object({
+export const addLocationSchema = z.object({
   name: z.string().min(1, { message: 'Masukan nama lokasi' }),
   address: z.string().min(1, { message: 'Masukan alamat lengkap' }),
   city_district: z
@@ -15,4 +15,8 @@ export const AddLocationSchema = z.object({
     .number()
     .min(-180)
     .max(180, 'Longitude harus berada antara -180 dan 180'),
+  store_id: z.number().min(1, { message: 'Store ID tidak boleh kosong' }),
+  user_id: z.number().min(1, { message: 'User ID tidak boleh kosong' }),
 });
+
+export type AddLocationSchema = z.infer<typeof addLocationSchema>;

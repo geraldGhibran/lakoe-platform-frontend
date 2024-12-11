@@ -28,8 +28,14 @@ import LocationConfig from './location-config';
 import { useAddLocation } from '../../hooks/useAddLocation';
 
 const AddLocation = () => {
-  const { provinsi, kabupaten, postalCode, setSelectedProvinsi } =
-    useAddLocation();
+  const {
+    provinsi,
+    kabupaten,
+    postalCodes,
+    setSelectedProvinsi,
+    setSelectedKabupaten,
+    removeKotaKabupaten,
+  } = useAddLocation();
 
   const ref = useRef<HTMLInputElement>(null);
 
@@ -43,14 +49,14 @@ const AddLocation = () => {
   const kabupatenCollection = createListCollection({
     items: kabupaten.map((kab) => ({
       label: kab.nama,
-      value: kab.id,
+      value: kab.nama,
     })),
   });
 
   const postalCodeCollection = createListCollection({
-    items: postalCode.map((pos) => ({
-      label: pos.label,
-      value: pos.value,
+    items: postalCodes.map((pos) => ({
+      label: pos.code,
+      value: pos.code,
     })),
   });
 
@@ -100,7 +106,11 @@ const AddLocation = () => {
               collection={kabupatenCollection}
               size="sm"
               disabled={!kabupaten.length}
-              onValueChange={(details) => console.log(details.value)}
+              onValueChange={(details) =>
+                setSelectedKabupaten(
+                  details.value ? removeKotaKabupaten(details.value[0]) : null
+                )
+              }
             >
               <SelectLabel>Kabupaten/Kota</SelectLabel>
               <SelectTrigger>

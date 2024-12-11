@@ -2,6 +2,7 @@ import API from '@/libs/axios';
 import { Store } from '@/types/store';
 import { TemplateSchema } from '../schemas/templateSchema';
 import { DeleteTemplateMessageSchema } from '../schemas/deleteTemplateMessageSchema';
+import { AddLocationSchema } from '../schemas/addLocationSchema';
 
 export const getDetailStore = async (userId: number): Promise<Store> => {
   try {
@@ -29,6 +30,16 @@ export const updateStoreData = async (formData: FormData, userId: number) => {
 
 export const getTemplateMessageByStoreId = async (storeId: number) => {
   const response = await API.get(`/templatemessage/${storeId}`);
+  return response.data;
+};
+
+export const getLocationByStoreId = async (storeId: number) => {
+  const response = await API.get(`/location/${storeId}`);
+  return response.data;
+};
+
+export const createLocationStore = async (data: AddLocationSchema) => {
+  const response = await API.post(`/location`, data);
   return response.data;
 };
 

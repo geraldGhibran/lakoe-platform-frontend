@@ -11,57 +11,94 @@ interface Kabupaten {
   nama: string;
 }
 
+interface PostalCode {
+  code: number;
+}
+
+function removeKotaKabupaten(city: string): string {
+  const regex = /^(Kota|Kabupaten) /;
+  return city.replace(regex, '');
+}
+
 export const useAddLocation = () => {
   const [provinsi, setProvinsi] = useState<Provinsi[]>([]);
   const [kabupaten, setKabupaten] = useState<Kabupaten[]>([]);
+  const [postalCodes, setPostalCodes] = useState<PostalCode[]>([]);
   const [selectedProvinsi, setSelectedProvinsi] = useState<number | null>(null);
+  const [selectedKabupaten, setSelectedKabupaten] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
-    axios
-      .get('https://dev.farizdotid.com/api/daerahindonesia/provinsi')
-      .then((response) => {
+    const fetchProvinsi = async () => {
+      try {
+        const response = await axios.get(
+          'https://dev.farizdotid.com/api/daerahindonesia/provinsi'
+        );
         const data = response.data.provinsi || [];
         setProvinsi(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching provinsi:', error);
-      });
+      }
+    };
+
+    fetchProvinsi();
   }, []);
 
   useEffect(() => {
-    if (selectedProvinsi === null) {
-      setKabupaten([]);
-      return;
-    }
+    const fetchKabupaten = async () => {
+      if (selectedProvinsi === null) {
+        setKabupaten([]);
+        return;
+      }
 
-    console.log(`Fetching kabupaten for provinsi ID: ${selectedProvinsi}`);
-    axios
-      .get(
-        `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvinsi}`
-      )
-      .then((response) => {
+      console.log(`Fetching kabupaten for provinsi ID: ${selectedProvinsi}`);
+      try {
+        const response = await axios.get(
+          `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvinsi}`
+        );
         const data = response.data.kota_kabupaten || [];
         setKabupaten(data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching kabupaten:', error);
         setKabupaten([]);
-      });
+      }
+    };
+
+    fetchKabupaten();
   }, [selectedProvinsi]);
 
-  const postalCode = [
-    { label: '10110', value: '10110' },
-    { label: '14230', value: '14230' },
-    { label: '11510', value: '11510' },
-    { label: '12520', value: '12520' },
-    { label: '13410', value: '13410' },
-  ];
+  useEffect(() => {
+    const fetchPostalCode = async () => {
+      if (selectedKabupaten === null) {
+        setPostalCodes([]);
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `https://kodepos.vercel.app/search/?q=${selectedKabupaten}`
+        );
+        const data = response.data.data || [];
+        setPostalCodes(data);
+      } catch (error) {
+        console.error('Error fetching postal code:', error);
+        setPostalCodes([]);
+      }
+    };
+
+    fetchPostalCode();
+  }, [selectedKabupaten]);
 
   return {
     provinsi,
     kabupaten,
-    postalCode,
+    postalCodes,
     selectedProvinsi,
     setSelectedProvinsi,
+    setPostalCodes,
+    setKabupaten,
+    setSelectedKabupaten,
+    removeKotaKabupaten,
   };
 };
