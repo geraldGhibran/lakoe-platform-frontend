@@ -42,7 +42,7 @@ export default function Cart() {
         width="3/4"
         pb="10px"
       >
-        <Table.Root size="sm">
+        <Table.Root size="sm" unstyled width="full">
           <Table.Header>
             <Table.Row bgColor="white">
               <Table.ColumnHeader padding="20px" color="black">
@@ -238,14 +238,14 @@ export default function Cart() {
             </Flex>
           </Link>
 
-          <Box display="flex" padding="10px" flexDir="column">
-            <Text fontSize="20px" fontWeight="bold" padding="8px">
+          <Box display="flex" padding="20px" flexDir="column">
+            <Text fontSize="20px" fontWeight="bold" py="10px">
               Ringkasan Pesanan
             </Text>
-            <Table.Root size="sm">
+            <Table.Root size="sm" unstyled>
               <Table.Header>
-                <Table.Row bgColor="white">
-                  <Table.ColumnHeader color="black">
+                <Table.Row bgColor="white" borderBottom="1px solid gainsboro">
+                  <Table.ColumnHeader py="10px" textAlign="start" color="black">
                     Subtotal
                   </Table.ColumnHeader>
                   <Table.ColumnHeader textAlign="end" color="black">
@@ -258,9 +258,9 @@ export default function Cart() {
                   fontSize="20px"
                   fontWeight="bold"
                   bgColor="white"
-                  borderTop="1px solid gainsboro"
+                  borderColor="red"
                 >
-                  <Table.Cell>Total</Table.Cell>
+                  <Table.Cell py="10px">Total</Table.Cell>
                   <Table.Cell textAlign="end">Rp 567</Table.Cell>
                 </Table.Row>
               </Table.Body>
