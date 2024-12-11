@@ -1,10 +1,10 @@
-'use client';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
 import { useState } from 'react';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
+import '@/styles/styes.css';
 
 export default function DetailProduct() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
@@ -165,9 +165,11 @@ export default function DetailProduct() {
                 <Table.Cell borderColor="transparent" w="1/3"></Table.Cell>
                 <Table.Cell borderColor="transparent" padding="20px 0">
                   <Flex gap="10px">
-                    <Button border="1px solid gray" padding="0 20px">
-                      Beli Langsung
-                    </Button>
+                    <Link to="checkout">
+                      <Button border="1px solid gray" padding="0 20px">
+                        Beli Langsung
+                      </Button>
+                    </Link>
                     <Button bgColor="#0080FF" color="white" padding="0 20px">
                       + Keranjang
                     </Button>
