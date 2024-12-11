@@ -34,7 +34,7 @@ export default function Cart() {
   }
 
   return (
-    <form onSubmit={test} className="flex gap-[20px] px-[20px] py-[20px]">
+    <form onSubmit={test} className="formulir">
       <Box
         overflow="hidden"
         rounded="2xl"

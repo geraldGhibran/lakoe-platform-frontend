@@ -2,9 +2,11 @@
 @import 'swiper/css/free-mode';
 @import 'swiper/css/navigation';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+.formulir {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

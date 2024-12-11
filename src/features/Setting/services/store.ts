@@ -38,7 +38,7 @@ export const getLocationByStoreId = async (storeId: number) => {
   return response.data;
 };
 
-export const createLocationStore = async (data: AddLocationSchema) => {
+export const addLocationStore = async (data: AddLocationSchema) => {
   const response = await API.post(`/location`, data);
   return response.data;
 };

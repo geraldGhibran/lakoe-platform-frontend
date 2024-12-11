@@ -1,5 +1,16 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useAuthStore } from '@/store/auth';
+import {
+  addLocationSchema,
+  AddLocationSchema,
+} from '../schemas/addLocationSchema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addLocationStore } from '../services/store';
+import { toaster } from '@/components/ui/toaster-placement';
+import { useLocationStore } from '@/store/location';
 
 interface Provinsi {
   id: number;
@@ -28,6 +39,67 @@ export const useAddLocation = () => {
   const [selectedKabupaten, setSelectedKabupaten] = useState<string | null>(
     null
   );
+  const [selectedPostalCodes, setSelectedPostalCodes] = useState<number | null>(
+    null
+  );
+  const queryClient = useQueryClient();
+
+  const { user } = useAuthStore();
+  const { position } = useLocationStore();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AddLocationSchema>({
+    resolver: zodResolver(addLocationSchema),
+    values: {
+      storeId: user?.store?.id ?? 0,
+      isMainLocation: false,
+      name: '',
+      address: '',
+      cityDistrict: '',
+      postalCode: 0,
+      latitude: position.lat,
+      longitude: position.lng,
+      userId: user?.id ?? 0,
+    },
+  });
+
+  const {
+    mutateAsync: addLocationStoreAsync,
+    isPending: isAddingLocationStore,
+  } = useMutation({
+    mutationKey: ['addLocationStore'],
+    mutationFn: async (data: AddLocationSchema) => {
+      return await addLocationStore(data);
+    },
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: ['locationStore', user?.store?.id],
+        exact: true,
+      });
+
+      toaster.create({
+        title: 'Add new Location created',
+        type: 'success',
+        duration: 3000,
+        description: 'Your New Locaion has been created successfully.',
+      });
+    },
+    onError: (error: Error) => {
+      toaster.create({
+        title: 'Error creating New Location',
+        type: 'error',
+        duration: 3000,
+        description: error.message || 'An error occurred, please try again',
+      });
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    addLocationStoreAsync(data as AddLocationSchema);
+  });
 
   useEffect(() => {
     const fetchProvinsi = async () => {
@@ -52,7 +124,6 @@ export const useAddLocation = () => {
         return;
       }
 
-      console.log(`Fetching kabupaten for provinsi ID: ${selectedProvinsi}`);
       try {
         const response = await axios.get(
           `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvinsi}`
@@ -100,5 +171,11 @@ export const useAddLocation = () => {
     setKabupaten,
     setSelectedKabupaten,
     removeKotaKabupaten,
+    register,
+    errors,
+    onSubmit,
+    isAddingLocationStore,
+    setSelectedPostalCodes,
+    selectedPostalCodes,
   };
 };
