@@ -23,7 +23,6 @@ import { Icon } from '@iconify/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '../schemas/addProductSchema/index';
-import VariantModal from '../modalVariant';
 
 interface ProductFormData {
   productName: string;
@@ -234,9 +233,8 @@ export default function AddProductPage() {
                   border={'1px solid black'}
                   borderRadius={'100px'}
                 >
-                  <Icon icon="formkit:add" /> Tambah Varian{' '}
+                  <Icon icon="formkit:add" /> Tambah Varian
                 </Button>
-                <VariantModal />
               </Box>
             </Stack>
           </Box>

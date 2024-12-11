@@ -7,6 +7,7 @@ import {
   Input,
   Stack,
 } from '@chakra-ui/react';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   SelectContent,
   SelectItem,
@@ -14,9 +15,10 @@ import {
   SelectTrigger,
   SelectValueText,
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Icon } from '@iconify/react';
 import { Field } from '@/components/ui/field';
+import DeleteConfirm from '../modal/delete-confirm';
+import NonactiveConfirm from '../modal/nonactive-confirm';
 
 const categoryCollectionDummy = createListCollection({
   items: [
@@ -33,11 +35,15 @@ const sortCollectionDummy = createListCollection({
     { label: 'Termurah', value: 'Termurah' },
   ],
 });
-export default function Header() {
+
+interface HeaderProps {
+  onSelectAll: (checked: boolean) => void; // New prop to handle the "Pilih Semua" checkbox change
+}
+
+export default function Header({ onSelectAll }: HeaderProps) {
   return (
     <Box w={'100%'} bgColor={'white'} mt={'-39px'} py={5}>
       <HStack direction={'row'} mt={5}>
-        {' '}
         <InputGroup
           startElement={
             <Icon
@@ -99,7 +105,29 @@ export default function Header() {
             5 Produk
           </Text>
         </Box>
-        <Checkbox>Pilih Semua</Checkbox>
+        <Box>
+          <Stack direction={'row'} gap={1}>
+            <Box
+              border={'1px solid #E6E6E6'}
+              borderRadius={'full'}
+              p={2}
+              w={'38px'}
+            >
+              <DeleteConfirm quantity={5} />
+            </Box>
+            <NonactiveConfirm quantity={5} />
+            <Checkbox
+              mt={2}
+              px={2}
+              colorPalette={'blue'}
+              onChange={(e) =>
+                onSelectAll((e.target as HTMLInputElement).checked)
+              } // Call the handler when the checkbox is toggled
+            >
+              Pilih Semua
+            </Checkbox>
+          </Stack>
+        </Box>
       </Stack>
     </Box>
   );

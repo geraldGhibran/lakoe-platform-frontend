@@ -2,15 +2,102 @@ import { useAuthStore } from '@/store/auth';
 import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
-import ListProduct from './listProduct';
 import NotFoundCard from './notFound';
 import Header from './CardProduct/header';
+import CardProduct from './CardProduct/card';
+import { allProducts } from './CardProduct/dumy';
+import { useState } from 'react';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  stock: number;
+  sku: string;
+  Url: string;
+  image: string;
+  isActive: boolean;
+}
 
 function ProductList() {
   const navigate = useNavigate();
-  const isFound = true;
   const { user } = useAuthStore();
   console.log('user', user);
+
+  const [productStates, setProductStates] = useState(
+    allProducts.map((product) => ({
+      id: product.id,
+      isActive: product.isActive,
+      isChecked: false,
+    }))
+  );
+
+  const handleCheckboxChange = (id: number, checked: boolean) => {
+    setProductStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === id ? { ...state, isChecked: checked } : state
+      )
+    );
+  };
+
+  const handleSwitchChange = (id: number, checked: boolean) => {
+    setProductStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === id ? { ...state, isActive: checked } : state
+      )
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setProductStates((prevStates) =>
+      prevStates.map((state) => ({ ...state, isChecked: checked }))
+    );
+  };
+
+  const getFilteredProducts = (isActive: boolean): Product[] => {
+    return allProducts.filter((product) => {
+      const productState = productStates.find(
+        (state) => state.id === product.id
+      );
+      return productState?.isActive === isActive;
+    });
+  };
+
+  const renderProducts = (products: Product[]) => {
+    if (products.length === 0) {
+      return (
+        <NotFoundCard>
+          <Text>Tidak ada produk yang ditemukan.</Text>
+        </NotFoundCard>
+      );
+    }
+
+    return products.map((product) => {
+      const productState = productStates.find(
+        (state) => state.id === product.id
+      );
+      return (
+        <CardProduct
+          key={product.id}
+          id={product.id}
+          name={product.name}
+          description={product.description}
+          image={product.image}
+          price={product.price}
+          stock={product.stock}
+          sku={product.sku}
+          Url={product.Url}
+          isActive={productState?.isActive || false}
+          onCheckboxChange={(checked) =>
+            handleCheckboxChange(product.id, checked)
+          }
+          onSwitchChange={(checked) => handleSwitchChange(product.id, checked)}
+          isChecked={productState?.isChecked || false}
+        />
+      );
+    });
+  };
 
   return (
     <Stack direction={'row'} bg={'#F4F4F5'} height={'100vh'}>
@@ -28,6 +115,8 @@ function ProductList() {
           top="0"
           bg="white"
           zIndex="10"
+          height={'80px'}
+          mb={'-20px'}
           borderBottom="1px solid #E6E6E6"
           py={4}
         >
@@ -49,24 +138,46 @@ function ProductList() {
             </Button>
           </Box>
         </Box>
-        <Box flex="1" overflowY="auto" pt={4}>
-          <Tabs.Root defaultValue={'all'}>
+        <Box overflowY="auto" pt={4}>
+          <Tabs.Root defaultValue={'all'} variant="plain">
             <Tabs.List
               position="sticky"
-              top="-20px"
+              zIndex="10"
+              top="0"
               bg="white"
-              zIndex="90"
               borderBottom="1px solid #E6E6E6"
-              py={2}
+              width={'100%'}
+              h={'40px'}
             >
-              <Tabs.Trigger value="all">
-                <Text>Semua</Text>
+              <Tabs.Trigger
+                value="all"
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
+              >
+                Semua
               </Tabs.Trigger>
-              <Tabs.Trigger value="active">
-                <Text>Aktif</Text>
+              <Tabs.Trigger
+                value="active"
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
+              >
+                Active
               </Tabs.Trigger>
-              <Tabs.Trigger value="nonactive">
-                <Text>Nonaktif</Text>
+              <Tabs.Trigger
+                value="nonactive"
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
+              >
+                NonActive
               </Tabs.Trigger>
             </Tabs.List>
 
@@ -78,26 +189,9 @@ function ProductList() {
                 borderBottom="1px solid #E6E6E6"
                 py={2}
               >
-                <Header />
+                <Header onSelectAll={handleSelectAll} />
               </Box>
-              {isFound ? (
-                <>
-                  <ListProduct />
-                  <ListProduct />
-                  <ListProduct />
-                  <ListProduct />
-                  <ListProduct />
-                  <ListProduct />
-                  <ListProduct />
-                </>
-              ) : (
-                <NotFoundCard>
-                  <Text>Oops, produk yang kamu cari tidak ditemukan</Text>
-                  <Text color={'fg.muted'} fontSize={'sm'}>
-                    Coba kata kunci lain atau tambahkan produk baru
-                  </Text>
-                </NotFoundCard>
-              )}
+              {renderProducts(allProducts)}
             </Tabs.Content>
 
             <Tabs.Content value="active">
@@ -109,18 +203,9 @@ function ProductList() {
                 borderBottom="1px solid #E6E6E6"
                 py={2}
               >
-                <Header />
+                <Header onSelectAll={handleSelectAll} />
               </Box>
-              {isFound ? (
-                <ListProduct />
-              ) : (
-                <NotFoundCard>
-                  <Text>Oops, saat ini belum ada produk yang aktif</Text>
-                  <Text color={'fg.muted'} fontSize={'sm'}>
-                    Aktifkan produk kamu atau buat produk baru
-                  </Text>
-                </NotFoundCard>
-              )}
+              {renderProducts(getFilteredProducts(true))}
             </Tabs.Content>
 
             <Tabs.Content value="nonactive">
@@ -132,18 +217,9 @@ function ProductList() {
                 borderBottom="1px solid #E6E6E6"
                 py={2}
               >
-                <Header />
+                <Header onSelectAll={handleSelectAll} />
               </Box>
-              {isFound ? (
-                <ListProduct />
-              ) : (
-                <NotFoundCard>
-                  <Text>Semua produk telah aktif</Text>
-                  <Text color={'fg.muted'} fontSize={'sm'}>
-                    Kamu bisa buat produk baru dan menyimpannya
-                  </Text>
-                </NotFoundCard>
-              )}
+              {renderProducts(getFilteredProducts(false))}
             </Tabs.Content>
           </Tabs.Root>
         </Box>
