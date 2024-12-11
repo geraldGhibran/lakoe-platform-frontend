@@ -7,6 +7,11 @@ export interface UserType {
   role?: RoleEnum;
   locationId?: number;
   storeId?: number;
+  store?: StoreType;
+}
+
+export interface StoreType {
+  id: number;
 }
 
 export enum RoleEnum {
