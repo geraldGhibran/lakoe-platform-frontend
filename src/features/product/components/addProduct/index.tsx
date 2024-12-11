@@ -20,10 +20,10 @@ import {
 } from '@/components/ui/file-upload';
 import { Field } from '@/components/ui/field';
 import { Icon } from '@iconify/react';
-import SideBar from '@/components/leftbar';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '../schemas/addProductSchema/index';
+import VariantModal from '../modalVariant';
 
 interface ProductFormData {
   productName: string;
@@ -56,19 +56,15 @@ export default function AddProductPage() {
 
   return (
     <Stack direction="row">
-      <Box w="30%" position={'fixed'}>
-        <SideBar />
-      </Box>
-      <Box bg="gray.100" minH="270vh" w="60%" p={5} ml="30%">
+      <Box bg="gray.100" minH="270vh" w="100%">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
             px={10}
-            py={5}
+            py={2}
             m="auto"
             width="100%"
             h={'480px'}
             bg="white"
-            my={5}
             boxShadow="md"
             borderRadius="lg"
           >
@@ -240,6 +236,7 @@ export default function AddProductPage() {
                 >
                   <Icon icon="formkit:add" /> Tambah Varian{' '}
                 </Button>
+                <VariantModal />
               </Box>
             </Stack>
           </Box>

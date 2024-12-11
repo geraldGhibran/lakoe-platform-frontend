@@ -74,7 +74,7 @@ export const useAddLocation = () => {
     }
 
     axios
-      .get(`https://kodepos.vercel.app/search/?q=${setSelectedKabupaten}`)
+      .get(`https://kodepos.vercel.app/search/?q=${selectedKabupatenName}`)
       .then((response) => {
         setPostalCodes(response.data || []);
       })

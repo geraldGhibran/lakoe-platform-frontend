@@ -1,131 +1,64 @@
-import { Checkbox } from '@/components/ui/checkbox';
-import { InputGroup } from '@/components/ui/input-group';
 import { useAuthStore } from '@/store/auth';
-import {
-  Box,
-  Button,
-  createListCollection,
-  HStack,
-  Input,
-  SelectContent,
-  SelectItem,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-  Stack,
-  Tabs,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import ListProduct from './listProduct';
 import NotFoundCard from './notFound';
+import Header from './CardProduct/header';
 
 function ProductList() {
   const navigate = useNavigate();
   const isFound = true;
-  const categoryCollectionDummy = createListCollection({
-    items: [
-      { label: 'semua kategory', value: 'all' },
-      { label: 'baju', value: 'baju' },
-      { label: 'celana', value: 'celana' },
-      { label: 'sepatu', value: 'sepatu' },
-    ],
-  });
-  const sortCollectionDummy = createListCollection({
-    items: [
-      { label: 'terbaru', value: 'terbaru' },
-      { label: 'terlama', value: 'terlama' },
-      { label: 'termahal', value: 'termahal' },
-      { label: 'termurah', value: 'termurah' },
-    ],
-  });
-
   const { user } = useAuthStore();
   console.log('user', user);
+
   return (
-    <>
-      <Stack direction={'row'} gap={5} bg={'#F4F4F5'} height={'100vh'}>
-        <Box bg={'white'} p={5} mx={'auto'} rounded={'md'}>
+    <Stack direction={'row'} bg={'#F4F4F5'} height={'100vh'}>
+      <Box
+        bg={'white'}
+        p={5}
+        mx={'auto'}
+        rounded={'md'}
+        width={'100%'}
+        display="flex"
+        flexDirection="column"
+      >
+        <Box
+          position="sticky"
+          top="0"
+          bg="white"
+          zIndex="10"
+          borderBottom="1px solid #E6E6E6"
+          py={4}
+        >
           <Box
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
-            marginBottom={5}
           >
-            <Text>Daftar Produk</Text>
-            <Button rounded={'full'} onClick={() => navigate('/add-product')}>
+            <Text fontWeight={'bold'} fontSize={'2xl'}>
+              Daftar Produk
+            </Text>
+            <Button
+              rounded={'full'}
+              onClick={() => navigate('/add-product')}
+              bgColor={'blue.500'}
+            >
               <Icon icon={'icons8:plus'} />
-              <Text>Tambah Produk</Text>
+              <Text ml={2}>Tambah Produk</Text>
             </Button>
           </Box>
-          <Box display={'flex'} justifyContent={'start'} gap={2}>
-            <HStack
-              display={'flex'}
-              gap={2}
-              width={'100%'}
-              justifyContent={'space-between'}
-            >
-              <InputGroup
-                startElement={
-                  <Icon icon={'ant-design:search-outlined'} color="black" />
-                }
-              >
-                <Input
-                  placeholder="Cari Produk"
-                  borderColor={'#E6E6E6'}
-                  width={'318px'}
-                />
-              </InputGroup>
-              <SelectRoot
-                collection={categoryCollectionDummy}
-                // w={'240px'}
-                size="sm"
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="pilih kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryCollectionDummy.items.map((item) => (
-                    <SelectItem key={item.value} item={item}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-
-              <SelectRoot
-                collection={sortCollectionDummy}
-                size="sm"
-                // w={'240px'}
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="urutkan" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sortCollectionDummy.items.map((item) => (
-                    <SelectItem
-                      key={item.value}
-                      item={item}
-                      onClick={() => console.log(item.value)}
-                    >
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </HStack>
-          </Box>
-          <Stack
-            display={'flex'}
-            justifyContent={'space-between'}
-            direction={'row'}
-          >
-            <Text>number produk</Text>
-            <Checkbox>pilih semua</Checkbox>
-          </Stack>
+        </Box>
+        <Box flex="1" overflowY="auto" pt={4}>
           <Tabs.Root defaultValue={'all'}>
-            <Tabs.List>
+            <Tabs.List
+              position="sticky"
+              top="-20px"
+              bg="white"
+              zIndex="90"
+              borderBottom="1px solid #E6E6E6"
+              py={2}
+            >
               <Tabs.Trigger value="all">
                 <Text>Semua</Text>
               </Tabs.Trigger>
@@ -136,9 +69,27 @@ function ProductList() {
                 <Text>Nonaktif</Text>
               </Tabs.Trigger>
             </Tabs.List>
+
             <Tabs.Content value="all">
+              <Box
+                position="sticky"
+                top="60px"
+                zIndex="9"
+                borderBottom="1px solid #E6E6E6"
+                py={2}
+              >
+                <Header />
+              </Box>
               {isFound ? (
-                <ListProduct />
+                <>
+                  <ListProduct />
+                  <ListProduct />
+                  <ListProduct />
+                  <ListProduct />
+                  <ListProduct />
+                  <ListProduct />
+                  <ListProduct />
+                </>
               ) : (
                 <NotFoundCard>
                   <Text>Oops, produk yang kamu cari tidak ditemukan</Text>
@@ -148,7 +99,18 @@ function ProductList() {
                 </NotFoundCard>
               )}
             </Tabs.Content>
+
             <Tabs.Content value="active">
+              <Box
+                position="sticky"
+                top="60px"
+                bg="white"
+                zIndex="9"
+                borderBottom="1px solid #E6E6E6"
+                py={2}
+              >
+                <Header />
+              </Box>
               {isFound ? (
                 <ListProduct />
               ) : (
@@ -160,7 +122,18 @@ function ProductList() {
                 </NotFoundCard>
               )}
             </Tabs.Content>
+
             <Tabs.Content value="nonactive">
+              <Box
+                position="sticky"
+                top="60px"
+                bg="white"
+                zIndex="9"
+                borderBottom="1px solid #E6E6E6"
+                py={2}
+              >
+                <Header />
+              </Box>
               {isFound ? (
                 <ListProduct />
               ) : (
@@ -174,8 +147,8 @@ function ProductList() {
             </Tabs.Content>
           </Tabs.Root>
         </Box>
-      </Stack>
-    </>
+      </Box>
+    </Stack>
   );
 }
 

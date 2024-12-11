@@ -1,11 +1,4 @@
-import {
-  Box,
-  HStack,
-  Input,
-  InputAddon,
-  Group,
-  createListCollection,
-} from '@chakra-ui/react';
+import { Box, HStack, Input, createListCollection } from '@chakra-ui/react';
 import {
   SelectContent,
   SelectItem,
@@ -13,61 +6,76 @@ import {
   SelectTrigger,
   SelectValueText,
 } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useState } from 'react';
+import { InputGroup } from '@/components/ui/input-group';
 import { Icon } from '@iconify/react';
 import { Field } from '@/components/ui/field';
 
 export default function HeaderMenu() {
-  const frameworks = createListCollection({
+  const couriers = createListCollection({
     items: [
-      { label: 'React.js', value: 'react' },
-      { label: 'Vue.js', value: 'vue' },
-      { label: 'Angular', value: 'angular' },
-      { label: 'Svelte', value: 'svelte' },
+      { label: 'GoSend', value: 'GoSend' },
+      { label: 'GrabExpress', value: 'GrabExpress' },
+      { label: 'AnterAja', value: 'AnterAja' },
+      { label: 'JNE', value: 'JNE' },
+      { label: 'J&T', value: 'J&T' },
+      { label: 'LionParcel', value: 'LionParcel' },
+      { label: 'NinjaXpress', value: 'NinjaXpress' },
+      { label: 'PosIndonesia', value: 'PosIndonesia' },
     ],
   });
-  const [checked, setChecked] = useState(false);
+  const timeOrder = createListCollection({
+    items: [
+      { label: 'Paling Baru', value: 'Paling Baru' },
+      { label: 'Paling Lama', value: 'Paling Lama' },
+      { label: 'Respons Tercepat', value: 'Respons Tercepat' },
+      { label: 'Respons Terlama', value: 'Respons Terlama' },
+    ],
+  });
+
   return (
     <Box w={'100%'} bgColor={'white'} mt={'-39px'} py={5}>
       <HStack direction={'row'} gap={5}>
-        <Group attached w={'35%'}>
-          <InputAddon bgColor={'transparent'} borderRight={'none'}>
+        {' '}
+        <InputGroup
+          startElement={
             <Icon
               icon="lets-icons:file-dock-search-light"
               width={'20px'}
               height={'20px'}
             />
-          </InputAddon>
-          <Input borderLeft={'none'} placeholder="Cari pesanan" />
-        </Group>
+          }
+          width="35%"
+        >
+          <Input placeholder="Cari pesanan" />
+        </InputGroup>
         <Field w={'35%'}>
-          <SelectRoot collection={frameworks}>
+          <SelectRoot multiple collection={couriers} size="md" w={'100%'}>
             <SelectTrigger>
-              <SelectValueText placeholder="Kurir" />
+              <SelectValueText placeholder="Kurir " />
             </SelectTrigger>
             <SelectContent>
-              {frameworks.items.map((movie) => (
+              {couriers.items.map((movie) => (
                 <SelectItem item={movie} key={movie.value}>
-                  <Checkbox
-                    checked={checked}
-                    onCheckedChange={(e) => setChecked(!!e.checked)}
-                  >
-                    {movie.label}
-                  </Checkbox>
+                  {movie.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </SelectRoot>
         </Field>
         <Field w={'35%'}>
-          <SelectRoot collection={frameworks}>
+          <SelectRoot collection={timeOrder} size="md" w={'100%'}>
             <SelectTrigger>
               <SelectValueText placeholder="Urutkan" />
             </SelectTrigger>
             <SelectContent>
-              {frameworks.items.map((movie) => (
-                <Checkbox value={movie.value}>{movie.label}</Checkbox>
+              {timeOrder.items.map((time) => (
+                <SelectItem
+                  item={time}
+                  key={time.value}
+                  _selected={{ color: 'blue.500' }}
+                >
+                  {time.label}
+                </SelectItem>
               ))}
             </SelectContent>
           </SelectRoot>

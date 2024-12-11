@@ -21,7 +21,7 @@ function ListProduct() {
                 />
             </InputGroup>
             <SelectRoot
-                collection={categoryCollectionDummy}
+                // collection={categoryCollectionDummy}
                 w={'240px'}
                 size="sm"
             >
