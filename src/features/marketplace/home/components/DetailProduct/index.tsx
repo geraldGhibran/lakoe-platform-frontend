@@ -31,7 +31,7 @@ export default function DetailProduct() {
             }
             spaceBetween={10}
             navigation={true}
-            thumbs={thumbsSwiper ? { swiper: thumbsSwiper } : undefined} // Tambahkan validasi
+            thumbs={thumbsSwiper ? { swiper: thumbsSwiper } : undefined}
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2"
           >
