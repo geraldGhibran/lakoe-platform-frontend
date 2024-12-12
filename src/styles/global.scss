@@ -3,3 +3,8 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
 } 
+.tailwind * {
+    all: unset;
+    /* Atur ulang gaya agar tidak mengganggu Chakra */
+  }
+  

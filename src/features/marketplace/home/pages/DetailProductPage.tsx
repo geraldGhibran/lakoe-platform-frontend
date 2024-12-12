@@ -2,18 +2,24 @@ import { Box, Button, Flex } from '@chakra-ui/react';
 import { Link, Outlet } from 'react-router-dom';
 import { BsHandbag } from 'react-icons/bs';
 import { BsPerson } from 'react-icons/bs';
+import '@/styles/styes.css';
 
 export default function DetailProductPage() {
   return (
     <Box
       className="hide-scrollbar"
-      overflowY="auto"
+      overflow="hidden"
+      height="100vh"
       color="black"
       bgColor="white"
-      height="100vh"
     >
       <Box
         display="flex"
+        position="fixed"
+        bgColor="white"
+        width="100vw"
+        zIndex="max"
+        top="0"
         justifyContent="space-between"
         alignItems="center"
         px="20px"
@@ -32,7 +38,7 @@ export default function DetailProductPage() {
           </Button>
         </Link>
         <Flex alignItems="center" gap="10px" justify="center">
-          <Link to="">
+          <Link to="cart">
             <Button _hover={{ bgColor: 'gainsboro' }} position="relative">
               <Box
                 position="absolute"
@@ -59,7 +65,9 @@ export default function DetailProductPage() {
           </Link>
         </Flex>
       </Box>
-      <Outlet />
+      <Box mt="80px" className="hide-scrollbar" height="100vh" overflowY="auto">
+        <Outlet />
+      </Box>
     </Box>
   );
 }
