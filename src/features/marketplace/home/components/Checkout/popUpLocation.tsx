@@ -17,7 +17,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Box, Button, Flex, HStack, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack } from '@chakra-ui/react';
+import { IoInformationCircleOutline } from 'react-icons/io5';
 import { useState } from 'react';
 
 export default function PopUpLocation() {
@@ -66,10 +67,11 @@ export default function PopUpLocation() {
 
             <Flex flexDir="column" gap="10px">
               <Box bgColor="#E5F2FF" padding="20px">
-                <Text color="#909090">
+                <Flex gap="10px" color="#909090">
+                  <IoInformationCircleOutline color="blue" size="20px" />
                   Pastikan pinpoint lokasi kamu sama dengan alamat yang kamu
                   tulis
-                </Text>
+                </Flex>
               </Box>
               {/* Map */}
               <Box height="200px" overflow="hidden" shadow="sm" rounded="2xl">
