@@ -1,6 +1,8 @@
 import { Location } from '@/types/locations';
 import { Box, Stack, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
+import DialogDeleteLocation from '../form/DialogDeleteLocation';
+import DialogEditLocation from '../form/DialogEditLocation';
 export default function ListLocation({ items }: { items: Location[] }) {
   return (
     <>
@@ -15,10 +17,10 @@ export default function ListLocation({ items }: { items: Location[] }) {
             <Box></Box>
             <Stack direction={'row'}>
               <Box border={'1px solid #E6E6E6'} borderRadius={'50%'} p={2}>
-                <Icon icon="bx:edit" />
+                <DialogEditLocation id={item?.id ?? 0} />
               </Box>
               <Box border={'1px solid #E6E6E6'} borderRadius={'50%'} p={2}>
-                <Icon icon="pajamas:remove" />
+                <DialogDeleteLocation id={item?.id ?? 0} />
               </Box>
             </Stack>
           </Stack>
@@ -29,6 +31,7 @@ export default function ListLocation({ items }: { items: Location[] }) {
                   <Box mr={20}>
                     <Text>Nama Lokasi</Text>
                     <Text>Alamat</Text>
+                    <Text>Kota/Kecamatan</Text>
                     <Text>Kode Pos</Text>
                     <Text>Pinpoint</Text>
                   </Box>
@@ -44,6 +47,7 @@ export default function ListLocation({ items }: { items: Location[] }) {
                   )}
                 </Stack>
                 <Text>{item?.address}</Text>
+                <Text>{item?.city_district}</Text>
                 <Text>{item?.postal_code}</Text>
                 <Stack direction={'row'} color={'blue'}>
                   <Icon icon="fluent:location-16-filled" />
