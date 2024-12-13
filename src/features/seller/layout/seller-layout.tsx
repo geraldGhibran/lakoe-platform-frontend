@@ -16,19 +16,45 @@ export function SellerLayout() {
   }
 
   return (
-    <>
-      <Box top={0} bg="white" zIndex={10} boxShadow="md" p={3} mb={4}></Box>
-      <Flex bg={'gray.100'}>
-        <Box flex={1}>
-          <SideBar />
-        </Box>
-        <Box flex={3} m={4}>
-          <Outlet />
-        </Box>
-        <Box flex={1}>
-          <AddSeller />
-        </Box>
-      </Flex>
-    </>
+    <Flex
+      color="black"
+      position="fixed"
+      bgColor="#F8F8F8"
+      height="100%"
+      width="100%"
+    >
+      <Box overflow="hidden" width="1/3">
+        <SideBar />
+      </Box>
+
+      <Box
+        position="fixed"
+        border="1px solid"
+        borderColor="#E6E6E6"
+        height="50px"
+        width="100%"
+        bgColor="white"
+      ></Box>
+
+      <Box
+        mt="50px"
+        zIndex="base"
+        bgColor="#F4F4F5"
+        pb="50px"
+        padding="20px"
+        className="hide-scrollbar"
+        overflowY="auto"
+        display="flex"
+        height="90vh"
+        width="full"
+        flexDirection={'column'}
+      >
+        <Outlet />
+      </Box>
+
+      <Box width="1/3" border="1px solid red">
+        <AddSeller />
+      </Box>
+    </Flex>
   );
 }
