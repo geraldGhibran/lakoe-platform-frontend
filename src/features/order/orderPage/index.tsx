@@ -87,14 +87,15 @@ export default function OrderPage() {
   };
 
   return (
-    <Stack direction="row">
-      <Box bg="gray.100">
+    <Stack direction="row" w={'100%'}>
+      <Box bg="gray.100" w={'100%'}>
         <Tabs.Root
           bg={'white'}
           value={value}
           onValueChange={(e) => setValue(e.value)}
           p={5}
           variant="plain"
+          width={'100%'}
         >
           <Text fontWeight={'bold'} fontSize={'2xl'}>
             Daftar Pesanan

@@ -2,11 +2,11 @@ export interface Location {
   id: number;
   name: string;
   address: string;
-  postalCode: number;
-  cityDistrict: number;
+  postal_code: number;
+  city_district: string;
   latitude: number;
   longitude: number;
-  storeId: number;
-  userId: number;
-  isMainLocation: boolean;
+  store_id: number;
+  user_id: number;
+  is_main_location: boolean;
 }

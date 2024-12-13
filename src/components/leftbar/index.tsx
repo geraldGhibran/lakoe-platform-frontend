@@ -1,5 +1,3 @@
-'use client';
-
 import { Box, Button, Flex, HStack, Link, Stack } from '@chakra-ui/react';
 import {
   AccordionItem,
@@ -27,14 +25,14 @@ const Links = [
 
 const SettingsSubLinks = [
   { name: 'Atur Toko', path: '/settings' },
-  { name: 'Pengiriman', path: '/order' },
-  { name: 'Metode Pembayaran  ', path: '/products' },
+  { name: 'Pengiriman', path: '/checkout' },
+  { name: 'Metode Pembayaran', path: '/' },
 ];
 
 const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
-  const activeColor = 'blue.500'; // Warna untuk teks dan ikon aktif
-  const inactiveColor = 'gray.800'; // Warna untuk teks dan ikon tidak aktif
-  const hoverBg = 'gray.200'; // Warna hover untuk semua link
+  const activeColor = 'blue.500';
+  const inactiveColor = 'gray.800';
+  const hoverBg = 'gray.200';
 
   return (
     <Link
@@ -71,13 +69,16 @@ const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
 export default function SideBar() {
   const location = useLocation();
   const logout = useAuthStore((state) => state.logout);
+  const isSettingsActive = SettingsSubLinks.some(
+    (subLink) => location.pathname === subLink.path
+  );
 
   return (
     <Box bg="white">
       <Flex h="100vh">
         <HStack>
           <HStack as="nav" display={{ base: 'none', md: 'flex' }}>
-            <Flex direction="column" justifyContent={'space-between'} h="100vh">
+            <Flex direction="column" justifyContent={'space-between'} h="80vh">
               <Stack gap={4}>
                 {Links.map((link) => (
                   <NavLink
@@ -90,33 +91,31 @@ export default function SideBar() {
                     {link.name}
                   </NavLink>
                 ))}
-                <AccordionRoot collapsible>
+                <AccordionRoot collapsible unstyled>
                   <AccordionItem key={'pengaturan'} value={'pengaturan'}>
                     <AccordionItemTrigger
+                      display="flex"
+                      alignItems="center"
+                      gap="10px"
                       px={20}
                       py={3}
                       _hover={{ bg: 'gray.200' }}
-                      color="gray.800"
+                      color={isSettingsActive ? 'blue.500' : 'gray.800'}
                     >
-                      <Box
-                        flex="1"
-                        textAlign="left"
-                        display="flex"
-                        alignItems="center"
-                      >
+                      <Box textAlign="left" display="flex" alignItems="center">
                         <Icon
                           icon="mdi:cog"
                           width="24"
                           height="24"
                           style={{
                             marginRight: '12px',
-                            color: 'gray.200',
+                            color: isSettingsActive ? 'blue.500' : 'gray.800',
                           }}
                         />
                         Pengaturan
                       </Box>
                     </AccordionItemTrigger>
-                    <AccordionItemContent position={'fixed'}>
+                    <AccordionItemContent zIndex="" position={'fixed'}>
                       {SettingsSubLinks.map((subLink) => (
                         <NavLink
                           key={subLink.name}

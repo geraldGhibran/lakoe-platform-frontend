@@ -1,181 +1,230 @@
-import { Checkbox } from '@/components/ui/checkbox';
-import { InputGroup } from '@/components/ui/input-group';
 import { useAuthStore } from '@/store/auth';
-import {
-  Box,
-  Button,
-  createListCollection,
-  HStack,
-  Input,
-  SelectContent,
-  SelectItem,
-  SelectRoot,
-  SelectTrigger,
-  SelectValueText,
-  Stack,
-  Tabs,
-  Text,
-} from '@chakra-ui/react';
+import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
-import ListProduct from './listProduct';
 import NotFoundCard from './notFound';
+import Header from './CardProduct/header';
+import CardProduct from './CardProduct/card';
+import { allProducts } from './CardProduct/dumy';
+import { useState } from 'react';
+
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  stock: number;
+  sku: string;
+  Url: string;
+  image: string;
+  isActive: boolean;
+}
 
 function ProductList() {
   const navigate = useNavigate();
-  const isFound = true;
-  const categoryCollectionDummy = createListCollection({
-    items: [
-      { label: 'semua kategory', value: 'all' },
-      { label: 'baju', value: 'baju' },
-      { label: 'celana', value: 'celana' },
-      { label: 'sepatu', value: 'sepatu' },
-    ],
-  });
-  const sortCollectionDummy = createListCollection({
-    items: [
-      { label: 'terbaru', value: 'terbaru' },
-      { label: 'terlama', value: 'terlama' },
-      { label: 'termahal', value: 'termahal' },
-      { label: 'termurah', value: 'termurah' },
-    ],
-  });
-
   const { user } = useAuthStore();
   console.log('user', user);
+
+  const [productStates, setProductStates] = useState(
+    allProducts.map((product) => ({
+      id: product.id,
+      isActive: product.isActive,
+      isChecked: false,
+    }))
+  );
+
+  const handleCheckboxChange = (id: number, checked: boolean) => {
+    setProductStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === id ? { ...state, isChecked: checked } : state
+      )
+    );
+  };
+
+  const handleSwitchChange = (id: number, checked: boolean) => {
+    setProductStates((prevStates) =>
+      prevStates.map((state) =>
+        state.id === id ? { ...state, isActive: checked } : state
+      )
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setProductStates((prevStates) =>
+      prevStates.map((state) => ({ ...state, isChecked: checked }))
+    );
+  };
+
+  const getFilteredProducts = (isActive: boolean): Product[] => {
+    return allProducts.filter((product) => {
+      const productState = productStates.find(
+        (state) => state.id === product.id
+      );
+      return productState?.isActive === isActive;
+    });
+  };
+
+  const renderProducts = (products: Product[]) => {
+    if (products.length === 0) {
+      return (
+        <NotFoundCard>
+          <Text>Tidak ada produk yang ditemukan.</Text>
+        </NotFoundCard>
+      );
+    }
+
+    return products.map((product) => {
+      const productState = productStates.find(
+        (state) => state.id === product.id
+      );
+      return (
+        <CardProduct
+          key={product.id}
+          id={product.id}
+          name={product.name}
+          description={product.description}
+          image={product.image}
+          price={product.price}
+          stock={product.stock}
+          sku={product.sku}
+          Url={product.Url}
+          isActive={productState?.isActive || false}
+          onCheckboxChange={(checked) =>
+            handleCheckboxChange(product.id, checked)
+          }
+          onSwitchChange={(checked) => handleSwitchChange(product.id, checked)}
+          isChecked={productState?.isChecked || false}
+        />
+      );
+    });
+  };
+
   return (
-    <>
-      <Stack direction={'row'} gap={5} bg={'#F4F4F5'} height={'100vh'}>
-        <Box bg={'white'} p={5} mx={'auto'} rounded={'md'}>
+    <Stack direction={'row'} bg={'#F4F4F5'} height={'100vh'}>
+      <Box
+        bg={'white'}
+        p={5}
+        mx={'auto'}
+        rounded={'md'}
+        width={'100%'}
+        display="flex"
+        flexDirection="column"
+      >
+        <Box
+          position="sticky"
+          top="0"
+          bg="white"
+          zIndex="10"
+          height={'80px'}
+          mb={'-20px'}
+          borderBottom="1px solid #E6E6E6"
+          py={4}
+        >
           <Box
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
-            marginBottom={5}
           >
-            <Text>Daftar Produk</Text>
-            <Button rounded={'full'} onClick={() => navigate('/add-product')}>
+            <Text fontWeight={'bold'} fontSize={'2xl'}>
+              Daftar Produk
+            </Text>
+            <Button
+              rounded={'full'}
+              onClick={() => navigate('/add-product')}
+              bgColor={'blue.500'}
+            >
               <Icon icon={'icons8:plus'} />
-              <Text>Tambah Produk</Text>
+              <Text ml={2}>Tambah Produk</Text>
             </Button>
           </Box>
-          <Box display={'flex'} justifyContent={'start'} gap={2}>
-            <HStack
-              display={'flex'}
-              gap={2}
+        </Box>
+        <Box overflowY="auto" pt={4}>
+          <Tabs.Root defaultValue={'all'} variant="plain">
+            <Tabs.List
+              position="sticky"
+              zIndex="10"
+              top="0"
+              bg="white"
+              borderBottom="1px solid #E6E6E6"
               width={'100%'}
-              justifyContent={'space-between'}
+              h={'40px'}
             >
-              <InputGroup
-                startElement={
-                  <Icon icon={'ant-design:search-outlined'} color="black" />
-                }
+              <Tabs.Trigger
+                value="all"
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
               >
-                <Input
-                  placeholder="Cari Produk"
-                  borderColor={'#E6E6E6'}
-                  width={'318px'}
-                />
-              </InputGroup>
-              <SelectRoot
-                collection={categoryCollectionDummy}
-                // w={'240px'}
-                size="sm"
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="pilih kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryCollectionDummy.items.map((item) => (
-                    <SelectItem key={item.value} item={item}>
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-
-              <SelectRoot
-                collection={sortCollectionDummy}
-                size="sm"
-                // w={'240px'}
-              >
-                <SelectTrigger>
-                  <SelectValueText placeholder="urutkan" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sortCollectionDummy.items.map((item) => (
-                    <SelectItem
-                      key={item.value}
-                      item={item}
-                      onClick={() => console.log(item.value)}
-                    >
-                      {item.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </SelectRoot>
-            </HStack>
-          </Box>
-          <Stack
-            display={'flex'}
-            justifyContent={'space-between'}
-            direction={'row'}
-          >
-            <Text>number produk</Text>
-            <Checkbox>pilih semua</Checkbox>
-          </Stack>
-          <Tabs.Root defaultValue={'all'}>
-            <Tabs.List>
-              <Tabs.Trigger value="all">
-                <Text>Semua</Text>
+                Semua
               </Tabs.Trigger>
-              <Tabs.Trigger value="active">
-                <Text>Aktif</Text>
+              <Tabs.Trigger
+                value="active"
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
+              >
+                Active
               </Tabs.Trigger>
-              <Tabs.Trigger value="nonactive">
-                <Text>Nonaktif</Text>
+              <Tabs.Trigger
+                value="nonactive"
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
+              >
+                NonActive
               </Tabs.Trigger>
             </Tabs.List>
+
             <Tabs.Content value="all">
-              {isFound ? (
-                <ListProduct />
-              ) : (
-                <NotFoundCard>
-                  <Text>Oops, produk yang kamu cari tidak ditemukan</Text>
-                  <Text color={'fg.muted'} fontSize={'sm'}>
-                    Coba kata kunci lain atau tambahkan produk baru
-                  </Text>
-                </NotFoundCard>
-              )}
+              <Box
+                position="sticky"
+                top="60px"
+                zIndex="9"
+                borderBottom="1px solid #E6E6E6"
+                py={2}
+              >
+                <Header onSelectAll={handleSelectAll} />
+              </Box>
+              {renderProducts(allProducts)}
             </Tabs.Content>
+
             <Tabs.Content value="active">
-              {isFound ? (
-                <ListProduct />
-              ) : (
-                <NotFoundCard>
-                  <Text>Oops, saat ini belum ada produk yang aktif</Text>
-                  <Text color={'fg.muted'} fontSize={'sm'}>
-                    Aktifkan produk kamu atau buat produk baru
-                  </Text>
-                </NotFoundCard>
-              )}
+              <Box
+                position="sticky"
+                top="60px"
+                bg="white"
+                zIndex="9"
+                borderBottom="1px solid #E6E6E6"
+                py={2}
+              >
+                <Header onSelectAll={handleSelectAll} />
+              </Box>
+              {renderProducts(getFilteredProducts(true))}
             </Tabs.Content>
+
             <Tabs.Content value="nonactive">
-              {isFound ? (
-                <ListProduct />
-              ) : (
-                <NotFoundCard>
-                  <Text>Semua produk telah aktif</Text>
-                  <Text color={'fg.muted'} fontSize={'sm'}>
-                    Kamu bisa buat produk baru dan menyimpannya
-                  </Text>
-                </NotFoundCard>
-              )}
+              <Box
+                position="sticky"
+                top="60px"
+                bg="white"
+                zIndex="9"
+                borderBottom="1px solid #E6E6E6"
+                py={2}
+              >
+                <Header onSelectAll={handleSelectAll} />
+              </Box>
+              {renderProducts(getFilteredProducts(false))}
             </Tabs.Content>
           </Tabs.Root>
         </Box>
-      </Stack>
-    </>
+      </Box>
+    </Stack>
   );
 }
 
