@@ -42,7 +42,7 @@
     "react-router-dom": "^6.28.0",
     "react-slick": "^0.30.2",
     "rechart": "^0.0.1",
-    "recharts": "^2.14.1",
+    "recharts": "^2.15.0",
     "swiper": "^11.1.15",
     "tailwindcss": "^3.4.16",
     "zod": "^3.23.8",
