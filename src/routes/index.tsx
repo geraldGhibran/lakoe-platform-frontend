@@ -113,6 +113,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <div>404</div>,
+    element: <div>CHeck lagi url nya WOI !!!!!</div>,
   },
 ]);
