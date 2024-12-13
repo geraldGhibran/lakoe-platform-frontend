@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Link, Stack } from '@chakra-ui/react';
+import { Box, Button, Flex, HStack, Stack } from '@chakra-ui/react';
 import {
   AccordionItem,
   AccordionItemContent,
@@ -6,7 +6,7 @@ import {
   AccordionRoot,
 } from '@/components/ui/accordion';
 import { Icon } from '@iconify/react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth';
 
 interface NavLinkProps {
@@ -25,50 +25,46 @@ const Links = [
 
 const SettingsSubLinks = [
   { name: 'Atur Toko', path: '/settings' },
-  { name: 'Pengiriman', path: '/settings' },
-  { name: 'Metode Pembayaran', path: '/settings' },
+  { name: 'Pengiriman', path: '' },
+  { name: 'Metode Pembayaran', path: '' },
 ];
 
 const NavLink = ({ children, icon, path, isActive, onClick }: NavLinkProps) => {
-  const activeColor = 'blue.500';
-  const inactiveColor = 'gray.800';
-  const hoverBg = 'gray.200';
-
   return (
-    <Link
-      as="a"
-      display="flex"
-      alignItems="center"
-      px={20}
-      py={3}
-      rounded="md"
-      href={path}
+    <Box
+      color={isActive ? 'blue.500' : 'gray.800'}
       onClick={onClick}
-      _hover={{
-        textDecoration: 'none',
-        bg: hoverBg,
-      }}
-      color={isActive ? activeColor : inactiveColor}
+      mx={'60px'}
     >
-      {icon && (
+      <Link
+        to={path}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '12px 20px',
+          borderRadius: '8px',
+          textDecoration: 'none',
+          backgroundColor: isActive ? 'gray.200' : 'transparent',
+        }}
+      >
         <Icon
           icon={icon}
           width="24"
           height="24"
           style={{
             marginRight: '12px',
-            color: isActive ? activeColor : inactiveColor,
           }}
         />
-      )}
-      {children}
-    </Link>
+        <Box color={isActive ? 'blue.500' : 'gray.800'}>{children}</Box>
+      </Link>
+    </Box>
   );
 };
 
 export default function SideBar() {
   const location = useLocation();
   const logout = useAuthStore((state) => state.logout);
+
   const isSettingsActive = SettingsSubLinks.some(
     (subLink) => location.pathname === subLink.path
   );
@@ -91,6 +87,7 @@ export default function SideBar() {
                     {link.name}
                   </NavLink>
                 ))}
+
                 <AccordionRoot collapsible>
                   <AccordionItem key={'pengaturan'} value={'pengaturan'}>
                     <AccordionItemTrigger
@@ -117,7 +114,7 @@ export default function SideBar() {
                         Pengaturan
                       </Box>
                     </AccordionItemTrigger>
-                    <AccordionItemContent position={'fixed'}>
+                    <AccordionItemContent>
                       {SettingsSubLinks.map((subLink) => (
                         <NavLink
                           key={subLink.name}

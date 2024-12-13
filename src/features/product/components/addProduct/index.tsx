@@ -23,6 +23,7 @@ import { Icon } from '@iconify/react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '../schemas/addProductSchema/index';
+import { useState } from 'react';
 
 interface ProductFormData {
   productName: string;
@@ -41,6 +42,11 @@ interface ProductFormData {
 }
 
 export default function AddProductPage() {
+  const [isVariantTypeCreate, setIsVariantTypeCreate] = useState(false);
+  const handleVariantTypeCreate = () => {
+    setIsVariantTypeCreate(true);
+  };
+
   const onSubmit = (data: ProductFormData) => {
     console.log('Form data:', data);
   };
@@ -207,10 +213,9 @@ export default function AddProductPage() {
           </Box>
           <Box
             px={10}
-            py={1}
+            py={5}
             mb={5}
             m="auto"
-            height="150px"
             width="100%"
             bg="white"
             boxShadow="md"
@@ -224,20 +229,69 @@ export default function AddProductPage() {
                 <Text fontSize="14px">
                   Tambah varian agar pembeli dapat memilih produk sesuai,yuk!
                 </Text>
+                {isVariantTypeCreate && (
+                  <HStack py={2}>
+                    <Button
+                      bg={'white'}
+                      color={'black'}
+                      border={'1px solid black'}
+                      borderRadius={'100px'}
+                    >
+                      Warna
+                    </Button>
+                    <Button
+                      bg={'white'}
+                      color={'black'}
+                      border={'1px solid black'}
+                      borderRadius={'100px'}
+                    >
+                      Ukuran
+                    </Button>
+                    <Button
+                      bg={'white'}
+                      color={'black'}
+                      border={'1px solid black'}
+                      borderRadius={'100px'}
+                    >
+                      Ukuran Kemasan
+                    </Button>
+                    <Button
+                      bg={'white'}
+                      color={'black'}
+                      border={'1px solid black'}
+                      borderRadius={'100px'}
+                    >
+                      <Icon icon="formkit:add" /> Tambah Varian
+                    </Button>
+                  </HStack>
+                )}
               </Box>
               <Box mt={10}>
-                <Button
-                  type="submit"
-                  bg={'white'}
-                  color={'black'}
-                  border={'1px solid black'}
-                  borderRadius={'100px'}
-                >
-                  <Icon icon="formkit:add" /> Tambah Varian
-                </Button>
+                {isVariantTypeCreate ? (
+                  <Button
+                    bg={'white'}
+                    color={'black'}
+                    border={'1px solid black'}
+                    borderRadius={'100px'}
+                    onClick={handleVariantTypeCreate}
+                  >
+                    <Icon icon="mynaui:trash" /> Hapus Variant
+                  </Button>
+                ) : (
+                  <Button
+                    bg={'white'}
+                    color={'black'}
+                    border={'1px solid black'}
+                    borderRadius={'100px'}
+                    onClick={handleVariantTypeCreate}
+                  >
+                    <Icon icon="formkit:add" /> Buat Tipe Varian
+                  </Button>
+                )}
               </Box>
             </Stack>
           </Box>
+
           <Box
             px={10}
             py={1}
