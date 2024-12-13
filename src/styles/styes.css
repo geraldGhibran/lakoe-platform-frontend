@@ -8,6 +8,11 @@
   padding: 20px;
 }
 
+.rounded {
+  overflow: hidden;
+  border-radius: 20px;
+}
+
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }

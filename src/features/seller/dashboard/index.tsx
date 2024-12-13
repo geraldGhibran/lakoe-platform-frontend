@@ -4,6 +4,7 @@ import { Table } from '@chakra-ui/react';
 import { TbHistoryToggle } from 'react-icons/tb';
 import { SiWebmoney } from 'react-icons/si';
 import MyChart from '@/components/Chart';
+import { formatCurrency } from '@/features/add-other/format-currency';
 
 export const Dashboard = () => {
   return (
@@ -95,7 +96,7 @@ export const Dashboard = () => {
                 <SiWebmoney size="20px" color="red" />
               </Flex>
               <Text fontSize="20px" color="green">
-                Rp. 5000.000,-
+                {formatCurrency(5000000)}
               </Text>
             </Flex>
           </Box>
