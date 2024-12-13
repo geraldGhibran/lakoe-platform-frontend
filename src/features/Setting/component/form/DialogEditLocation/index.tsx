@@ -26,10 +26,14 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
-import { useAddLocation } from '../../hooks/useAddLocation';
-import { Switch } from '@/components/ui/switch';
+import { useEditLocation } from '@/features/Setting/hooks/useEditLocation';
+import { useAddLocation } from '@/features/Setting/hooks/useAddLocation';
+import { Icon } from '@iconify/react/dist/iconify.js';
 
-const AddLocation = () => {
+const DialogEditLocation = ({ id }: { id: number }) => {
+  const { errors, isEditingLocationStore, register, onSubmit, locationStore } =
+    useEditLocation(id);
+
   const {
     provinsi,
     kabupaten,
@@ -37,12 +41,6 @@ const AddLocation = () => {
     setSelectedProvinsi,
     setSelectedKabupaten,
     removeKotaKabupaten,
-    errors,
-    isAddingLocationStore,
-    register,
-    onSubmit,
-    watch,
-    setValue,
   } = useAddLocation();
 
   const ref = useRef<HTMLInputElement>(null);
@@ -70,24 +68,16 @@ const AddLocation = () => {
   const { onClose } = useDisclosure();
 
   const { position } = useLocationStore();
-  const isMainLocation = watch('is_main_location');
 
   return (
     <DialogRoot initialFocusEl={() => ref.current}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          bgColor="white"
-          borderRadius="100px"
-          color="black"
-        >
-          Tambah Lokasi
-        </Button>
+        <Icon icon="bx:edit" />
       </DialogTrigger>
       <DialogContent position="fixed" zIndex={1} top="-7%">
         <form onSubmit={onSubmit}>
           <DialogHeader>
-            <DialogTitle fontWeight="bold">Tambah Lokasi Baru</DialogTitle>
+            <DialogTitle fontWeight="bold">Edit Lokasi</DialogTitle>
           </DialogHeader>
           <DialogBody pb="4">
             <Stack gap="4">
@@ -107,13 +97,6 @@ const AddLocation = () => {
               />
               <Input
                 {...register('store_id')}
-                border="2px solid black"
-                placeholder="ID"
-                type="number"
-                hidden
-              />
-              <Input
-                {...register('user_id')}
                 border="2px solid black"
                 placeholder="ID"
                 type="number"
@@ -181,6 +164,7 @@ const AddLocation = () => {
                 )}
               </SelectRoot>
               <SelectRoot
+                defaultValue={[locationStore?.postal_code]}
                 {...register('postal_code', { valueAsNumber: true })}
                 collection={postalCodeCollection}
               >
@@ -215,28 +199,18 @@ const AddLocation = () => {
               </Text>
               {/* <LocationConfig onLocationChange={(detail) => console.log(detail)} /> */}
               <DraggableMarkerMap />
-              <Field label="Jadikan Alamat Utama">
-                <Switch
-                  {...register('is_main_location')}
-                  onChange={() => setValue('is_main_location', !isMainLocation)}
-                  colorPalette={'blue'}
-                />
-                {errors.is_main_location && (
-                  <Text color="red.500">This field is required</Text>
-                )}
-              </Field>
             </Stack>
           </DialogBody>
           <DialogFooter>
             <DialogActionTrigger asChild>
               <Button
-                loading={isAddingLocationStore}
+                loading={isEditingLocationStore}
                 variant="outline"
                 bgColor="blue"
                 borderRadius="100px"
                 color="white"
                 type="submit"
-                onClick={isAddingLocationStore ? () => {} : () => onClose()}
+                onClick={isEditingLocationStore ? () => {} : () => onClose()}
               >
                 Simpan
               </Button>
@@ -258,4 +232,4 @@ const AddLocation = () => {
   );
 };
 
-export default AddLocation;
+export default DialogEditLocation;

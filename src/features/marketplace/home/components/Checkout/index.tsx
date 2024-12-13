@@ -10,6 +10,10 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
+import {
+  NativeSelectField,
+  NativeSelectRoot,
+} from '@/components/ui/native-select';
 import { Field } from '@/components/ui/field';
 import { Link } from 'react-router-dom';
 import { LuMapPinOff } from 'react-icons/lu';
@@ -28,32 +32,28 @@ export default function Checkout() {
         {/* Formulir */}
         <Box display="flex" flexDir="column" gap="20px" width="4/6">
           {/* Status Checkout */}
-          <Flex py="10px" borderBottom="1px solid gainsboro">
-            <Button>
-              <Box
-                display="flex"
-                borderBottom="2px solid blue"
-                padding="5px 20px"
-                flexDir="column"
-                justifyContent="start"
-                alignItems="start"
-              >
-                <Text color="blue">Langkah 1</Text>
-                <Text fontWeight="medium">Info Pengiriman</Text>
-              </Box>
-            </Button>
-            <Button disabled>
-              <Box
-                display="flex"
-                padding="5px 20px"
-                flexDir="column"
-                justifyContent="start"
-                alignItems="start"
-              >
-                <Text color="gray">Langkah 2</Text>
-                <Text fontWeight="medium">Metode Pembayaran</Text>
-              </Box>
-            </Button>
+          <Flex borderBottom="1px solid gainsboro">
+            <Box
+              display="flex"
+              flexDir="column"
+              padding="10px 20px"
+              borderBottom="2px solid blue"
+              justifyContent="start"
+              alignItems="start"
+            >
+              <Text color="blue">Langkah 1</Text>
+              <Text fontWeight="medium">Info Pengiriman</Text>
+            </Box>
+            <Box
+              display="flex"
+              padding="10px 20px"
+              flexDir="column"
+              justifyContent="start"
+              alignItems="start"
+            >
+              <Text color="gray">Langkah 2</Text>
+              <Text fontWeight="medium">Metode Pembayaran</Text>
+            </Box>
           </Flex>
           {/* Form Informasi Kontak */}
           <Flex
@@ -86,17 +86,21 @@ export default function Checkout() {
               <Field position="relative" label="Nomor WhatsApp">
                 <Group
                   width="full"
-                  border="1px solid gray"
                   rounded="md"
                   _focus={{ border: 'red' }}
                   attached
                 >
                   <InputAddon bgColor="gainsboro">+62</InputAddon>
-                  <Input px="20px" placeholder="Phone number..." />
+                  <Input
+                    px="20px"
+                    roundedEnd="md"
+                    placeholder="Phone number..."
+                  />
                   <Link to="/login">
                     <Button
-                      top="-35px"
+                      top="-25px"
                       color="blue"
+                      boxSize="auto"
                       fontWeight="medium"
                       right="0"
                       position="absolute"
@@ -141,6 +145,28 @@ export default function Checkout() {
                 </Group>
               </Field>
             </Fieldset.Root>
+            <Field label="Kecamatan">
+              <NativeSelectRoot size="md" width="full">
+                <NativeSelectField>
+                  <option value="react">React</option>
+                  <option value="vue">Vue</option>
+                  <option value="svelte">Svelte</option>
+                  <option value="angular">Angular</option>
+                </NativeSelectField>
+              </NativeSelectRoot>
+            </Field>
+
+            <Field label="Kelurahan">
+              <NativeSelectRoot size="md" width="full">
+                <NativeSelectField>
+                  <option value="react">React</option>
+                  <option value="vue">Vue</option>
+                  <option value="svelte">Svelte</option>
+                  <option value="angular">Angular</option>
+                </NativeSelectField>
+              </NativeSelectRoot>
+            </Field>
+
             <Field label="Detail Alamat" required>
               <Textarea
                 padding="10px"
@@ -201,16 +227,16 @@ export default function Checkout() {
               bgColor="#E5F2FF"
               rounded="lg"
               display="flex"
-              padding="10px"
+              padding="20px"
               flexDir="column"
             >
-              <Text fontSize="20px" fontWeight="bold" padding="8px">
+              <Text fontSize="20px" fontWeight="bold" py="8px">
                 Ringkasan Pesanan
               </Text>
-              <Table.Root size="sm">
+              <Table.Root size="sm" unstyled>
                 <Table.Header>
                   <Table.Row bgColor="#E5F2FF">
-                    <Table.ColumnHeader color="gray">
+                    <Table.ColumnHeader textAlign="start" color="gray">
                       Total Harga (1)
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
@@ -218,7 +244,7 @@ export default function Checkout() {
                     </Table.ColumnHeader>
                   </Table.Row>
                   <Table.Row bgColor="#E5F2FF">
-                    <Table.ColumnHeader color="gray">
+                    <Table.ColumnHeader py="5px" textAlign="start" color="gray">
                       Biaya Pengiriman
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
@@ -234,7 +260,9 @@ export default function Checkout() {
                     borderTop="1px solid gainsboro"
                     borderBottom="transparent"
                   >
-                    <Table.Cell color="gray">Total</Table.Cell>
+                    <Table.Cell py="5px" color="gray">
+                      Total
+                    </Table.Cell>
                     <Table.Cell textAlign="end">Rp 567</Table.Cell>
                   </Table.Row>
                 </Table.Body>

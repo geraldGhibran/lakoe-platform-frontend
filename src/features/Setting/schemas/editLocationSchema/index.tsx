@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const addLocationSchema = z.object({
+export const editLocationSchema = z.object({
   name: z.string().min(1, { message: 'Masukan nama lokasi' }),
   address: z.string().min(1, { message: 'Masukan alamat lengkap' }),
   city_district: z
@@ -16,8 +16,7 @@ export const addLocationSchema = z.object({
     .min(-180)
     .max(180, 'Longitude harus berada antara -180 dan 180'),
   store_id: z.number().min(1, { message: 'Store ID tidak boleh kosong' }),
-  user_id: z.number().min(1, { message: 'User ID tidak boleh kosong' }),
-  is_main_location: z.any().optional(),
+  is_main_location: z.boolean(),
 });
 
-export type AddLocationSchema = z.infer<typeof addLocationSchema>;
+export type EditLocationSchema = z.infer<typeof editLocationSchema>;

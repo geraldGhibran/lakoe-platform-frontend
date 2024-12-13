@@ -87,21 +87,18 @@ export default function SideBar() {
                     {link.name}
                   </NavLink>
                 ))}
-
-                <AccordionRoot collapsible>
+                <AccordionRoot collapsible unstyled>
                   <AccordionItem key={'pengaturan'} value={'pengaturan'}>
                     <AccordionItemTrigger
+                      display="flex"
+                      alignItems="center"
+                      gap="10px"
                       px={20}
                       py={3}
                       _hover={{ bg: 'gray.200' }}
                       color={isSettingsActive ? 'blue.500' : 'gray.800'}
                     >
-                      <Box
-                        flex="1"
-                        textAlign="left"
-                        display="flex"
-                        alignItems="center"
-                      >
+                      <Box textAlign="left" display="flex" alignItems="center">
                         <Icon
                           icon="mdi:cog"
                           width="24"

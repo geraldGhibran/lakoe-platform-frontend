@@ -50,19 +50,21 @@ export const useAddLocation = () => {
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<AddLocationSchema>({
     resolver: zodResolver(addLocationSchema),
     values: {
-      storeId: user?.store?.id ?? 0,
-      isMainLocation: false,
+      store_id: user?.store?.id ?? 0,
+      is_main_location: true,
       name: '',
       address: '',
-      cityDistrict: '',
-      postalCode: 0,
+      city_district: '',
+      postal_code: 0,
       latitude: position.lat,
       longitude: position.lng,
-      userId: user?.id ?? 0,
+      user_id: user?.id ?? 0,
     },
   });
 
@@ -177,5 +179,7 @@ export const useAddLocation = () => {
     isAddingLocationStore,
     setSelectedPostalCodes,
     selectedPostalCodes,
+    watch,
+    setValue,
   };
 };
