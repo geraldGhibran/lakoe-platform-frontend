@@ -35,7 +35,7 @@ export const useAddTemplateMessage = () => {
     },
     onSuccess: async () => {
       await queryClient.refetchQueries({
-        queryKey: ['templateMessage'],
+        queryKey: ['templateMessage', user?.store?.id],
         exact: true,
       });
 
