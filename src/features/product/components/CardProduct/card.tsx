@@ -91,6 +91,9 @@ export default function CardProduct(props: CardProductProps) {
               size={'lg'}
               colorPalette={'blue'}
               checked={isActive}
+              style={{
+                transition: 'transform 0.3s ease, background-color 0.3s ease;',
+              }}
               onChange={(e) =>
                 onSwitchChange((e.target as HTMLInputElement).checked)
               }

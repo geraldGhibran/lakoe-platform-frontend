@@ -4,6 +4,7 @@ import {
   createListCollection,
   HStack,
   Text,
+  Flex,
   Input,
   Stack,
 } from '@chakra-ui/react';
@@ -37,7 +38,7 @@ const sortCollectionDummy = createListCollection({
 });
 
 interface HeaderProps {
-  onSelectAll: (checked: boolean) => void; // New prop to handle the "Pilih Semua" checkbox change
+  onSelectAll: (checked: boolean) => void;
 }
 
 export default function Header({ onSelectAll }: HeaderProps) {
@@ -56,25 +57,21 @@ export default function Header({ onSelectAll }: HeaderProps) {
         >
           <Input placeholder="Cari Pesanan" />
         </InputGroup>
-        <Field w={'35%'}>
-          <SelectRoot
-            multiple
-            collection={categoryCollectionDummy}
-            size="md"
-            w={'100%'}
-          >
+        <Box width={'35%'}>
+          <SelectRoot multiple collection={categoryCollectionDummy} size="sm">
             <SelectTrigger>
-              <SelectValueText placeholder="Semua kategori " />
+              <SelectValueText placeholder="Semua Kategori" />
             </SelectTrigger>
             <SelectContent>
-              {categoryCollectionDummy.items.map((category) => (
-                <SelectItem item={category} key={category.value}>
-                  {category.label}
-                </SelectItem>
+              {categoryCollectionDummy.items.map((data) => (
+                <Flex gap="3" margin="4px">
+                  <Checkbox border="2px solid #B1B1B1" colorPalette="blue" />
+                  {data.label}
+                </Flex>
               ))}
             </SelectContent>
           </SelectRoot>
-        </Field>
+        </Box>
         <Field w={'35%'}>
           <SelectRoot collection={sortCollectionDummy} size="md" w={'100%'}>
             <SelectTrigger>
@@ -116,16 +113,15 @@ export default function Header({ onSelectAll }: HeaderProps) {
               <DeleteConfirm quantity={5} />
             </Box>
             <NonactiveConfirm quantity={5} />
-            <Checkbox
-              mt={2}
-              px={2}
-              colorPalette={'blue'}
-              onChange={(e) =>
-                onSelectAll((e.target as HTMLInputElement).checked)
-              } // Call the handler when the checkbox is toggled
-            >
+            <Flex gap="2" alignItems="center">
               Pilih Semua
-            </Checkbox>
+              <Checkbox
+                colorPalette={'blue'}
+                onChange={(e) =>
+                  onSelectAll((e.target as HTMLInputElement).checked)
+                }
+              />
+            </Flex>
           </Stack>
         </Box>
       </Stack>

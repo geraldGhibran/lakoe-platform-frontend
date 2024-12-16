@@ -13,13 +13,22 @@ import {
 import { Box, Group, HStack, Input, InputAddon } from '@chakra-ui/react';
 import { useState } from 'react';
 import { Field } from '@/components/ui/field';
+import { Icon } from '@iconify/react';
 
 export default function VariantModal() {
   const [open, setOpen] = useState(false);
   return (
     <DialogRoot lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <DialogTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button
+          variant="outline"
+          borderRadius={'full'}
+          bgColor={'#0086B4'}
+          color={'white'}
+        >
+          <Icon icon="ep:list" />
+          Atur Sekaligus
+        </Button>
       </DialogTrigger>
       <DialogContent minWidth={'50%'}>
         <DialogHeader>

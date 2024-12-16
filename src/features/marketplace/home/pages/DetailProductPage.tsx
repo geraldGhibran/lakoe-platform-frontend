@@ -31,6 +31,7 @@ export default function DetailProductPage() {
             color="black"
             _hover={{ bgColor: 'gainsboro' }}
             padding="10px"
+            bgColor="white"
             rounded="full"
             border="1px solid gainsboro"
           >
@@ -39,7 +40,12 @@ export default function DetailProductPage() {
         </Link>
         <Flex alignItems="center" gap="10px" justify="center">
           <Link to="cart">
-            <Button _hover={{ bgColor: 'gainsboro' }} position="relative">
+            <Button
+              bgColor="white"
+              color="black"
+              _hover={{ bgColor: 'gainsboro' }}
+              position="relative"
+            >
               <Box
                 position="absolute"
                 bgColor="#FF9800"
@@ -59,13 +65,18 @@ export default function DetailProductPage() {
             </Button>
           </Link>
           <Link to="">
-            <Button _hover={{ bgColor: 'gainsboro' }} position="relative">
+            <Button
+              bgColor="white"
+              color="black"
+              _hover={{ bgColor: 'gainsboro' }}
+              position="relative"
+            >
               <BsPerson />
             </Button>
           </Link>
         </Flex>
       </Box>
-      <Box mt="80px" className="hide-scrollbar" height="100vh" overflowY="auto">
+      <Box mt="80px" className="hide-scrollbar" height="85vh" overflowY="auto">
         <Outlet />
       </Box>
     </Box>
