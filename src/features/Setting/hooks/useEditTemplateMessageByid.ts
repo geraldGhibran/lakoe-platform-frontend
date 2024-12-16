@@ -10,6 +10,7 @@ import { TemplateSchema } from '../schemas/templateSchema';
 import { updateTemplateMessage } from '../services/store';
 import { useGetTemplateMessageById } from './useGetTemplateMessageById';
 import { useAuthStore } from '@/store/auth';
+import { useState } from 'react';
 
 export const useEditTemplateMessageById = (id: number) => {
   const { user } = useAuthStore();
@@ -17,6 +18,7 @@ export const useEditTemplateMessageById = (id: number) => {
   const { data: templateMessage } = useGetTemplateMessageById(id);
 
   const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const {
     register,
@@ -51,6 +53,8 @@ export const useEditTemplateMessageById = (id: number) => {
         duration: 3000,
         description: 'Your template message has been created successfully.',
       });
+
+      setIsOpen(false);
     },
     onError: (error: Error) => {
       toaster.create({
@@ -71,6 +75,8 @@ export const useEditTemplateMessageById = (id: number) => {
     errors,
     register,
     onSubmit,
+    isOpen,
+    setIsOpen,
     templateMessage,
   };
 };

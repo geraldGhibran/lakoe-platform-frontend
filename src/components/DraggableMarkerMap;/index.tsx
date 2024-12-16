@@ -1,15 +1,16 @@
 // src/components/DraggableMarkerMap.tsx
-import React, { useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import axios from 'axios';
+import { useAddLocation } from '@/features/Setting/hooks/useAddLocation';
 import { useLocationStore } from '@/store/location';
 import { Box } from '@chakra-ui/react';
+import axios from 'axios';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import React, { useRef, useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 const DraggableMarkerMap: React.FC = () => {
-  //   const [position, setPosition] = useState<L.LatLngLiteral>({ lat: -6.390110076310068, lng: 106.8498086885969 });
   const { position, setPosition } = useLocationStore();
+  const { setValue } = useAddLocation();
   const [address, setAddress] = useState<string>('Loading address...');
   const markerRef = useRef<L.Marker<[number | number]>>(null);
 
@@ -41,12 +42,14 @@ const DraggableMarkerMap: React.FC = () => {
     if (markerRef.current != null) {
       const newPos = markerRef.current.getLatLng();
       setPosition(newPos);
+      setValue('latitude', newPos.lat);
+      setValue('longitude', newPos.lng);
       updateAddress(newPos.lat, newPos.lng);
     }
   };
 
   return (
-    <Box width="100%" height="22vh" position="relative">
+    <Box width="100%" height="20vh" position="relative">
       <MapContainer
         center={position}
         zoom={13}

@@ -7,6 +7,7 @@ import Header from './CardProduct/header';
 import CardProduct from './CardProduct/card';
 import { allProducts } from './CardProduct/dumy';
 import { useState } from 'react';
+import '@/styles/styes.css';
 
 interface Product {
   id: number;
@@ -41,12 +42,20 @@ function ProductList() {
     );
   };
 
+  const [switchingProduct, setSwitchingProduct] = useState<number | null>(null);
+
   const handleSwitchChange = (id: number, checked: boolean) => {
+    setSwitchingProduct(id);
+
     setProductStates((prevStates) =>
       prevStates.map((state) =>
         state.id === id ? { ...state, isActive: checked } : state
       )
     );
+
+    setTimeout(() => {
+      setSwitchingProduct(null);
+    }, 300);
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -60,7 +69,9 @@ function ProductList() {
       const productState = productStates.find(
         (state) => state.id === product.id
       );
-      return productState?.isActive === isActive;
+      return (
+        productState?.isActive === isActive || product.id === switchingProduct
+      );
     });
   };
 
@@ -138,7 +149,7 @@ function ProductList() {
             </Button>
           </Box>
         </Box>
-        <Box overflowY="auto" pt={4}>
+        <Box overflowY="auto" pt={4} className="hide-scrollbar">
           <Tabs.Root defaultValue={'all'} variant="plain">
             <Tabs.List
               position="sticky"

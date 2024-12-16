@@ -80,6 +80,7 @@ export default function Cart() {
                 <Flex gap="10px" padding="10px" height="full" fontSize="20px">
                   <Button
                     display="flex"
+                    bgColor="white"
                     justifyContent="center"
                     alignItems="center"
                     border="1px solid blue"
@@ -91,6 +92,8 @@ export default function Cart() {
                   <Button
                     onClick={decrement1}
                     display="flex"
+                    bgColor="white"
+                    color="black"
                     justifyContent="center"
                     alignItems="center"
                     border="1px solid blue"
@@ -100,6 +103,8 @@ export default function Cart() {
                   </Button>
                   <Button
                     display="flex"
+                    bgColor="white"
+                    color="black"
                     alignItems="center"
                     fontSize="15px"
                     justifyContent="center"
@@ -110,6 +115,8 @@ export default function Cart() {
                   <Button
                     onClick={increment1}
                     display="flex"
+                    bgColor="white"
+                    color="black"
                     justifyContent="center"
                     alignItems="center"
                     border="1px solid blue"
@@ -145,6 +152,7 @@ export default function Cart() {
                     display="flex"
                     justifyContent="center"
                     alignItems="center"
+                    bgColor="white"
                     border="1px solid blue"
                     rounded="sm"
                     color="blue"
@@ -154,6 +162,8 @@ export default function Cart() {
                   <Button
                     onClick={decrement2}
                     display="flex"
+                    bgColor="white"
+                    color="black"
                     justifyContent="center"
                     alignItems="center"
                     border="1px solid blue"
@@ -165,6 +175,8 @@ export default function Cart() {
                     display="flex"
                     alignItems="center"
                     fontSize="15px"
+                    bgColor="white"
+                    color="black"
                     justifyContent="center"
                     border="1px solid gray"
                   >
@@ -173,6 +185,8 @@ export default function Cart() {
                   <Button
                     onClick={increment2}
                     display="flex"
+                    bgColor="white"
+                    color="black"
                     justifyContent="center"
                     alignItems="center"
                     border="1px solid blue"

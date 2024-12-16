@@ -1,10 +1,10 @@
 import { toaster } from '@/components/ui/toaster-placement';
 import { useAuthStore } from '@/store/auth';
-import { useDisclosure } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { deleteLocation } from '../services/store';
 import { useGetLocationById } from './useGetLocationById';
+import { useState } from 'react';
 
 interface IdType {
   id: number;
@@ -12,12 +12,12 @@ interface IdType {
 
 export const useDeleteLocationStore = (id: number) => {
   const { user } = useAuthStore();
-  const { onClose } = useDisclosure();
   const { data: locationStore } = useGetLocationById(id);
 
   const queryClient = useQueryClient();
 
   const { register, handleSubmit } = useForm<IdType>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { mutateAsync: deleteLocationAsync, isPending: isDeletingLocation } =
     useMutation({
@@ -38,7 +38,7 @@ export const useDeleteLocationStore = (id: number) => {
           duration: 3000,
           description: 'Your Location has been deleted successfully.',
         });
-        onClose();
+        setIsOpen(false);
       },
       onError: (error: Error) => {
         toaster.create({
@@ -58,6 +58,8 @@ export const useDeleteLocationStore = (id: number) => {
     isDeletingLocation,
     register,
     onSubmit,
+    isOpen,
+    setIsOpen,
     locationStore,
   };
 };

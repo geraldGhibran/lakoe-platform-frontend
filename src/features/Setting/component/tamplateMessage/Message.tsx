@@ -15,6 +15,7 @@ export default function MessageContent({
           key={index}
           border={'1px solid #E6E6E6'}
           borderRadius={'10px'}
+          mb={5}
         >
           <Stack direction={'row'} justifyContent={'space-between'}>
             <Box>

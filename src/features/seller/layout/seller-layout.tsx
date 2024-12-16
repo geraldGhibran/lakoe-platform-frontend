@@ -52,7 +52,7 @@ export function SellerLayout() {
         <Outlet />
       </Box>
 
-      <Box width="1/3" border="1px solid red">
+      <Box width="1/3">
         <AddSeller />
       </Box>
     </Flex>

@@ -18,7 +18,7 @@ export default function StoreSetting() {
           variant="plain"
         >
           <Text py={3} fontWeight={'bold'} fontSize={'2xl'}>
-            Feysen Store
+            Atur Toko
           </Text>
           <Tabs.List display={'flex'} w={'100%'}>
             <Tabs.Trigger
@@ -58,7 +58,7 @@ export default function StoreSetting() {
               }}
               borderBottom="4px solid transparent"
             >
-              Tamplate Pesan
+              Template Pesan
             </Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="first">
