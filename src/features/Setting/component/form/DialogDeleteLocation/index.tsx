@@ -28,7 +28,7 @@ export default function DialogDeleteLocation({ id }: { id: number }) {
         scrollBehavior="outside"
       >
         <DialogTrigger asChild>
-          <Icon icon="pajamas:remove" />
+          <Icon icon="pajamas:remove" onClick={() => setIsOpen(!isOpen)} />
         </DialogTrigger>
         <DialogContent position="absolute" zIndex={1} top="25%" left="25%">
           <form onSubmit={onSubmit}>
