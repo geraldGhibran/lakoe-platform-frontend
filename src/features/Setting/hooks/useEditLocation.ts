@@ -10,9 +10,11 @@ import {
   editLocationSchema,
 } from '../schemas/editLocationSchema';
 import { useLocationStore } from '@/store/location';
+import { useState } from 'react';
 
 export const useEditLocation = (id: number) => {
   const { user } = useAuthStore();
+  const [isOpen, setIsOpen] = useState(false);
 
   const { data: locationStore } = useGetLocationById(id);
 
@@ -23,12 +25,17 @@ export const useEditLocation = (id: number) => {
     register,
     handleSubmit,
     control,
+    watch: watchEditLocation,
+    setValue: setValueEditLocation,
     formState: { errors },
   } = useForm<EditLocationSchema>({
     resolver: zodResolver(editLocationSchema),
     values: {
       address: locationStore?.address || '',
-      city_district: locationStore?.city_district || '',
+      city_district: locationStore?.city_district || 0,
+      province_code: locationStore?.province_code || 0,
+      subdistrict: locationStore?.subdistrict || 0,
+      village: locationStore?.village || '',
       postal_code: locationStore?.postal_code || 0,
       latitude: locationStore?.latitude || position.lat,
       longitude: locationStore?.longitude || position.lng,
@@ -56,6 +63,8 @@ export const useEditLocation = (id: number) => {
           duration: 3000,
           description: 'Your Location Store has been created successfully.',
         });
+
+        setIsOpen(false);
       },
       onError: (error: Error) => {
         toaster.create({
@@ -78,5 +87,9 @@ export const useEditLocation = (id: number) => {
     onSubmit,
     locationStore,
     control,
+    watchEditLocation,
+    setValueEditLocation,
+    isOpen,
+    setIsOpen,
   };
 };

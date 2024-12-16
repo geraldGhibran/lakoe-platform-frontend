@@ -12,23 +12,33 @@ import {
   DialogTrigger,
   Input,
   Stack,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useRef } from 'react';
 import { Controller } from 'react-hook-form';
 export default function DialogDeleteTemplateMessage({ id }: { id: number }) {
-  const { onClose } = useDisclosure();
   const ref = useRef<HTMLInputElement>(null);
-  const { onSubmit, control, isDeletingTemplateMessage, templateMessage } =
-    useDeleteTemplateMessage(Number(id));
+  const {
+    setIsOpen,
+    isOpen,
+    onSubmit,
+    control,
+    isDeletingTemplateMessage,
+    templateMessage,
+  } = useDeleteTemplateMessage(Number(id));
   return (
     <Box>
-      <DialogRoot initialFocusEl={() => ref.current}>
+      <DialogRoot
+        open={isOpen}
+        lazyMount
+        initialFocusEl={() => ref.current}
+        size="lg"
+        scrollBehavior="outside"
+      >
         <DialogTrigger asChild>
-          <Icon icon="pajamas:remove" />
+          <Icon icon="pajamas:remove" onClick={() => setIsOpen(!isOpen)} />
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent position="absolute" zIndex={1} top="-5%" left="15%">
           <form onSubmit={onSubmit}>
             <DialogHeader>
               <DialogTitle fontWeight={'bold'}>
@@ -66,28 +76,22 @@ export default function DialogDeleteTemplateMessage({ id }: { id: number }) {
                   bgColor={'white'}
                   borderRadius={'100px'}
                   color={'black'}
+                  onClick={() => setIsOpen(false)}
                 >
                   Batalkan
                 </Button>
               </DialogActionTrigger>
-              <DialogActionTrigger asChild>
-                <Button
-                  loading={isDeletingTemplateMessage}
-                  variant="outline"
-                  bgColor={'red'}
-                  borderRadius={'100px'}
-                  color={'white'}
-                  colorPalette={'red'}
-                  type="submit"
-                  onClick={
-                    isDeletingTemplateMessage
-                      ? () => onClose()
-                      : () => onClose()
-                  }
-                >
-                  Hapus
-                </Button>
-              </DialogActionTrigger>
+              <Button
+                loading={isDeletingTemplateMessage}
+                variant="outline"
+                bgColor={'red'}
+                borderRadius={'100px'}
+                color={'white'}
+                colorPalette={'red'}
+                type="submit"
+              >
+                Hapus
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

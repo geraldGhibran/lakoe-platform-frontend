@@ -16,23 +16,32 @@ import {
   Stack,
   Text,
   Textarea,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useRef } from 'react';
 export default function DialogEditTemplateMessage({ id }: { id: number }) {
-  const { onClose } = useDisclosure();
-
   const ref = useRef<HTMLInputElement>(null);
-  const { onSubmit, errors, register, isEditingTemplateMessage } =
-    useEditTemplateMessageById(Number(id));
+  const {
+    isOpen,
+    setIsOpen,
+    onSubmit,
+    errors,
+    register,
+    isEditingTemplateMessage,
+  } = useEditTemplateMessageById(Number(id));
   return (
     <Box>
-      <DialogRoot initialFocusEl={() => ref.current}>
+      <DialogRoot
+        open={isOpen}
+        lazyMount
+        initialFocusEl={() => ref.current}
+        size="lg"
+        scrollBehavior="outside"
+      >
         <DialogTrigger asChild>
-          <Icon icon="bx:edit" />
+          <Icon icon="bx:edit" onClick={() => setIsOpen(!isOpen)} />
         </DialogTrigger>
-        <DialogContent position={'fixed'}>
+        <DialogContent position="absolute" zIndex={1} top="-5%" left="15%">
           <form onSubmit={onSubmit}>
             <DialogHeader>
               <DialogTitle fontWeight={'bold'}>
@@ -107,25 +116,21 @@ export default function DialogEditTemplateMessage({ id }: { id: number }) {
                   bgColor={'white'}
                   borderRadius={'100px'}
                   color={'black'}
+                  onClick={() => setIsOpen(!isOpen)}
                 >
                   Batalkan
                 </Button>
               </DialogActionTrigger>
-              <DialogActionTrigger asChild>
-                <Button
-                  loading={isEditingTemplateMessage}
-                  variant="outline"
-                  bgColor={'#0086B4'}
-                  borderRadius={'100px'}
-                  color={'white'}
-                  type="submit"
-                  onClick={
-                    isEditingTemplateMessage ? () => {} : () => onClose()
-                  }
-                >
-                  Simpan
-                </Button>
-              </DialogActionTrigger>
+              <Button
+                loading={isEditingTemplateMessage}
+                variant="outline"
+                bgColor={'#0086B4'}
+                borderRadius={'100px'}
+                color={'white'}
+                type="submit"
+              >
+                Simpan
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>
