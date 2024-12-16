@@ -12,6 +12,7 @@ export default function ListLocation({ items }: { items: Location[] }) {
           key={index}
           border={'1px solid #E6E6E6'}
           borderRadius={'10px'}
+          mb={5}
         >
           <Stack direction={'row'} justifyContent={'space-between'}>
             <Box></Box>
@@ -31,7 +32,7 @@ export default function ListLocation({ items }: { items: Location[] }) {
                   <Box mr={20}>
                     <Text>Nama Lokasi</Text>
                     <Text>Alamat</Text>
-                    <Text>Kota/Kecamatan</Text>
+                    <Text>Kelurahan</Text>
                     <Text>Kode Pos</Text>
                     <Text>Pinpoint</Text>
                   </Box>
@@ -47,7 +48,7 @@ export default function ListLocation({ items }: { items: Location[] }) {
                   )}
                 </Stack>
                 <Text>{item?.address}</Text>
-                <Text>{item?.city_district}</Text>
+                <Text>{item?.village}</Text>
                 <Text>{item?.postal_code}</Text>
                 <Stack direction={'row'} color={'blue'}>
                   <Icon icon="fluent:location-16-filled" />

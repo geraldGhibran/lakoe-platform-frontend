@@ -11,22 +11,26 @@ import {
   DialogTitle,
   DialogTrigger,
   Stack,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useRef } from 'react';
 export default function DialogDeleteLocation({ id }: { id: number }) {
-  const { onClose } = useDisclosure();
   const ref = useRef<HTMLInputElement>(null);
-  const { onSubmit, isDeletingLocation, locationStore } =
+  const { onSubmit, isDeletingLocation, locationStore, isOpen, setIsOpen } =
     useDeleteLocationStore(Number(id));
   return (
     <Box>
-      <DialogRoot initialFocusEl={() => ref.current}>
+      <DialogRoot
+        open={isOpen}
+        lazyMount
+        initialFocusEl={() => ref.current}
+        size="lg"
+        scrollBehavior="outside"
+      >
         <DialogTrigger asChild>
           <Icon icon="pajamas:remove" />
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent position="absolute" zIndex={1} top="25%" left="25%">
           <form onSubmit={onSubmit}>
             <DialogHeader>
               <DialogTitle fontWeight={'bold'}>
@@ -46,26 +50,22 @@ export default function DialogDeleteLocation({ id }: { id: number }) {
                   bgColor={'white'}
                   borderRadius={'100px'}
                   color={'black'}
+                  onClick={() => setIsOpen(!isOpen)}
                 >
                   Batalkan
                 </Button>
               </DialogActionTrigger>
-              <DialogActionTrigger asChild>
-                <Button
-                  loading={isDeletingLocation}
-                  variant="outline"
-                  bgColor={'red'}
-                  borderRadius={'100px'}
-                  color={'white'}
-                  colorPalette={'red'}
-                  type="submit"
-                  onClick={
-                    isDeletingLocation ? () => onClose() : () => onClose()
-                  }
-                >
-                  Hapus
-                </Button>
-              </DialogActionTrigger>
+              <Button
+                loading={isDeletingLocation}
+                variant="outline"
+                bgColor={'red'}
+                borderRadius={'100px'}
+                color={'white'}
+                colorPalette={'red'}
+                type="submit"
+              >
+                Hapus
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

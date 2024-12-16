@@ -1,6 +1,8 @@
 import { toaster } from '@/components/ui/toaster-placement';
+import { useAuthStore } from '@/store/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   DeleteTemplateMessageSchema,
@@ -8,12 +10,10 @@ import {
 } from '../schemas/deleteTemplateMessageSchema';
 import { deleteTemplateMessage } from '../services/store';
 import { useGetTemplateMessageById } from './useGetTemplateMessageById';
-import { useAuthStore } from '@/store/auth';
-import { useDisclosure } from '@chakra-ui/react';
 
 export const useDeleteTemplateMessage = (id: number) => {
   const { user } = useAuthStore();
-  const { onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { data: templateMessage } = useGetTemplateMessageById(id);
 
   const queryClient = useQueryClient();
@@ -45,7 +45,7 @@ export const useDeleteTemplateMessage = (id: number) => {
         duration: 3000,
         description: 'Your template message has been deleted successfully.',
       });
-      onClose();
+      setIsOpen(false);
     },
     onError: (error: Error) => {
       toaster.create({
@@ -66,5 +66,7 @@ export const useDeleteTemplateMessage = (id: number) => {
     control,
     onSubmit,
     templateMessage,
+    isOpen,
+    setIsOpen,
   };
 };

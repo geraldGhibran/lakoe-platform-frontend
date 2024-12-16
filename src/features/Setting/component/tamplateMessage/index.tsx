@@ -19,7 +19,7 @@ export default function Message() {
         p={2}
       >
         <Text fontSize={'2xl'} fontWeight={'bold'} py={3}>
-          Daftar Tamplate Pesan
+          Daftar Template Pesan
         </Text>
         <DialogAddTemplate />
       </Stack>

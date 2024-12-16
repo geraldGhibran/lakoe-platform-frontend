@@ -3,7 +3,8 @@ export interface Location {
   name: string;
   address: string;
   postal_code: number;
-  city_district: string;
+  city_district: number;
+  village: string;
   latitude: number;
   longitude: number;
   store_id: number;
