@@ -36,7 +36,7 @@ export default function DetailProduct() {
             className="mySwiper2"
           >
             {[...Array(10)].map((_, index) => (
-              <SwiperSlide className="overflow-hidden rounded-3xl" key={index}>
+              <SwiperSlide className="rounded" key={index}>
                 <Image
                   src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
                   alt={`Slide ${index + 1}`}
@@ -98,6 +98,8 @@ export default function DetailProduct() {
                         border: '1px solid white',
                       }}
                       border="1px solid gray"
+                      bgColor="white"
+                      color="black"
                       padding="0 20px"
                     >
                       Merah
@@ -109,6 +111,8 @@ export default function DetailProduct() {
                         border: '1px solid white',
                       }}
                       border="1px solid gray"
+                      bgColor="white"
+                      color="black"
                       padding="0 20px"
                     >
                       Biru
@@ -130,6 +134,8 @@ export default function DetailProduct() {
                       onClick={decrement}
                       display="flex"
                       justifyContent="center"
+                      bgColor="white"
+                      color="black"
                       alignItems="center"
                       border="1px solid gray"
                       boxSizing="30px"
@@ -152,6 +158,8 @@ export default function DetailProduct() {
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
+                      bgColor="white"
+                      color="black"
                       border="1px solid gray"
                       boxSizing="30px"
                       rounded="sm"
@@ -166,7 +174,12 @@ export default function DetailProduct() {
                 <Table.Cell borderColor="transparent" padding="20px 0">
                   <Flex gap="10px">
                     <Link to="checkout">
-                      <Button border="1px solid gray" padding="0 20px">
+                      <Button
+                        bgColor="white"
+                        color="black"
+                        border="1px solid gray"
+                        padding="0 20px"
+                      >
                         Beli Langsung
                       </Button>
                     </Link>

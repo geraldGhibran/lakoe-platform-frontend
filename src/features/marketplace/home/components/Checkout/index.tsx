@@ -4,6 +4,7 @@ import {
   Fieldset,
   Flex,
   Group,
+  Image,
   Input,
   InputAddon,
   Table,
@@ -14,6 +15,12 @@ import {
   NativeSelectField,
   NativeSelectRoot,
 } from '@/components/ui/native-select';
+import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from '@/components/ui/accordion';
 import { Field } from '@/components/ui/field';
 import { Link } from 'react-router-dom';
 import { LuMapPinOff } from 'react-icons/lu';
@@ -21,6 +28,8 @@ import PopUpLocation from './popUpLocation';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import { IoIosArrowForward } from 'react-icons/io';
 import { FaArrowRight } from 'react-icons/fa6';
+import { formatCurrency } from '@/features/add-other/format-currency';
+import DeliveryMethod from './deliveryMethod';
 
 export default function Checkout() {
   return (
@@ -47,11 +56,12 @@ export default function Checkout() {
             <Box
               display="flex"
               padding="10px 20px"
+              color="gray"
               flexDir="column"
               justifyContent="start"
               alignItems="start"
             >
-              <Text color="gray">Langkah 2</Text>
+              <Text>Langkah 2</Text>
               <Text fontWeight="medium">Metode Pembayaran</Text>
             </Box>
           </Flex>
@@ -100,6 +110,7 @@ export default function Checkout() {
                     <Button
                       top="-25px"
                       color="blue"
+                      bgColor="transparent"
                       boxSize="auto"
                       fontWeight="medium"
                       right="0"
@@ -192,6 +203,89 @@ export default function Checkout() {
               </Flex>
             </Field>
           </Flex>
+          {/* Metode Pembayaran */}
+          <AccordionRoot
+            border="1px solid red"
+            rounded="lg"
+            collapsible
+            defaultValue={['b']}
+            variant="enclosed"
+          >
+            <AccordionItem bgColor="white" value="a">
+              <AccordionItemTrigger
+                padding="20px"
+                cursor="pointer"
+                rounded="0"
+                bgColor="#fee2e2"
+              >
+                Pesanan 1
+              </AccordionItemTrigger>
+              <AccordionItemContent
+                display="flex"
+                flexDir="column"
+                fontSize="20px"
+                gap="20px"
+                bgColor="white"
+              >
+                <Text>Depok</Text>
+                <Flex gap="15px">
+                  <Image
+                    boxSize="100px"
+                    src="https://th.bing.com/th/id/OIP.STUm1W-vyQmnx5ZRRhI9kgHaHa?rs=1&pid=ImgDetMain"
+                  />
+                  <Box fontSize="20px" display="flex" flexDir="column">
+                    <Text>Sepatu mantap</Text>
+                    <Text color="gray" fontSize="15px">
+                      Biru - 1 barang (123 g)
+                    </Text>
+                    <Text fontWeight="medium">{formatCurrency(321)}</Text>
+                  </Box>
+                </Flex>
+                <Box borderY="1px solid gainsboro" py="20px">
+                  <DeliveryMethod />
+                </Box>
+
+                <AccordionRoot
+                  borderColor="transparent"
+                  rounded="lg"
+                  collapsible
+                  defaultValue={['b']}
+                  variant="enclosed"
+                >
+                  <AccordionItem bgColor="white" value="a">
+                    <AccordionItemTrigger
+                      cursor="pointer"
+                      padding="20px"
+                      rounded="0"
+                    >
+                      <Flex width="full" justify="space-between">
+                        <Text color="gray">Subtotal</Text>
+                        {formatCurrency(321)}
+                      </Flex>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent
+                      display="flex"
+                      flexDir="column"
+                      padding="20px"
+                      rounded="md"
+                      fontWeight="light"
+                      gap="20px"
+                      bgColor="#F9FAFB"
+                    >
+                      <Flex
+                        fontSize="15px"
+                        width="full"
+                        justify="space-between"
+                      >
+                        <Text>Subtotal (items)</Text>
+                        {formatCurrency(321)}
+                      </Flex>
+                    </AccordionItemContent>
+                  </AccordionItem>
+                </AccordionRoot>
+              </AccordionItemContent>
+            </AccordionItem>
+          </AccordionRoot>
         </Box>
 
         {/* Ringkasan Pembayaran */}
@@ -240,7 +334,7 @@ export default function Checkout() {
                       Total Harga (1)
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
-                      Rp 567
+                      {formatCurrency(567)}
                     </Table.ColumnHeader>
                   </Table.Row>
                   <Table.Row bgColor="#E5F2FF">
@@ -248,7 +342,7 @@ export default function Checkout() {
                       Biaya Pengiriman
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
-                      Rp 0
+                      {formatCurrency(0)}
                     </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
@@ -263,7 +357,9 @@ export default function Checkout() {
                     <Table.Cell py="5px" color="gray">
                       Total
                     </Table.Cell>
-                    <Table.Cell textAlign="end">Rp 567</Table.Cell>
+                    <Table.Cell textAlign="end">
+                      {formatCurrency(567)}
+                    </Table.Cell>
                   </Table.Row>
                 </Table.Body>
               </Table.Root>
