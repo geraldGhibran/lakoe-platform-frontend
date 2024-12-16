@@ -2,6 +2,7 @@ import { Box, Stack, Tabs, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import HeaderMenu from '../component/headerMenu';
 import OrderItem from '../component/orderItem';
+import '@/styles/styes.css';
 
 export default function OrderPage() {
   const [value, setValue] = useState<string | null>('first');
@@ -231,7 +232,12 @@ export default function OrderPage() {
               Pesanan selesai
             </Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content value="first" overflowY="auto" h="calc(100vh - 120px)">
+          <Tabs.Content
+            value="first"
+            overflowY="auto"
+            className="hide-scrollbar"
+            h="calc(100vh - 120px)"
+          >
             <Box
               position="sticky"
               top="0"

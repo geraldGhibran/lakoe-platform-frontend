@@ -1,4 +1,10 @@
-import { Box, HStack, Input, createListCollection } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  HStack,
+  Input,
+  createListCollection,
+} from '@chakra-ui/react';
 import {
   SelectContent,
   SelectItem,
@@ -9,6 +15,7 @@ import {
 import { InputGroup } from '@/components/ui/input-group';
 import { Icon } from '@iconify/react';
 import { Field } from '@/components/ui/field';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function HeaderMenu() {
   const couriers = createListCollection({
@@ -48,20 +55,21 @@ export default function HeaderMenu() {
         >
           <Input placeholder="Cari pesanan" />
         </InputGroup>
-        <Field w={'35%'}>
-          <SelectRoot multiple collection={couriers} size="md" w={'100%'}>
+        <Box width={'35%'}>
+          <SelectRoot multiple collection={couriers} size="sm">
             <SelectTrigger>
-              <SelectValueText placeholder="Kurir " />
+              <SelectValueText placeholder="Semua Kategori" />
             </SelectTrigger>
             <SelectContent>
-              {couriers.items.map((movie) => (
-                <SelectItem item={movie} key={movie.value}>
-                  {movie.label}
-                </SelectItem>
+              {couriers.items.map((data) => (
+                <Flex gap="3" margin="4px">
+                  <Checkbox border="2px solid #B1B1B1" colorPalette="blue" />
+                  {data.label}
+                </Flex>
               ))}
             </SelectContent>
           </SelectRoot>
-        </Field>
+        </Box>
         <Field w={'35%'}>
           <SelectRoot collection={timeOrder} size="md" w={'100%'}>
             <SelectTrigger>
