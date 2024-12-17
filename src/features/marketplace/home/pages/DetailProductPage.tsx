@@ -15,7 +15,7 @@ export default function DetailProductPage() {
     >
       <Box
         display="flex"
-        position="fixed"
+        position="sticky"
         bgColor="white"
         width="100vw"
         zIndex="max"
@@ -23,7 +23,7 @@ export default function DetailProductPage() {
         justifyContent="space-between"
         alignItems="center"
         px="20px"
-        height="80px"
+        height="10%"
         borderBottom="1px solid gainsboro"
       >
         <Link to="/">
@@ -76,7 +76,7 @@ export default function DetailProductPage() {
           </Link>
         </Flex>
       </Box>
-      <Box mt="80px" className="hide-scrollbar" height="85vh" overflowY="auto">
+      <Box className="hide-scrollbar" height="85vh" overflowY="auto">
         <Outlet />
       </Box>
     </Box>

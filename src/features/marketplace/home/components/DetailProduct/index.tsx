@@ -21,7 +21,7 @@ export default function DetailProduct() {
   return (
     <Box padding="0 10px">
       <Flex color="black">
-        <Box width="1/2" padding="20px" height="500px">
+        <Box width="1/2" padding="20px" height="80vh">
           <Swiper
             style={
               {
