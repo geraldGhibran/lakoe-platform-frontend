@@ -55,31 +55,25 @@ export default function AddProductPage() {
   });
   const [isVariantTypeCreate, setIsVariantTypeCreate] = useState(false);
 
-  // Pisahkan tags untuk warna dan ukuran
   const [colorTags, setColorTags] = useState<string[]>([]);
   const [sizeTags, setSizeTags] = useState<string[]>([]);
 
-  // Fungsi untuk menambah tag warna
   const handleAddColorTag = (tag: string) => {
     setColorTags((prevTags) => [...prevTags, tag]);
   };
 
-  // Fungsi untuk menghapus tag warna
   const handleRemoveColorTag = (index: number) => {
     setColorTags((prevTags) => prevTags.filter((_, i) => i !== index));
   };
 
-  // Fungsi untuk menambah tag ukuran
   const handleAddSizeTag = (tag: string) => {
     setSizeTags((prevTags) => [...prevTags, tag]);
   };
 
-  // Fungsi untuk menghapus tag ukuran
   const handleRemoveSizeTag = (index: number) => {
     setSizeTags((prevTags) => prevTags.filter((_, i) => i !== index));
   };
 
-  // Fungsi untuk toggle variant creation
   const handleVariantTypeCreateToggle = () => {
     setIsVariantTypeCreate(!isVariantTypeCreate);
   };
