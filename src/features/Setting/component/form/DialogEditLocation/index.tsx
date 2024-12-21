@@ -58,17 +58,18 @@ const DialogEditLocation = ({ id }: { id: number }) => {
     markerRef,
   } = useAddLocation();
   const ref = useRef<HTMLInputElement>(null);
+
   const provinsiCollection = createListCollection({
     items: provinsi.map((prov) => ({
       label: prov.nama,
-      value: prov.id,
+      value: prov.id.toString(),
     })),
   });
 
   const kabupatenCollection = createListCollection({
     items: kabupaten.map((kab) => ({
       label: kab.nama,
-      value: kab.nama,
+      value: kab.id,
     })),
   });
 
@@ -93,11 +94,7 @@ const DialogEditLocation = ({ id }: { id: number }) => {
     })),
   });
 
-  // console.log("Ini location Store", locationStore?.province_code)
-
-  // const province_code: number = Number(locationStore.province_code);
-
-  // console.log(province_code)
+  console.log(locationStore?.province_code);
 
   return (
     <DialogRoot
@@ -110,7 +107,7 @@ const DialogEditLocation = ({ id }: { id: number }) => {
       <DialogTrigger asChild>
         <Icon icon="bx:edit" onClick={() => setIsOpen(!isOpen)} />
       </DialogTrigger>
-      <DialogContent position="absolute" zIndex={1} top="-5%" left="15%">
+      <DialogContent position="absolute" top="-5%" left="15%">
         <form onSubmit={onSubmit}>
           <DialogHeader>
             <DialogTitle fontWeight="bold">Edit Lokasi</DialogTitle>
@@ -152,16 +149,15 @@ const DialogEditLocation = ({ id }: { id: number }) => {
               >
                 <SelectRoot
                   collection={provinsiCollection}
-                  defaultValue={[String(locationStore?.province_code)]}
                   {...register('province_code', { valueAsNumber: true })}
+                  value={[locationStore?.province_code?.toString() ?? '']}
                   size="sm"
-                  onValueChange={(details) =>
-                    setSelectedProvinsi(
-                      details.value
-                        ? Number(details.value)
-                        : locationStore?.province_code
-                    )
-                  }
+                  onValueChange={(details) => {
+                    const provinceId = details.value
+                      ? Number(details.value)
+                      : null;
+                    setSelectedProvinsi(provinceId ?? 0);
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValueText placeholder="Pilih Provinsi" />
@@ -182,12 +178,13 @@ const DialogEditLocation = ({ id }: { id: number }) => {
               >
                 <SelectRoot
                   collection={kabupatenCollection}
-                  size="sm"
-                  defaultValue={[locationStore?.city_district]}
                   {...register('city_district', { valueAsNumber: true })}
+                  size="sm"
                   onValueChange={(details) =>
                     setSelectedKabupaten(
-                      details.value ? Number(details.value) : null
+                      !details.value || details.value
+                        ? Number(details.value)
+                        : Number(`${locationStore?.city_district}`)
                     )
                   }
                 >
@@ -215,13 +212,15 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                 errorText={errors.subdistrict?.message}
               >
                 <SelectRoot
-                  defaultValue={[locationStore?.subdistrict]}
+                  defaultValue={[Number(`${locationStore?.subdistrict}`)]}
                   {...register('subdistrict', { valueAsNumber: true })}
                   collection={kecamatanCollection}
                   size="sm"
                   onValueChange={(details) =>
                     setSelectedKecamatan(
-                      details.value ? Number(details.value) : null
+                      !details.value || details.value
+                        ? Number(details.value)
+                        : Number(`${locationStore?.subdistrict}`)
                     )
                   }
                 >
@@ -257,7 +256,7 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                     setSelectedKelurahan(
                       details.value
                         ? removeKotaKabupaten(details.value[0])
-                        : null
+                        : locationStore?.village
                     )
                   }
                 >

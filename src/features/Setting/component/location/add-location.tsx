@@ -52,6 +52,7 @@ const AddLocation = () => {
     address,
     position,
     markerRef,
+    selectedProvinsi,
   } = useAddLocation();
 
   const ref = useRef<HTMLInputElement>(null);
@@ -145,6 +146,21 @@ const AddLocation = () => {
                 type="number"
                 hidden
               />
+
+              <Input
+                {...register('province_code', { valueAsNumber: true })}
+                value={Number(selectedProvinsi)}
+                // style={{ display: 'none' }}
+                // onChange={(details) =>
+                //   setSelectedProvinsi(
+                //     details ? Number(details.target.value) : null
+                //   )
+                // }
+                border="2px solid black"
+                placeholder="ID"
+                type="number"
+              />
+
               <Field
                 label="Nama Lokasi"
                 invalid={!!errors.name}
@@ -154,12 +170,12 @@ const AddLocation = () => {
               </Field>
               <Field
                 label="Provinsi"
-                invalid={!!errors.province_code}
-                errorText={errors.province_code?.message}
+                // invalid={!!errors.province_code}
+                // errorText={errors.province_code?.message}
               >
                 <SelectRoot
                   collection={provinsiCollection}
-                  {...register('province_code', { valueAsNumber: true })}
+                  // {...register('province_code', { valueAsNumber: true })}
                   size="sm"
                   onValueChange={(details) =>
                     setSelectedProvinsi(

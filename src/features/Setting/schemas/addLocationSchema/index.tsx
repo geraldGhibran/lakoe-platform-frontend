@@ -9,9 +9,7 @@ export const addLocationSchema = z.object({
   subdistrict: z
     .number()
     .min(1, { message: 'Cari kecamatan tidak boleh kosong' }),
-  province_code: z
-    .number()
-    .min(1, { message: 'Cari province tidak boleh kosong' }),
+  province_code: z.number().optional(),
   village: z.string().min(1, { message: 'Cari kelurahan tidak boleh kosong' }),
   postal_code: z.number().min(1, { message: 'Kode pos tidak boleh kosong' }),
   latitude: z
