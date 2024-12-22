@@ -8,75 +8,49 @@ import {
   Textarea,
   Button,
   HStack,
+  Image,
+  Flex,
 } from '@chakra-ui/react';
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from '@/components/ui/native-select';
-import {
-  FileUploadDropzone,
-  FileUploadList,
-  FileUploadRoot,
-} from '@/components/ui/file-upload';
 import { Field } from '@/components/ui/field';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema } from '../schemas/addProductSchema/index';
-import { useState } from 'react';
 import VariantComponent from './variant';
-
-interface ProductFormData {
-  productName: string;
-  checkoutUrl: string;
-  category: string;
-  description: string;
-  price: number;
-  minPurchase: number;
-  stock: number;
-  sku: string;
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
-  image: File[];
-}
+import useAddProduct from '../hooks/useAddProduct';
+import { Icon } from '@iconify/react';
+import {
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from '@/components/ui/select';
 
 export default function AddProductPage() {
-  const onSubmit = (data: ProductFormData) => {
-    console.log('Form data:', data);
-  };
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-  });
-  const [isVariantTypeCreate, setIsVariantTypeCreate] = useState(false);
+    errors,
+    isVariantTypeCreate,
+    handleAddColorTag,
+    handleRemoveColorTag,
+    handleAddSizeTag,
+    handleRemoveSizeTag,
+    handleVariantTypeCreateToggle,
+    colorTags,
+    sizeTags,
+    onSubmit,
+    images,
+    handleImageChange,
+    handleRemoveImage,
+    getSelectedPath,
+    selectedCategory,
+    selectedSubcategory,
+    selectedSubSubcategory,
+    setSelectedCategory,
+    setSelectedSubcategory,
+    setSelectedSubSubcategory,
+    categoryCollection,
+  } = useAddProduct();
 
-  const [colorTags, setColorTags] = useState<string[]>([]);
-  const [sizeTags, setSizeTags] = useState<string[]>([]);
-
-  const handleAddColorTag = (tag: string) => {
-    setColorTags((prevTags) => [...prevTags, tag]);
-  };
-
-  const handleRemoveColorTag = (index: number) => {
-    setColorTags((prevTags) => prevTags.filter((_, i) => i !== index));
-  };
-
-  const handleAddSizeTag = (tag: string) => {
-    setSizeTags((prevTags) => [...prevTags, tag]);
-  };
-
-  const handleRemoveSizeTag = (index: number) => {
-    setSizeTags((prevTags) => prevTags.filter((_, i) => i !== index));
-  };
-
-  const handleVariantTypeCreateToggle = () => {
-    setIsVariantTypeCreate(!isVariantTypeCreate);
-  };
   return (
     <Stack direction="row">
       <Box bg="gray.100" minH="270vh" w="100%">
@@ -86,7 +60,7 @@ export default function AddProductPage() {
             py={2}
             m="auto"
             width="100%"
-            h={'480px'}
+            h={'450px'}
             bg="white"
             boxShadow="md"
             borderRadius="lg"
@@ -98,14 +72,12 @@ export default function AddProductPage() {
               <Field label="Nama produk">
                 <Input
                   placeholder="masukan nama produk"
-                  {...register('productName')}
-                  borderColor={errors.productName ? 'red.500' : 'gray.200'}
+                  {...register('name')}
+                  borderColor={errors.name ? 'red.500' : 'gray.200'}
                 />
               </Field>
-              {errors.productName && (
-                <Text color={'red.500'}>
-                  {errors.productName.message as string}
-                </Text>
+              {errors.name && (
+                <Text color={'red.500'}>{errors.name.message as string}</Text>
               )}
             </Box>
             <Box pt={5}>
@@ -117,34 +89,129 @@ export default function AddProductPage() {
                   <InputAddon>lakoe.store/</InputAddon>
                   <Input
                     placeholder="nama produk"
-                    {...register('checkoutUrl')}
-                    borderColor={errors.checkoutUrl ? 'red.500' : 'gray.200'}
+                    {...register('url')}
+                    borderColor={errors.url ? 'red.500' : 'gray.200'}
                   />
                 </Group>
-                {errors.checkoutUrl && (
-                  <Text color={'red.500'}>
-                    {errors.checkoutUrl.message as string}
-                  </Text>
+                {errors.url && (
+                  <Text color={'red.500'}>{errors.url.message as string}</Text>
                 )}
               </Stack>
             </Box>
             <Box pt={5}>
-              <Field label="Kategori">
-                <NativeSelectRoot>
-                  <NativeSelectField
-                    items={[
-                      'Pilih kategori produk',
-                      'Canada (CA)',
-                      'United States (US)',
-                    ]}
-                    {...register('category')}
-                    borderColor={errors.productName ? 'red.500' : 'gray.200'}
-                  />
-                </NativeSelectRoot>
-              </Field>
-              {errors.category && (
+              <Box>
+                <SelectRoot
+                  collection={categoryCollection}
+                  size="sm"
+                  width="100%"
+                  closeOnSelect={false}
+                >
+                  <SelectLabel>Kategori</SelectLabel>
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={`${getSelectedPath() || 'Pilih Kategori'}`}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <Flex gap={4}>
+                      <Box width="35%">
+                        {categoryCollection.items.map((category) => (
+                          <SelectItem
+                            colorPalette={
+                              selectedCategory?.value === category.value
+                                ? 'cyan'
+                                : undefined
+                            }
+                            item={category}
+                            key={category.value}
+                            onClick={() => {
+                              setSelectedCategory(category);
+                              setSelectedSubcategory(null);
+                              setSelectedSubSubcategory(null);
+                            }}
+                          >
+                            <Text ml={5}>
+                              {selectedCategory?.value === category.value ? (
+                                <strong>{category.label}</strong>
+                              ) : (
+                                category.label
+                              )}
+                            </Text>
+                          </SelectItem>
+                        ))}
+                      </Box>
+                      {selectedCategory?.subcategories && (
+                        <Box width="35%">
+                          {selectedCategory.subcategories.map((subcategory) => (
+                            <SelectItem
+                              item={subcategory}
+                              key={subcategory.value}
+                              colorPalette={
+                                selectedSubcategory?.value === subcategory.value
+                                  ? 'blue'
+                                  : undefined
+                              }
+                              onClick={() => {
+                                setSelectedSubcategory(subcategory);
+                                setSelectedSubSubcategory(null);
+                              }}
+                            >
+                              <Text pl={5}>
+                                {selectedSubcategory?.value ===
+                                subcategory.value ? (
+                                  <strong>{subcategory.label}</strong>
+                                ) : (
+                                  subcategory.label
+                                )}
+                              </Text>
+                            </SelectItem>
+                          ))}
+                        </Box>
+                      )}
+                      {selectedSubcategory?.subcategories && (
+                        <Box width="35%" p={5}>
+                          {selectedSubcategory.subcategories.map(
+                            (subSubcategory) => (
+                              <SelectItem
+                                colorPalette={
+                                  selectedSubSubcategory?.value ===
+                                  subSubcategory.value
+                                    ? 'blue'
+                                    : undefined
+                                }
+                                item={subSubcategory}
+                                key={subSubcategory.value}
+                                onClick={() =>
+                                  setSelectedSubSubcategory(subSubcategory)
+                                }
+                              >
+                                <Text pl={5}>
+                                  {selectedSubSubcategory?.value ===
+                                  subSubcategory.value ? (
+                                    <strong>{subSubcategory.label}</strong>
+                                  ) : (
+                                    subSubcategory.label
+                                  )}
+                                  <input
+                                    type="hidden"
+                                    {...register('categories', {
+                                      valueAsNumber: true,
+                                    })}
+                                    value={subSubcategory.id}
+                                  />
+                                </Text>
+                              </SelectItem>
+                            )
+                          )}
+                        </Box>
+                      )}
+                    </Flex>
+                  </SelectContent>
+                </SelectRoot>
+              </Box>
+              {errors.categories && (
                 <Text color={'red.500'}>
-                  {errors.category.message as string}
+                  {errors.categories.message as string}
                 </Text>
               )}
             </Box>
@@ -183,50 +250,77 @@ export default function AddProductPage() {
                 Foto Produk
               </Text>
               <Stack direction="row">
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto Utama"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 2"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 3"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 4"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 5"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
+                <Box display="flex" gap="4" flexWrap="wrap">
+                  {images.map((preview, index) => (
+                    <Box
+                      key={index}
+                      width="188px"
+                      height="200px"
+                      borderWidth="2px"
+                      borderStyle="dashed"
+                      borderRadius="md"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      position="relative"
+                      overflow="hidden"
+                    >
+                      {preview ? (
+                        <Box position="relative" width="100%" height="100%">
+                          <Image
+                            src={preview}
+                            width="100%"
+                            height="100%"
+                            objectFit="cover"
+                          />
+                          <Button
+                            size="sm"
+                            colorScheme="red"
+                            position="absolute"
+                            top="10px"
+                            right="10px"
+                            onClick={() => handleRemoveImage(index)}
+                          >
+                            Remove
+                          </Button>
+                        </Box>
+                      ) : (
+                        <Box textAlign="center" position="relative">
+                          <Text fontSize="sm">
+                            <Icon
+                              icon="hugeicons:image-upload-01"
+                              color="green"
+                              width="50px"
+                              height="50px"
+                            />
+                          </Text>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            position="absolute"
+                            top="0"
+                            left="0"
+                            width="100%"
+                            height="100%"
+                            opacity="0"
+                            cursor="pointer"
+                            {...register(`image.${index}`)}
+                            onChange={(e) => handleImageChange(e, index)}
+                            borderColor={
+                              errors.image?.[index] ? 'red.500' : 'gray.200'
+                            }
+                          />
+                        </Box>
+                      )}
+                      {errors.image?.[index] && (
+                        <Text color="red.500" fontSize="sm" mt="2">
+                          {errors.image[index]?.message as string}
+                        </Text>
+                      )}
+                    </Box>
+                  ))}
+                </Box>
               </Stack>
-              {errors.image && (
-                <Text color={'red.500'}>{'Foto Produk wajib diisi'}</Text>
-              )}
             </Box>
           </Box>
           <Box
@@ -285,14 +379,14 @@ export default function AddProductPage() {
               <Group attached>
                 <Input
                   value={'1'}
-                  {...register('minPurchase')}
-                  borderColor={errors.minPurchase ? 'red.500' : 'gray.200'}
+                  {...register('minimum_order')}
+                  borderColor={errors.minimum_order ? 'red.500' : 'gray.200'}
                 />
                 <InputAddon>Produk</InputAddon>
               </Group>
-              {errors.minPurchase && (
+              {errors.minimum_order && (
                 <Text color={'red.500'}>
-                  {errors.minPurchase.message as string}
+                  {errors.minimum_order.message as string}
                 </Text>
               )}
             </Stack>
@@ -379,7 +473,7 @@ export default function AddProductPage() {
                 <Text fontSize="14px" mb={1} mt={2} fontWeight="500">
                   Ukuran Produk
                 </Text>
-                <Group attached w={'120%'}>
+                <Group attached w={'100%'}>
                   <Input
                     placeholder="panjang"
                     {...register('length')}
@@ -394,7 +488,7 @@ export default function AddProductPage() {
                 )}
               </Box>
               <Box>
-                <Group attached w={'120%'} mt={8}>
+                <Group attached w={'100%'} mt={8}>
                   <Input placeholder="Lebar" {...register('width')} />
                   borderColor={errors.width ? 'red.500' : 'gray.200'}
                   <InputAddon>cm</InputAddon>
@@ -406,7 +500,7 @@ export default function AddProductPage() {
                 )}
               </Box>
               <Box>
-                <Group attached w={'120%'} mt={8}>
+                <Group attached w={'100%'} mt={8}>
                   <Input
                     placeholder="Tinggi"
                     {...register('height')}
@@ -438,7 +532,6 @@ export default function AddProductPage() {
             >
               <Box>
                 <Button
-                  type="submit"
                   bg={'white'}
                   color={'black'}
                   border={'1px solid gray'}
@@ -449,7 +542,6 @@ export default function AddProductPage() {
               </Box>
               <Box>
                 <Button
-                  type="submit"
                   width={'100px'}
                   bg={'white'}
                   color={'black'}

@@ -159,7 +159,7 @@ export default function VariantComponent({
                 <Box
                   display="flex"
                   flexWrap="wrap"
-                  w={'900px'}
+                  w={'810px'}
                   alignItems="center"
                   padding="2px"
                   border="1px solid"
@@ -298,7 +298,7 @@ export default function VariantComponent({
                 <Box
                   display="flex"
                   flexWrap="wrap"
-                  w={'900px'}
+                  w={'100%'}
                   alignItems="center"
                   padding="2px"
                   border="1px solid"
@@ -337,7 +337,7 @@ export default function VariantComponent({
                   direction={'row'}
                   justifyContent={'space-between'}
                   mt={10}
-                  w={'900px'}
+                  w={'810px'}
                 >
                   <Box>
                     <Text fontWeight={500} fontSize={'20px'}>
@@ -359,7 +359,7 @@ export default function VariantComponent({
                       </Text>
                       <Switch colorPalette={'cyan'}>Aktif</Switch>
                     </HStack>
-                    <HStack gap="10" width="full">
+                    <HStack gap="2" width="full">
                       <Box>
                         <Field label="Harga">
                           <Group attached>
@@ -382,7 +382,7 @@ export default function VariantComponent({
                         </Field>
                       </Box>
                     </HStack>
-                    <HStack gap="10" width="full" my={4}>
+                    <HStack gap="2" width="full" my={4}>
                       <Box>
                         <Field label="SKU(Stock Keeping Unit)">
                           <Input
