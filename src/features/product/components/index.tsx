@@ -1,13 +1,13 @@
-import { useAuthStore } from '@/store/auth';
 import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import NotFoundCard from './notFound';
 import Header from './CardProduct/header';
 import CardProduct from './CardProduct/card';
-import { allProducts } from './CardProduct/dumy';
-import { useState } from 'react';
+// import { allProducts } from './CardProduct/dumy';
+import { useState, useEffect } from 'react';
 import '@/styles/styes.css';
+import { useGetProductSeller } from '../hooks/use-get-product';
 
 interface Product {
   id: number;
@@ -23,22 +23,33 @@ interface Product {
 
 function ProductList() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
-  console.log('user', user);
+  const { data: products = [], isLoading } = useGetProductSeller();
 
   const [productStates, setProductStates] = useState(
-    allProducts.map((product) => ({
+    products.map((product: Product) => ({
       id: product.id,
       isActive: product.isActive,
-      isChecked: false,
     }))
   );
 
+  useEffect(() => {
+    if (products.length > 0) {
+      setProductStates(
+        products.map((product: Product) => ({
+          id: product.id,
+          isActive: product.isActive,
+          isChecked: false,
+        }))
+      );
+    }
+  }, [products]);
+
   const handleCheckboxChange = (id: number, checked: boolean) => {
-    setProductStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === id ? { ...state, isChecked: checked } : state
-      )
+    setProductStates(
+      (prevStates: { id: number; isActive: boolean; isChecked?: boolean }[]) =>
+        prevStates.map((state) =>
+          state.id === id ? { ...state, isChecked: checked } : state
+        )
     );
   };
 
@@ -47,10 +58,11 @@ function ProductList() {
   const handleSwitchChange = (id: number, checked: boolean) => {
     setSwitchingProduct(id);
 
-    setProductStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === id ? { ...state, isActive: checked } : state
-      )
+    setProductStates(
+      (prevStates: { id: number; isActive: boolean; isChecked?: boolean }[]) =>
+        prevStates.map((state) =>
+          state.id === id ? { ...state, isActive: checked } : state
+        )
     );
 
     setTimeout(() => {
@@ -59,15 +71,17 @@ function ProductList() {
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setProductStates((prevStates) =>
-      prevStates.map((state) => ({ ...state, isChecked: checked }))
+    setProductStates(
+      (prevStates: { id: number; isActive: boolean; isChecked?: boolean }[]) =>
+        prevStates.map((state) => ({ ...state, isChecked: checked }))
     );
   };
 
   const getFilteredProducts = (isActive: boolean): Product[] => {
-    return allProducts.filter((product) => {
+    return products.filter((product: Product) => {
       const productState = productStates.find(
-        (state) => state.id === product.id
+        (state: { id: number; isActive: boolean; isChecked?: boolean }) =>
+          state.id === product.id
       );
       return (
         productState?.isActive === isActive || product.id === switchingProduct
@@ -76,6 +90,9 @@ function ProductList() {
   };
 
   const renderProducts = (products: Product[]) => {
+    if (isLoading) {
+      return <Text>Loading...</Text>;
+    }
     if (products.length === 0) {
       return (
         <NotFoundCard>
@@ -86,7 +103,8 @@ function ProductList() {
 
     return products.map((product) => {
       const productState = productStates.find(
-        (state) => state.id === product.id
+        (state: { id: number; isActive: boolean; isChecked?: boolean }) =>
+          state.id === product.id
       );
       return (
         <CardProduct
@@ -208,8 +226,10 @@ function ProductList() {
                 zIndex="9"
                 borderBottom="1px solid #E6E6E6"
                 py={2}
-              ></Box>
-              {renderProducts(allProducts)}
+              >
+                <Header onSelectAll={handleSelectAll} />
+              </Box>
+              {renderProducts(products)}
             </Tabs.Content>
 
             <Tabs.Content value="active">
