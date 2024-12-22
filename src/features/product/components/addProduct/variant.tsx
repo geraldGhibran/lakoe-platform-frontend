@@ -50,6 +50,10 @@ export default function VariantComponent({
     setInputWarna(event.target.value);
   };
 
+  const combinations = colorTags.flatMap((color) =>
+    sizeTags.map((size) => `${color}-${size}`)
+  );
+
   const handleInputChangeUkuran = (
     event: ChangeEvent<HTMLInputElement>
   ): void => {
@@ -155,7 +159,7 @@ export default function VariantComponent({
                 <Box
                   display="flex"
                   flexWrap="wrap"
-                  w={'900px'}
+                  w={'810px'}
                   alignItems="center"
                   padding="2px"
                   border="1px solid"
@@ -294,7 +298,7 @@ export default function VariantComponent({
                 <Box
                   display="flex"
                   flexWrap="wrap"
-                  w={'900px'}
+                  w={'100%'}
                   alignItems="center"
                   padding="2px"
                   border="1px solid"
@@ -333,7 +337,7 @@ export default function VariantComponent({
                   direction={'row'}
                   justifyContent={'space-between'}
                   mt={10}
-                  w={'900px'}
+                  w={'810px'}
                 >
                   <Box>
                     <Text fontWeight={500} fontSize={'20px'}>
@@ -347,60 +351,62 @@ export default function VariantComponent({
                     <VariantModal />
                   </Box>
                 </Stack>
-                <Box>
-                  <HStack my={4}>
-                    <Text py={2} fontWeight={500}>
-                      warna
-                    </Text>
-                    <Switch colorPalette={'cyan'}>Aktif</Switch>
-                  </HStack>
-                  <HStack gap="10" width="full">
-                    <Box>
-                      <Field label="Harga">
-                        <Group attached>
-                          <InputAddon>Rp</InputAddon>
+                {combinations.map((combination, index) => (
+                  <Box key={index}>
+                    <HStack my={4}>
+                      <Text py={2} fontWeight={500}>
+                        {combination}
+                      </Text>
+                      <Switch colorPalette={'cyan'}>Aktif</Switch>
+                    </HStack>
+                    <HStack gap="2" width="full">
+                      <Box>
+                        <Field label="Harga">
+                          <Group attached>
+                            <InputAddon>Rp</InputAddon>
+                            <Input
+                              placeholder="Masukan Harga"
+                              variant="outline"
+                              width="350px"
+                            />
+                          </Group>
+                        </Field>
+                      </Box>
+                      <Box>
+                        <Field label="Stok Produk">
                           <Input
-                            placeholder="Masukan Harga"
+                            placeholder="Masukan Stok"
                             variant="outline"
-                            width="350px"
+                            width="410px"
                           />
-                        </Group>
-                      </Field>
-                    </Box>
-                    <Box>
-                      <Field label="Stok Produk">
-                        <Input
-                          placeholder="Masukan Stok"
-                          variant="outline"
-                          width="410px"
-                        />
-                      </Field>
-                    </Box>
-                  </HStack>
-                  <HStack gap="10" width="full" my={4}>
-                    <Box>
-                      <Field label="SKU(Stock Keeping Unit)">
-                        <Input
-                          placeholder="Masukan SkU"
-                          variant="outline"
-                          width="395px"
-                        />
-                      </Field>
-                    </Box>
-                    <Box>
-                      <Field label="Berat Produk">
-                        <Group attached>
+                        </Field>
+                      </Box>
+                    </HStack>
+                    <HStack gap="2" width="full" my={4}>
+                      <Box>
+                        <Field label="SKU(Stock Keeping Unit)">
                           <Input
-                            placeholder="Masukan SKU"
+                            placeholder="Masukan SkU"
                             variant="outline"
-                            width="350px"
+                            width="395px"
                           />
-                          <InputAddon>Gram</InputAddon>
-                        </Group>
-                      </Field>
-                    </Box>
-                  </HStack>
-                </Box>
+                        </Field>
+                      </Box>
+                      <Box>
+                        <Field label="Berat Produk">
+                          <Group attached>
+                            <Input
+                              placeholder="Masukan SKU"
+                              variant="outline"
+                              width="350px"
+                            />
+                            <InputAddon>Gram</InputAddon>
+                          </Group>
+                        </Field>
+                      </Box>
+                    </HStack>
+                  </Box>
+                ))}
               </>
             )}
           </>

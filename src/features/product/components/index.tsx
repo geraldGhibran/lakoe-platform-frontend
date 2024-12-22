@@ -129,7 +129,13 @@ function ProductList() {
   };
 
   return (
-    <Stack direction={'row'} bg={'#F4F4F5'} height={'100vh'}>
+    <Stack
+      direction={'row'}
+      bg={'#F4F4F5'}
+      position={'fixed'}
+      height={'90vh'}
+      width={'58%'}
+    >
       <Box
         bg={'white'}
         p={5}
@@ -153,6 +159,7 @@ function ProductList() {
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
+            zIndex={9}
           >
             <Text fontWeight={'bold'} fontSize={'2xl'}>
               Daftar Produk
@@ -209,7 +216,9 @@ function ProductList() {
                 NonActive
               </Tabs.Trigger>
             </Tabs.List>
-
+            <Box position={'sticky'} top={'40px'} zIndex={'10'}>
+              <Header onSelectAll={handleSelectAll} />
+            </Box>
             <Tabs.Content value="all">
               <Box
                 position="sticky"
@@ -231,9 +240,7 @@ function ProductList() {
                 zIndex="9"
                 borderBottom="1px solid #E6E6E6"
                 py={2}
-              >
-                <Header onSelectAll={handleSelectAll} />
-              </Box>
+              ></Box>
               {renderProducts(getFilteredProducts(true))}
             </Tabs.Content>
 
@@ -245,9 +252,7 @@ function ProductList() {
                 zIndex="9"
                 borderBottom="1px solid #E6E6E6"
                 py={2}
-              >
-                <Header onSelectAll={handleSelectAll} />
-              </Box>
+              ></Box>
               {renderProducts(getFilteredProducts(false))}
             </Tabs.Content>
           </Tabs.Root>
