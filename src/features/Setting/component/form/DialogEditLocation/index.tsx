@@ -94,8 +94,6 @@ const DialogEditLocation = ({ id }: { id: number }) => {
     })),
   });
 
-  console.log(locationStore?.province_code);
-
   return (
     <DialogRoot
       open={isOpen}
@@ -135,6 +133,7 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                 type="number"
                 hidden
               />
+
               <Field
                 label="Nama Lokasi"
                 invalid={!!errors.name}
@@ -156,7 +155,10 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                     const provinceId = details.value
                       ? Number(details.value)
                       : null;
-                    setSelectedProvinsi(provinceId ?? 0);
+                    setSelectedProvinsi(
+                      provinceId ?? locationStore?.province_code
+                    );
+                    setValueEditLocation('province_code', provinceId ?? 0); // Set value in react-hook-form
                   }}
                 >
                   <SelectTrigger>
@@ -178,22 +180,20 @@ const DialogEditLocation = ({ id }: { id: number }) => {
               >
                 <SelectRoot
                   collection={kabupatenCollection}
+                  value={[locationStore?.city_district?.toString() ?? '']}
                   {...register('city_district', { valueAsNumber: true })}
                   size="sm"
-                  onValueChange={(details) =>
-                    setSelectedKabupaten(
-                      !details.value || details.value
-                        ? Number(details.value)
-                        : Number(`${locationStore?.city_district}`)
-                    )
-                  }
+                  onValueChange={(details) => {
+                    const id = details.value ? Number(details.value) : null;
+                    setSelectedKabupaten(id ?? locationStore?.city_district);
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValueText
                       placeholder={
                         kabupaten.length
                           ? 'Pilih Kabupaten/Kota'
-                          : 'Pilih provinsi terlebih dahulu'
+                          : `${locationStore?.city_district}`
                       }
                     />
                   </SelectTrigger>
@@ -212,7 +212,6 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                 errorText={errors.subdistrict?.message}
               >
                 <SelectRoot
-                  defaultValue={[Number(`${locationStore?.subdistrict}`)]}
                   {...register('subdistrict', { valueAsNumber: true })}
                   collection={kecamatanCollection}
                   size="sm"
@@ -228,8 +227,8 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                     <SelectValueText
                       placeholder={
                         kecamatan.length
-                          ? 'Pilih Kecamatan'
-                          : 'Pilih Kota/kabupaten terlebih dahulu'
+                          ? 'Pilih Kecamatan terlebih dahulu'
+                          : `${locationStore?.subdistrict}`
                       }
                     />
                   </SelectTrigger>
@@ -265,7 +264,7 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                       placeholder={
                         kelurahan.length
                           ? 'Pilih Kelurahan terlebih dahulu'
-                          : 'Pilih Kecamatan'
+                          : `${locationStore?.village}`
                       }
                     />
                   </SelectTrigger>
@@ -289,7 +288,13 @@ const DialogEditLocation = ({ id }: { id: number }) => {
                   collection={postalCodeCollection}
                 >
                   <SelectTrigger>
-                    <SelectValueText placeholder="Masukan Kode Pos" />
+                    <SelectValueText
+                      placeholder={
+                        postalCodes.length
+                          ? 'Pilih Kelurahan terlebih dahulu'
+                          : `${locationStore?.postal_code}`
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {postalCodeCollection.items.map((pos, index) => (
