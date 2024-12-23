@@ -20,6 +20,7 @@ import Cart from '@/features/marketplace/home/components/Cart';
 import Checkout from '@/features/marketplace/home/components/Checkout';
 import PengirimanSeller from '@/features/seller/pengiriman';
 import MetodePembayaran from '@/features/seller/metode-pembayaran';
+import DetailOrder from '@/features/order/orderPage/detail-order';
 
 export const router = createBrowserRouter([
   {
@@ -101,6 +102,10 @@ export const router = createBrowserRouter([
       {
         path: 'order',
         element: <OrderPage />,
+      },
+      {
+        path: 'detail-order',
+        element: <DetailOrder />,
       },
       {
         path: 'settings',
