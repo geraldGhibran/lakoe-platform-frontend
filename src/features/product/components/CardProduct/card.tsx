@@ -1,10 +1,11 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
-import { Box, Button, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, Image, Stack, Text } from '@chakra-ui/react';
 import ActionMenu from '../modal/action-menu';
 import ChangeStock from '../modal/stock';
 import ChangePrice from '../modal/price';
 import { Icon } from '@iconify/react';
+import { useNavigate } from 'react-router-dom';
 
 interface CardProductProps {
   id: number;
@@ -33,6 +34,13 @@ export default function CardProduct(props: CardProductProps) {
     onCheckboxChange,
     onSwitchChange,
   } = props;
+
+  const navigate = useNavigate();
+
+  const handleButtonClick = async () => {
+    navigate(`/product/detail/${name}`);
+  };
+
   return (
     <>
       <Stack
@@ -50,7 +58,7 @@ export default function CardProduct(props: CardProductProps) {
           justifyContent={'space-between'}
         >
           <Box>
-            <img src={image} />
+            <Image boxSize="100px" src={image} />
           </Box>
           <Box flex={2}>
             <Text>{name}</Text>
@@ -66,7 +74,9 @@ export default function CardProduct(props: CardProductProps) {
                 rounded={'full'}
                 bg={'white'}
                 color={'black'}
+                _hover={{ bgColor: 'gainsboro' }}
                 border={'1px solid black'}
+                onClick={handleButtonClick}
               >
                 <Icon icon="system-uicons:chain" />
                 {Url}
