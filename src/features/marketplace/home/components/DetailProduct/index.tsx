@@ -5,18 +5,15 @@ import SwiperCore from 'swiper';
 import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import '@/styles/styes.css';
+import { useCartStore } from '@/store/cart-store';
+import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
 
 export default function DetailProduct() {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
-  const [step, setStep] = useState<number>(1);
 
-  function increment() {
-    setStep(step + 1);
-  }
+  const { products, addItem, decreaseQuantity } = useCartStore();
 
-  function decrement() {
-    if (step > 1) setStep(step - 1);
-  }
+  const { data: product } = useGetDummyProduct();
 
   return (
     <Box padding="0 10px">
@@ -35,14 +32,14 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2"
           >
-            {[...Array(10)].map((_, index) => (
-              <SwiperSlide className="rounded" key={index}>
-                <Image
-                  src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
-                  alt={`Slide ${index + 1}`}
-                />
-              </SwiperSlide>
-            ))}
+            {/* {[...Array(10)].map((_, index) => ( */}
+            <SwiperSlide className="rounded">
+              <Image
+                src={`${product?.image}`}
+                // alt={`Slide ${index + 1}`}
+              />
+            </SwiperSlide>
+            {/* ))} */}
           </Swiper>
 
           <Swiper
@@ -54,21 +51,21 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper"
           >
-            {[...Array(10)].map((_, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
-                  alt={`Thumbnail ${index + 1}`}
-                />
-              </SwiperSlide>
-            ))}
+            {/* {[...Array(10)].map((_, index) => ( */}
+            <SwiperSlide>
+              <img
+                src={`${product?.image}`}
+                // alt={`Thumbnail ${index + 1}`}
+              />
+            </SwiperSlide>
+            {/* ))} */}
           </Swiper>
         </Box>
 
         {/* Descriptions */}
         <Box gap="20px" padding="20px" w="full" display="flex" flexDir="column">
           <Text fontWeight="bold" fontSize="30px">
-            Sepatu mantap
+            {product?.title}
           </Text>
           <Table.Root borderColor="">
             <Table.Body>
@@ -81,7 +78,7 @@ export default function DetailProduct() {
                   Harga
                 </Table.Cell>
                 <Table.Cell borderBottom="1px solid gainsboro">
-                  Rp 123 - Rp 321
+                  Rp. {product?.price}
                 </Table.Cell>
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
@@ -131,7 +128,7 @@ export default function DetailProduct() {
                 <Table.Cell borderBottom="1px solid gainsboro">
                   <Flex gap="10px">
                     <Button
-                      onClick={decrement}
+                      onClick={() => decreaseQuantity(product?.id ?? 0)}
                       display="flex"
                       justifyContent="center"
                       bgColor="white"
@@ -151,10 +148,14 @@ export default function DetailProduct() {
                       width="40px"
                       rounded="sm"
                     >
-                      {step}
+                      {products?.length == 0 ? 0 : products[0]?.quantity}
                     </Box>
                     <Button
-                      onClick={increment}
+                      onClick={() => {
+                        if (product) {
+                          addItem({ product, quantity: 1 });
+                        }
+                      }}
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
@@ -183,9 +184,11 @@ export default function DetailProduct() {
                         Beli Langsung
                       </Button>
                     </Link>
-                    <Button bgColor="#0080FF" color="white" padding="0 20px">
-                      + Keranjang
-                    </Button>
+                    <Link to="cart">
+                      <Button bgColor="#0080FF" color="white" padding="0 20px">
+                        + Keranjang
+                      </Button>
+                    </Link>
                   </Flex>
                 </Table.Cell>
               </Table.Row>

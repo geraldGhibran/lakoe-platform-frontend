@@ -1,4 +1,4 @@
-import 'leaflet/dist/leaflet.css';
+import { Button } from '@/components/ui/button';
 import {
   DialogBody,
   DialogCloseTrigger,
@@ -7,8 +7,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
+import { useGetStoreDetail } from '@/features/Setting/hooks/useGetStoreDetail';
+import { useAuthStore } from '@/store/auth';
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
-import { useState } from 'react';
+import 'leaflet/dist/leaflet.css';
+import { useEditShipmentStoreById } from './hooks/use-edit-shipment';
 
 const switchOptions = [
   {
@@ -16,14 +19,14 @@ const switchOptions = [
     label: 'J&T EZ',
     description: 'Tersedia untuk COD',
     image:
-      'https://1.bp.blogspot.com/-awkmdr1rWGI/YILHglBLkFI/AAAAAAAAIVw/lvFK6WSrOo0ki_-FU80DVNtDKR6eDwnWgCLcBGAsYHQ/s16000/jnt.png',
+      'https://upload.wikimedia.org/wikipedia/commons/9/99/Gojek_logo_2019.svg',
   },
   {
     id: '2',
     label: 'AnterAja',
     description: '',
     image:
-      'https://1.bp.blogspot.com/-G2AH2_9Jhl0/YZgdJAJJqDI/AAAAAAAATh4/U9V2T2vsoNI5gnaiEtYnFcGyiK-dqIYJwCLcBGAsYHQ/s320/Anteraja.png',
+      'https://upload.wikimedia.org/wikipedia/en/thumb/1/12/Grab_%28application%29_logo.svg/320px-Grab_%28application%29_logo.svg.png',
   },
   {
     id: '3',
@@ -31,22 +34,40 @@ const switchOptions = [
     description: 'Tersedia untuk COD',
     image: 'https://d290ny10omyv12.cloudfront.net/images/jne-large.png',
   },
+  {
+    id: '4',
+    label: 'J&T EZ',
+    description: 'Tersedia untuk COD',
+    image:
+      'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhnQ_u7_qEjguu0ZqqKrXJKRfi4PHRc5fLw0aCXnYwf-yygcnoXw0yDcIo8A-J_wwQyFH1cSZX9TnLcqOKsjCnKiKmBxkoXvznGOYsY-y6qvVHQSgKKA2qSGraF6x1xRFlP12sqb3ZvUDXUNmV1rSZvePdhXUp98t_uBBBogyC8efTM-KIX-zqNtgdO/s320/GKL5_SiCepat%20Express%20-%20Koleksilogo.com.jpg',
+  },
+  {
+    id: '5',
+    label: 'AnterAja',
+    description: '',
+    image:
+      'https://1.bp.blogspot.com/-G2AH2_9Jhl0/YZgdJAJJqDI/AAAAAAAATh4/U9V2T2vsoNI5gnaiEtYnFcGyiK-dqIYJwCLcBGAsYHQ/s320/Anteraja.png',
+  },
 ];
 
+interface PayloadCourier {
+  id: number;
+  is_active: boolean;
+}
+
 const SwitchItem = ({
-  id,
   label,
   description,
   image,
   isChecked,
-  onChange,
+  onClick,
 }: {
-  id: string;
+  id: PayloadCourier;
   label: string;
   description?: string;
   image: string;
   isChecked: boolean;
-  onChange: (id: string) => void;
+  onClick: () => void;
 }) => (
   <Flex
     _hover={{ bgColor: 'blue.300' }}
@@ -62,27 +83,18 @@ const SwitchItem = ({
       </Text>
     </Flex>
     {description && <Text color="gray">{description}</Text>}
-    <Switch
-      colorPalette="blue"
-      checked={isChecked}
-      onChange={() => onChange(id)}
-    />
+    <Button type="submit">
+      <Switch colorPalette="blue" checked={isChecked} onClick={onClick} />
+    </Button>
   </Flex>
 );
 
 export default function PengirimanSeller() {
-  const [selectedValues, setSelectedValues] = useState<string[]>([]);
+  const { onSubmit, setValue } = useEditShipmentStoreById();
 
-  const handleSwitchChange = (id: string) => {
-    setSelectedValues((prevSelected) => {
-      const updatedValues = prevSelected.includes(id)
-        ? prevSelected.filter((value) => value !== id)
-        : [...prevSelected, id];
+  const { user } = useAuthStore();
 
-      console.log('Selected Values:', updatedValues);
-      return updatedValues;
-    });
-  };
+  const { data: courierStore } = useGetStoreDetail(Number(user?.id));
 
   return (
     <Box bgColor="white">
@@ -93,31 +105,24 @@ export default function PengirimanSeller() {
           </DialogTitle>
         </DialogHeader>
         <DialogBody color="#464646" display="flex" flexDir="column" gap="20px">
-          {/* Close Form */}
-
           <Flex flexDir="column" gap="10px">
-            <Box display="flex" flexDir="column" gap="10px">
-              <Text fontSize="20px" fontWeight="bold">
-                Reguler (2 -4) hari
-              </Text>
-              <Text>
-                Pengiriman di atas jam 3 sore berpotensi dikirim besok
-              </Text>
-            </Box>
-            {/* Radio */}
-
             <Box display="flex" flexDir="column" colorScheme="yellow">
-              {switchOptions.map((option) => (
-                <SwitchItem
-                  key={option.id}
-                  id={option.id}
-                  label={option.label}
-                  description={option.description}
-                  image={option.image}
-                  isChecked={selectedValues.includes(option.id)}
-                  onChange={handleSwitchChange}
-                />
-              ))}
+              <form onSubmit={onSubmit}>
+                {courierStore?.couriers.map((option, index) => (
+                  <SwitchItem
+                    key={option.id}
+                    id={{ id: option.id, is_active: option.is_active }}
+                    label={option.courier_code}
+                    description={option.courier_service_name}
+                    image={switchOptions[index]?.image}
+                    isChecked={option.is_active}
+                    onClick={() => {
+                      setValue('id', option.id);
+                      setValue('is_active', !option.is_active);
+                    }}
+                  />
+                ))}
+              </form>
             </Box>
           </Flex>
         </DialogBody>

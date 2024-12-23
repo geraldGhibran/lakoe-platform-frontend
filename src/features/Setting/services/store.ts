@@ -4,6 +4,7 @@ import { TemplateSchema } from '../schemas/templateSchema';
 import { DeleteTemplateMessageSchema } from '../schemas/deleteTemplateMessageSchema';
 import { AddLocationSchema } from '../schemas/addLocationSchema';
 import { EditLocationSchema } from '../schemas/editLocationSchema';
+import { CourierDto } from '@/types/courier';
 
 export const getDetailStore = async (userId: number): Promise<Store> => {
   try {
@@ -25,6 +26,12 @@ export const updateStoreData = async (formData: FormData, userId: number) => {
   if (response.status === 200) {
     return await getDetailStore(userId);
   }
+
+  return response.data;
+};
+
+export const updateStoreCourierData = async (data: CourierDto) => {
+  const response = await API.put<Store>(`/store/courier/edit`, data);
 
   return response.data;
 };
