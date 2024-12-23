@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
 export const ratesSchema = z.object({
-  origin_postal_code: z.number(),
-  destination_postal_code: z.number(),
+  origin_area_id: z.string(),
+  destination_area_id: z.string(),
   couriers: z.string(),
   items: z.array(
     z.object({

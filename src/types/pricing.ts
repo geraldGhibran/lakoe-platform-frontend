@@ -31,8 +31,8 @@ export interface Item {
 }
 
 export interface ShipmentDetails {
-  origin_postal_code: number;
-  destination_postal_code: number;
+  origin_area_id: string;
+  destination_area_id: string;
   couriers: string;
   items: Item[];
 }

@@ -17,7 +17,7 @@ export default function DeliveryMethod({
   rates,
 }: {
   onSubmit: () => void;
-  rates: { pricing: Pricing[] };
+  rates: { pricing: { pricing: Pricing[] } };
 }) {
   return (
     <HStack wrap="wrap" gap="4">
@@ -68,7 +68,7 @@ export default function DeliveryMethod({
             </Box>
 
             <Flex flexDir="column" gap="10px">
-              {rates?.pricing?.map((rate) => (
+              {rates?.pricing?.pricing?.map((rate) => (
                 <>
                   <RadioGroup
                     display="flex"

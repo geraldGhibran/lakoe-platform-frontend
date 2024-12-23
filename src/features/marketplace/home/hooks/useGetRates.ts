@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { ratesSchema, RatesSchema } from '../schemas/RatesSchema';
 import { getRates } from '../services/rates';
 import { useState } from 'react';
+import { ShipmentDetails } from '@/types/pricing';
 
 export const useGetRates = () => {
   const queryClient = useQueryClient();
@@ -18,8 +19,8 @@ export const useGetRates = () => {
   } = useForm<RatesSchema>({
     resolver: zodResolver(ratesSchema),
     values: {
-      origin_postal_code: 12440,
-      destination_postal_code: 12240,
+      origin_area_id: 'IDNP9IDNC111IDND264IDZ16413',
+      destination_area_id: 'IDNP6IDNC148IDND843IDZ12250',
       couriers: 'jne,jnt,sicepat,gojek,tiki,anteraja,grabexpress',
       items: [
         {
@@ -40,7 +41,13 @@ export const useGetRates = () => {
     {
       mutationKey: ['getRates'],
       mutationFn: async (data: RatesSchema) => {
-        return await getRates(data);
+        const shipmentDetails: ShipmentDetails = {
+          origin_area_id: data.origin_area_id,
+          destination_area_id: data.destination_area_id,
+          couriers: data.couriers,
+          items: data.items,
+        };
+        return await getRates(shipmentDetails);
       },
       onSuccess: async () => {
         await queryClient.refetchQueries({
