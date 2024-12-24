@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import NotFoundCard from './notFound';
 import Header from './CardProduct/header';
 import CardProduct from './CardProduct/card';
-// import { allProducts } from './CardProduct/dumy';
 import { useState, useEffect } from 'react';
 import '@/styles/styes.css';
 import { useGetProductSeller } from '../hooks/use-get-product';
@@ -17,7 +16,7 @@ interface Product {
   stock: number;
   sku: string;
   Url: string;
-  image: string;
+  image: string | { url: string }[];
   isActive: boolean;
 }
 
@@ -112,7 +111,11 @@ function ProductList() {
           id={product.id}
           name={product.name}
           description={product.description}
-          image={product.image}
+          image={
+            Array.isArray(product.image) && product.image.length > 0
+              ? product.image[0].url
+              : ''
+          }
           price={product.price}
           stock={product.stock}
           sku={product.sku}
@@ -216,9 +219,6 @@ function ProductList() {
                 NonActive
               </Tabs.Trigger>
             </Tabs.List>
-            <Box position={'sticky'} top={'40px'} zIndex={'10'}>
-              <Header onSelectAll={handleSelectAll} />
-            </Box>
             <Tabs.Content value="all">
               <Box
                 position="sticky"

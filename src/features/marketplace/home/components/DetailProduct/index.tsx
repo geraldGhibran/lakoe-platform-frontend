@@ -3,17 +3,31 @@ import { useState } from 'react';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '@/styles/styes.css';
 import { useCartStore } from '@/store/cart-store';
-import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
+// import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
+import { useGetProductDetail } from '@/features/product/hooks/use-get-product-detail';
 
 export default function DetailProduct() {
+  const { name } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
 
   const { products, addItem, decreaseQuantity } = useCartStore();
 
-  const { data: product } = useGetDummyProduct();
+  // const { data: product } = useGetDummyProduct();
+  const { data: productDetail, isLoading } = useGetProductDetail(name ?? '');
+
+  console.log('Products:', products);
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (!productDetail || !productDetail.length)
+    return <Text>Produk tidak ditemukan.</Text>;
+
+  const product = productDetail[0];
+  const productImage = product.image[0]?.url;
+
+  if (!product) return <Text>Detail produk tidak tersedia.</Text>;
 
   return (
     <Box padding="0 10px">
@@ -35,7 +49,7 @@ export default function DetailProduct() {
             {/* {[...Array(10)].map((_, index) => ( */}
             <SwiperSlide className="rounded">
               <Image
-                src={`${product?.image}`}
+                src={productImage}
                 // alt={`Slide ${index + 1}`}
               />
             </SwiperSlide>
@@ -54,7 +68,7 @@ export default function DetailProduct() {
             {/* {[...Array(10)].map((_, index) => ( */}
             <SwiperSlide>
               <img
-                src={`${product?.image}`}
+                src={productImage}
                 // alt={`Thumbnail ${index + 1}`}
               />
             </SwiperSlide>
@@ -65,7 +79,7 @@ export default function DetailProduct() {
         {/* Descriptions */}
         <Box gap="20px" padding="20px" w="full" display="flex" flexDir="column">
           <Text fontWeight="bold" fontSize="30px">
-            {product?.title}
+            {product.name} - {product.description}
           </Text>
           <Table.Root borderColor="">
             <Table.Body>
@@ -78,7 +92,7 @@ export default function DetailProduct() {
                   Harga
                 </Table.Cell>
                 <Table.Cell borderBottom="1px solid gainsboro">
-                  Rp. {product?.price}
+                  Rp. {product.price.toLocaleString('id-ID')}
                 </Table.Cell>
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
@@ -148,7 +162,8 @@ export default function DetailProduct() {
                       width="40px"
                       rounded="sm"
                     >
-                      {products?.length == 0 ? 0 : products[0]?.quantity}
+                      {products?.find((p) => p.product.id === product.id)
+                        ?.quantity || 0}
                     </Box>
                     <Button
                       onClick={() => {
