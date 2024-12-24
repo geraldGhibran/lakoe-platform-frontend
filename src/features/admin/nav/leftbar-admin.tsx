@@ -68,8 +68,13 @@ export default function LeftBarAdmin() {
   const logout = useAuthStore((state) => state.logout);
 
   return (
-    <Box bg={'white'}>
-      <Flex h={'100vh'}>
+    <>
+      <Flex
+        direction={'column'}
+        justifyContent={'space-between'}
+        height={'100%'}
+        bg={'white'}
+      >
         <IconButton
           aria-label={'Open Menu'}
           display={{ md: 'none' }}
@@ -79,7 +84,7 @@ export default function LeftBarAdmin() {
           <Flex
             direction={'column'}
             justifyContent={'space-between'}
-            h={'100%'}
+            height={'90vh'}
           >
             <Stack gap={4}>
               {Links.map((link) => (
@@ -127,6 +132,6 @@ export default function LeftBarAdmin() {
           </Stack>
         </Box>
       )}
-    </Box>
+    </>
   );
 }

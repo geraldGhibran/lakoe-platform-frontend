@@ -1,8 +1,23 @@
 import { Avatar } from '@/components/ui/avatar';
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { Button, Table } from '@chakra-ui/react';
+import { Store } from '@/types/admin';
+import { Button, Spinner, Table, Text } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { useAllStores } from '../hooks';
 
 export function SellerInfo() {
+  const { data: stores, isLoading, isError, error } = useAllStores();
+
+  const Navigate = useNavigate();
+
+  if (isLoading) {
+    return <Spinner size="xl" />;
+  }
+
+  if (isError) {
+    return <Text color="red.500">Error: {(error as Error).message}</Text>;
+  }
+
   return (
     <>
       <Table.ScrollArea borderWidth="1px" rounded="md" height="100%">
@@ -20,17 +35,24 @@ export function SellerInfo() {
           </Table.Header>
 
           <Table.Body>
-            {items.map((item, index) => (
-              <Table.Row key={item.id}>
+            {stores?.map((store: Store, index: number) => (
+              <Table.Row key={store.id}>
                 <Table.Cell>{index + 1}</Table.Cell>
                 <Table.Cell>
-                  <Avatar src={item.image} />
+                  <Avatar
+                    src={
+                      store.logo_img ||
+                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqsL-13Hag1GkSIL6dCH1pYm3CwQ7Tfqorcw&s'
+                    }
+                  />
                 </Table.Cell>
-                <Table.Cell>{item.name}</Table.Cell>
-                <Table.Cell>{item.totalProduct}</Table.Cell>
-                <Table.Cell>{formatCurrency(item.totalIncome)}</Table.Cell>
+                <Table.Cell>{store.name}</Table.Cell>
+                <Table.Cell>{store.products.length}</Table.Cell>
+                <Table.Cell>{formatCurrency(store.amount)}</Table.Cell>
                 <Table.Cell textAlign={'end'}>
-                  <Button>Visit</Button>
+                  <Button onClick={() => Navigate(`/admin/seller/${store.id}`)}>
+                    Visit
+                  </Button>
                 </Table.Cell>
               </Table.Row>
             ))}
@@ -40,40 +62,3 @@ export function SellerInfo() {
     </>
   );
 }
-const items = [
-  {
-    id: 1,
-    image: 'https://randomuser.me/api/portraits/men/70.jpg',
-    name: 'Laptop',
-    totalProduct: '4',
-    totalIncome: 1111532,
-  },
-  {
-    id: 2,
-    image: 'https://randomuser.me/api/portraits/men/70.jpg',
-    name: 'Coffee Maker',
-    totalProduct: '2',
-    totalIncome: 22222,
-  },
-  {
-    id: 3,
-    image: 'https://randomuser.me/api/portraits/men/70.jpg',
-    name: 'Desk Chair',
-    totalProduct: '3',
-    totalIncome: 3333,
-  },
-  {
-    id: 4,
-    image: 'https://randomuser.me/api/portraits/men/70.jpg',
-    name: 'Smartphone',
-    totalProduct: '11',
-    totalIncome: 444446,
-  },
-  {
-    id: 5,
-    image: 'https://randomuser.me/api/portraits/men/70.jpg',
-    name: 'Headphones',
-    totalProduct: '44',
-    totalIncome: 555544,
-  },
-];

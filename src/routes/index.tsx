@@ -21,6 +21,7 @@ import Checkout from '@/features/marketplace/home/components/Checkout';
 import PengirimanSeller from '@/features/seller/pengiriman';
 import MetodePembayaran from '@/features/seller/metode-pembayaran';
 import DetailOrder from '@/features/order/orderPage/detail-order';
+import { DetailSeller } from '@/features/admin/seller/detail-seller';
 
 export const router = createBrowserRouter([
   {
@@ -80,7 +81,16 @@ export const router = createBrowserRouter([
       },
       {
         path: 'seller',
-        element: <SellerInfo />,
+        children: [
+          {
+            index: true,
+            element: <SellerInfo />,
+          },
+          {
+            path: ':storeId',
+            element: <DetailSeller />,
+          },
+        ],
       },
     ],
   },

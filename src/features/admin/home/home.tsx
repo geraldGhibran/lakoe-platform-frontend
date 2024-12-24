@@ -1,7 +1,15 @@
 import { Avatar } from '@/components/ui/avatar';
 import { StatRoot, StatValueText } from '@/components/ui/stat';
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { Box, Grid, GridItem, Heading, StatLabel } from '@chakra-ui/react';
+import {
+  Box,
+  Grid,
+  GridItem,
+  Heading,
+  Spinner,
+  StatLabel,
+  Text,
+} from '@chakra-ui/react';
 import { Tooltip } from 'react-leaflet';
 import {
   Bar,
@@ -12,8 +20,19 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import { useStoreAndWithdrawsAmount, useTopSeller } from '../hooks';
 
 export default function AdminHomePage() {
+  const { data: stores, isLoading, isError, error } = useTopSeller();
+  const { data: amount } = useStoreAndWithdrawsAmount();
+
+  if (isLoading) {
+    return <Spinner size="xl" />;
+  }
+
+  if (isError) {
+    return <Text color="red.500">Error: {(error as Error).message}</Text>;
+  }
   const data = [
     { name: 'Jan', sales: 400 },
     { name: 'Feb', sales: 300 },
@@ -30,14 +49,18 @@ export default function AdminHomePage() {
           <GridItem p={4} bg="blue.50" borderRadius="md">
             <StatRoot>
               <StatLabel>Total Income All Seller</StatLabel>
-              <StatValueText>{formatCurrency(100000)}</StatValueText>
+              <StatValueText>
+                {formatCurrency(amount?.totalStoreAmount ?? 0)}
+              </StatValueText>
             </StatRoot>
           </GridItem>
 
           <GridItem p={4} bg="green.50" borderRadius="md">
             <StatRoot>
               <StatLabel>Total Income</StatLabel>
-              <StatValueText>{formatCurrency(150000)}</StatValueText>
+              <StatValueText>
+                {formatCurrency(amount?.totalFeeAmount ?? 0)}
+              </StatValueText>
             </StatRoot>
           </GridItem>
         </Grid>
@@ -46,13 +69,14 @@ export default function AdminHomePage() {
             <StatRoot>
               <StatLabel textAlignLast={'center'}>Top Seller #1</StatLabel>
               <StatValueText justifyContent={'center'} m={3}>
-                <Avatar src="https://bit.ly/dan-abramov" />
-                Jarwo
+                <Avatar src={stores?.logo_img || ''} />
+                {stores?.name}
               </StatValueText>
             </StatRoot>
           </GridItem>
         </Grid>
       </Box>
+
       <Box>
         <Heading size="md" textAlign="center" mb={4}>
           Sales Chart
