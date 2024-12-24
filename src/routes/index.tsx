@@ -18,8 +18,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
 import Cart from '@/features/marketplace/home/components/Cart';
 import Checkout from '@/features/marketplace/home/components/Checkout';
-import PengirimanSeller from '@/features/seller/pengiriman';
-import MetodePembayaran from '@/features/seller/metode-pembayaran';
+import ShipmentSeller from '@/features/seller/shipment';
+import PaymentMethod from '@/features/seller/payment-method';
 import DetailOrder from '@/features/order/orderPage/detail-order';
 
 export const router = createBrowserRouter([
@@ -113,11 +113,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'pengiriman',
-        element: <PengirimanSeller />,
+        element: <ShipmentSeller />,
       },
       {
         path: 'metode-pembayaran',
-        element: <MetodePembayaran />,
+        element: <PaymentMethod />,
       },
     ],
   },

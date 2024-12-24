@@ -29,7 +29,6 @@ import { MdOutlineAttachMoney } from 'react-icons/md';
 import { IoIosArrowForward } from 'react-icons/io';
 import { FaArrowRight } from 'react-icons/fa6';
 import { formatCurrency } from '@/features/add-other/format-currency';
-// import DeliveryMethod fro../Form/deliveryMethodhod';
 import { useCartStore } from '@/store/cart-store';
 import DeliveryMethod from '../Form/deliveryMethod';
 import { useGetRates } from '../../hooks/useGetRates';
@@ -37,385 +36,318 @@ import { useGetRates } from '../../hooks/useGetRates';
 export default function Checkout() {
   const { totalPrice, products } = useCartStore();
   const { onSubmit, rates } = useGetRates();
-  return (
-    <Box padding="10px 100px" pb="100px">
-      <Text fontSize="30px" fontWeight="medium" mb="20px">
-        Checkout
-      </Text>
-      <Flex gap="20px">
-        {/* Formulir */}
-        <Box display="flex" flexDir="column" gap="20px" width="4/6">
-          {/* Status Checkout */}
-          <Flex borderBottom="1px solid gainsboro">
-            <Box
-              display="flex"
-              flexDir="column"
-              padding="10px 20px"
-              borderBottom="2px solid blue"
-              justifyContent="start"
-              alignItems="start"
-            >
-              <Text color="blue">Langkah 1</Text>
-              <Text fontWeight="medium">Info Pengiriman</Text>
-            </Box>
-            <Box
-              display="flex"
-              padding="10px 20px"
-              color="gray"
-              flexDir="column"
-              justifyContent="start"
-              alignItems="start"
-            >
-              <Text>Langkah 2</Text>
-              <Text fontWeight="medium">Metode Pembayaran</Text>
-            </Box>
-          </Flex>
-          {/* Form Informasi Kontak */}
-          <Flex
+
+  const ratesData = {
+    pricing: {
+      pricing: rates.length > 0 ? rates : [],
+    },
+  };
+
+  <Box padding="10px 100px" pb="100px">
+    <Text fontSize="30px" fontWeight="medium" mb="20px">
+      Checkout
+    </Text>
+    <Flex gap="20px">
+      {/* Formulir */}
+      <Box display="flex" flexDir="column" gap="20px" width="4/6">
+        {/* Status Checkout */}
+        <Flex borderBottom="1px solid gainsboro">
+          <Box
+            display="flex"
             flexDir="column"
-            padding="20px"
-            rounded="lg"
-            gap="20px"
-            border="1px solid gainsboro"
+            padding="10px 20px"
+            borderBottom="2px solid blue"
+            justifyContent="start"
+            alignItems="start"
           >
-            <Text fontSize="20px" fontWeight="medium">
-              Informasi Kontak
-            </Text>
-            <Fieldset.Root width="1/2">
-              <Field position="relative" label="Nama Kontak">
-                <Input px="20px" border="1px solid gray" name="name" />
-                <Text position="absolute" right="0" bottom="-25px">
-                  0 / 50
-                </Text>
-              </Field>
-
-              <Field label="Alamat Email">
-                <Input
-                  px="20px"
-                  border="1px solid gray"
-                  name="email"
-                  type="email"
-                />
-              </Field>
-
-              <Field position="relative" label="Nomor WhatsApp">
-                <Group
-                  width="full"
-                  rounded="md"
-                  _focus={{ border: 'red' }}
-                  attached
-                >
-                  <InputAddon bgColor="gainsboro">+62</InputAddon>
-                  <Input
-                    px="20px"
-                    roundedEnd="md"
-                    placeholder="Phone number..."
-                  />
-                  <Link to="/login">
-                    <Button
-                      top="-25px"
-                      color="blue"
-                      bgColor="transparent"
-                      boxSize="auto"
-                      fontWeight="medium"
-                      right="0"
-                      position="absolute"
-                    >
-                      Masuk
-                    </Button>
-                  </Link>
-                </Group>
-              </Field>
-              <Text fontSize="10px">
-                Kami akan mengirimkan konfirmasi dan informasi perubahan status
-                pesanan ke WhatsApp kamu
-              </Text>
-            </Fieldset.Root>
-          </Flex>
-
-          {/* Form Alamat Pengiriman */}
-          <Flex
+            <Text color="blue">Langkah 1</Text>
+            <Text fontWeight="medium">Info Pengiriman</Text>
+          </Box>
+          <Box
+            display="flex"
+            padding="10px 20px"
+            color="gray"
             flexDir="column"
-            padding="20px"
-            rounded="lg"
-            gap="20px"
-            border="1px solid gainsboro"
+            justifyContent="start"
+            alignItems="start"
           >
-            <Text fontSize="20px" fontWeight="medium">
-              Alamat Pengiriman
-            </Text>
-            <Fieldset.Root width="full">
-              <Field label="Nama Penerima">
-                <Input px="20px" border="1px solid gray" name="name" />
-              </Field>
+            <Text>Langkah 2</Text>
+            <Text fontWeight="medium">Metode Pembayaran</Text>
+          </Box>
+        </Flex>
 
-              <Field label="Nomor HP">
-                <Group
-                  width="full"
-                  border="1px solid gray"
-                  rounded="md"
-                  attached
-                >
-                  <InputAddon bgColor="gainsboro">+62</InputAddon>
-                  <Input px="20px" placeholder="Phone number..." />
-                </Group>
-              </Field>
-            </Fieldset.Root>
-            <Field label="Kecamatan">
-              <NativeSelectRoot size="md" width="full">
-                <NativeSelectField>
-                  <option value="react">React</option>
-                  <option value="vue">Vue</option>
-                  <option value="svelte">Svelte</option>
-                  <option value="angular">Angular</option>
-                </NativeSelectField>
-              </NativeSelectRoot>
+        {/* Form Alamat Pengiriman */}
+        <Flex
+          flexDir="column"
+          padding="20px"
+          rounded="lg"
+          gap="20px"
+          border="1px solid gainsboro"
+        >
+          <Text fontSize="20px" fontWeight="medium">
+            Alamat Pengiriman asdasdasd
+          </Text>
+          <Fieldset.Root width="full">
+            <Field label="Nama Penerima">
+              <Input px="20px" border="1px solid gray" name="name" />
             </Field>
 
-            <Field label="Kelurahan">
-              <NativeSelectRoot size="md" width="full">
-                <NativeSelectField>
-                  <option value="react">React</option>
-                  <option value="vue">Vue</option>
-                  <option value="svelte">Svelte</option>
-                  <option value="angular">Angular</option>
-                </NativeSelectField>
-              </NativeSelectRoot>
+            <Field label="Nomor HP">
+              <Group width="full" border="1px solid gray" rounded="md" attached>
+                <InputAddon bgColor="gainsboro">+62</InputAddon>
+                <Input px="20px" placeholder="Phone number..." />
+              </Group>
             </Field>
+          </Fieldset.Root>
+          <Field label="Kecamatan">
+            <NativeSelectRoot size="md" width="full">
+              <NativeSelectField>
+                <option value="react">React</option>
+                <option value="vue">Vue</option>
+                <option value="svelte">Svelte</option>
+                <option value="angular">Angular</option>
+              </NativeSelectField>
+            </NativeSelectRoot>
+          </Field>
 
-            <Field label="Detail Alamat" required>
-              <Textarea
-                padding="10px"
-                minHeight="100px"
-                border="1px solid gray"
-                placeholder="isi dengan jalan, nomor rumah, nomor gedung, lantai atau nomor unit"
-              />
-            </Field>
-            <Field label="Pin Alamat (Pilihan)">
-              <Flex
-                justify="space-between"
-                padding="20px"
-                rounded="md"
-                border="1px solid gray"
-                width="full"
-                bgColor="gainsboro"
-              >
-                <Flex color="gray" alignItems="center" gap="10px">
-                  <LuMapPinOff />
-                  Belum Pinpoint
-                </Flex>
-                <PopUpLocation />
-              </Flex>
-            </Field>
-          </Flex>
-          {/* Metode Pembayaran */}
-          <AccordionRoot
-            border="1px solid red"
-            rounded="lg"
-            collapsible
-            defaultValue={['b']}
-            variant="enclosed"
-          >
-            {products.map((item) => (
-              <AccordionItem bgColor="white" value="a">
-                <AccordionItemTrigger
-                  padding="20px"
-                  cursor="pointer"
-                  rounded="0"
-                  bgColor="#fee2e2"
-                >
-                  {item?.product?.title}
-                </AccordionItemTrigger>
-                <AccordionItemContent
-                  display="flex"
-                  flexDir="column"
-                  fontSize="20px"
-                  gap="20px"
-                  bgColor="white"
-                >
-                  {/* <Text>Depok</Text> */}
-                  <Flex gap="15px">
-                    <Image boxSize="100px" src={item?.product?.image} />
-                    <Box fontSize="20px" display="flex" flexDir="column">
-                      <Text>{item?.product?.title}</Text>
-                      <Text color="gray" fontSize="15px">
-                        {item?.product?.category} - {item?.quantity} barang (100
-                        g)
-                      </Text>
-                      <Text fontWeight="medium">
-                        {formatCurrency(totalPrice)}
-                      </Text>
-                    </Box>
-                  </Flex>
-                  <Box borderY="1px solid gainsboro" py="20px">
-                    <DeliveryMethod
-                      onSubmit={onSubmit}
-                      rates={{ pricing: rates }}
-                    />
-                  </Box>
+          <Field label="Kelurahan">
+            <NativeSelectRoot size="md" width="full">
+              <NativeSelectField>
+                <option value="react">React</option>
+                <option value="vue">Vue</option>
+                <option value="svelte">Svelte</option>
+                <option value="angular">Angular</option>
+              </NativeSelectField>
+            </NativeSelectRoot>
+          </Field>
 
-                  <AccordionRoot
-                    borderColor="transparent"
-                    rounded="lg"
-                    collapsible
-                    defaultValue={['b']}
-                    variant="enclosed"
-                  >
-                    <AccordionItem bgColor="white" value="a">
-                      <AccordionItemTrigger
-                        cursor="pointer"
-                        padding="20px"
-                        rounded="0"
-                      >
-                        <Flex width="full" justify="space-between">
-                          <Text color="gray">Total</Text>
-                          {formatCurrency(totalPrice)}
-                        </Flex>
-                      </AccordionItemTrigger>
-                      <AccordionItemContent
-                        display="flex"
-                        flexDir="column"
-                        padding="20px"
-                        rounded="md"
-                        fontWeight="light"
-                        gap="20px"
-                        bgColor="#F9FAFB"
-                      >
-                        <Flex
-                          fontSize="15px"
-                          width="full"
-                          justify="space-between"
-                        >
-                          <Text>Total (items)</Text>
-                          {formatCurrency(totalPrice)}
-                        </Flex>
-                      </AccordionItemContent>
-                    </AccordionItem>
-                  </AccordionRoot>
-                </AccordionItemContent>
-              </AccordionItem>
-            ))}
-          </AccordionRoot>
-        </Box>
-
-        {/* Ringkasan Pembayaran */}
-        <Box gap="20px" display="flex" flexDir="column" width="2/6">
-          <Flex gap="20px" flexDir="column">
-            <Link to="">
-              <Flex
-                rounded="lg"
-                cursor="pointer"
-                fontWeight="bold"
-                alignItems="center"
-                padding="15px"
-                gap="10px"
-                border="1px solid black"
-              >
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  border="1px solid blue"
-                  rounded="full"
-                >
-                  <MdOutlineAttachMoney color="blue" />
-                </Box>
-                <Text>Gunakan / Masukan Voucer</Text>
-                <IoIosArrowForward />
-              </Flex>
-            </Link>
-
-            {/* Total Pembayaran */}
-            <Box
-              border="1px solid blue"
-              bgColor="#E5F2FF"
-              rounded="lg"
-              display="flex"
+          <Field label="Detail Alamat" required>
+            <Textarea
+              padding="10px"
+              minHeight="100px"
+              border="1px solid gray"
+              placeholder="isi dengan jalan, nomor rumah, nomor gedung, lantai atau nomor unit"
+            />
+          </Field>
+          <Field label="Pin Alamat (Pilihan)">
+            <Flex
+              justify="space-between"
               padding="20px"
-              flexDir="column"
+              rounded="md"
+              border="1px solid gray"
+              width="full"
+              bgColor="gainsboro"
             >
-              <Text fontSize="20px" fontWeight="bold" py="8px">
-                Ringkasan Pesanan
-              </Text>
-              <Table.Root size="sm" unstyled>
-                <Table.Header>
-                  <Table.Row bgColor="#E5F2FF">
-                    <Table.ColumnHeader textAlign="start" color="gray">
-                      Total Harga (1)
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(567)}
-                    </Table.ColumnHeader>
-                  </Table.Row>
-                  <Table.Row bgColor="#E5F2FF">
-                    <Table.ColumnHeader py="5px" textAlign="start" color="gray">
-                      Biaya Pengiriman
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(0)}
-                    </Table.ColumnHeader>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  <Table.Row
-                    fontSize="20px"
-                    fontWeight="bold"
-                    bgColor="#E5F2FF"
-                    borderTop="1px solid gainsboro"
-                    borderBottom="transparent"
-                  >
-                    <Table.Cell py="5px" color="gray">
-                      Total
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      {formatCurrency(567)}
-                    </Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table.Root>
-            </Box>
-            {/* Catatan */}
-            <Box
-              border="1px solid blue"
-              rounded="lg"
-              display="flex"
-              gap="20px"
-              padding="30px"
-              flexDir="column"
-            >
-              <Flex gap="10px" fontSize="20px" fontWeight="bold">
-                Catatan <Text color="gray">(Pilihan)</Text>
+              <Flex color="gray" alignItems="center" gap="10px">
+                <LuMapPinOff />
+                Belum Pinpoint
               </Flex>
-              <Field position="relative" required>
-                <Textarea
-                  border="1px solid gray"
-                  minHeight="100px"
-                  padding="10px"
-                  placeholder="Tulis catatan / instruksi pesananmu"
-                />
-                <Text
-                  fontSize="12px"
-                  position="absolute"
-                  right="0"
-                  bottom="-20px"
+              <PopUpLocation />
+            </Flex>
+          </Field>
+        </Flex>
+        {/* Metode Pembayaran */}
+        <AccordionRoot
+          border="1px solid red"
+          rounded="lg"
+          collapsible
+          defaultValue={['b']}
+          variant="enclosed"
+        >
+          {products.map((item) => (
+            <AccordionItem bgColor="white" value="a">
+              <AccordionItemTrigger
+                padding="20px"
+                cursor="pointer"
+                rounded="0"
+                bgColor="#fee2e2"
+              >
+                {item?.product?.title}
+              </AccordionItemTrigger>
+              <AccordionItemContent
+                display="flex"
+                flexDir="column"
+                fontSize="20px"
+                gap="20px"
+                bgColor="white"
+              >
+                {/* <Text>Depok</Text> */}
+                <Flex gap="15px">
+                  <Image boxSize="100px" src={item?.product?.image} />
+                  <Box fontSize="20px" display="flex" flexDir="column">
+                    <Text>{item?.product?.title}</Text>
+                    <Text color="gray" fontSize="15px">
+                      {item?.product?.category} - {item?.quantity} barang (100
+                      g)
+                    </Text>
+                    <Text fontWeight="medium">
+                      {formatCurrency(totalPrice)}
+                    </Text>
+                  </Box>
+                </Flex>
+                <Box borderY="1px solid gainsboro" py="20px">
+                  <DeliveryMethod onSubmit={onSubmit} rates={ratesData} />
+                </Box>
+
+                <AccordionRoot
+                  borderColor="transparent"
+                  rounded="lg"
+                  collapsible
+                  defaultValue={['b']}
+                  variant="enclosed"
                 >
-                  0 / 150
-                </Text>
-              </Field>
-            </Box>
-          </Flex>
-          <Button
-            type="submit"
-            _active={{ shadow: 'sm' }}
-            shadow="md"
-            color="white"
-            bgColor="blue"
+                  <AccordionItem bgColor="white" value="a">
+                    <AccordionItemTrigger
+                      cursor="pointer"
+                      padding="20px"
+                      rounded="0"
+                    >
+                      <Flex width="full" justify="space-between">
+                        <Text color="gray">Total</Text>
+                        {formatCurrency(totalPrice)}
+                      </Flex>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent
+                      display="flex"
+                      flexDir="column"
+                      padding="20px"
+                      rounded="md"
+                      fontWeight="light"
+                      gap="20px"
+                      bgColor="#F9FAFB"
+                    >
+                      <Flex
+                        fontSize="15px"
+                        width="full"
+                        justify="space-between"
+                      >
+                        <Text>Total (items)</Text>
+                        {formatCurrency(totalPrice)}
+                      </Flex>
+                    </AccordionItemContent>
+                  </AccordionItem>
+                </AccordionRoot>
+              </AccordionItemContent>
+            </AccordionItem>
+          ))}
+        </AccordionRoot>
+      </Box>
+
+      {/* Ringkasan Pembayaran */}
+      <Box gap="20px" display="flex" flexDir="column" width="2/6">
+        <Flex gap="20px" flexDir="column">
+          <Link to="">
+            <Flex
+              rounded="lg"
+              cursor="pointer"
+              fontWeight="bold"
+              alignItems="center"
+              padding="15px"
+              gap="10px"
+              border="1px solid black"
+            >
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                border="1px solid blue"
+                rounded="full"
+              >
+                <MdOutlineAttachMoney color="blue" />
+              </Box>
+              <Text>Gunakan / Masukan Voucer</Text>
+              <IoIosArrowForward />
+            </Flex>
+          </Link>
+
+          {/* Total Pembayaran */}
+          <Box
+            border="1px solid blue"
+            bgColor="#E5F2FF"
+            rounded="lg"
+            display="flex"
+            padding="20px"
+            flexDir="column"
           >
-            <Text>Pilih Pembayaran</Text>
-            <FaArrowRight />
-          </Button>
-        </Box>
-      </Flex>
-    </Box>
-  );
+            <Text fontSize="20px" fontWeight="bold" py="8px">
+              Ringkasan Pesanan
+            </Text>
+            <Table.Root size="sm" unstyled>
+              <Table.Header>
+                <Table.Row bgColor="#E5F2FF">
+                  <Table.ColumnHeader textAlign="start" color="gray">
+                    Total Harga (1)
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader color="gray" textAlign="end">
+                    {formatCurrency(567)}
+                  </Table.ColumnHeader>
+                </Table.Row>
+                <Table.Row bgColor="#E5F2FF">
+                  <Table.ColumnHeader py="5px" textAlign="start" color="gray">
+                    Biaya Pengiriman
+                  </Table.ColumnHeader>
+                  <Table.ColumnHeader color="gray" textAlign="end">
+                    {formatCurrency(0)}
+                  </Table.ColumnHeader>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                <Table.Row
+                  fontSize="20px"
+                  fontWeight="bold"
+                  bgColor="#E5F2FF"
+                  borderTop="1px solid gainsboro"
+                  borderBottom="transparent"
+                >
+                  <Table.Cell py="5px" color="gray">
+                    Total
+                  </Table.Cell>
+                  <Table.Cell textAlign="end">{formatCurrency(567)}</Table.Cell>
+                </Table.Row>
+              </Table.Body>
+            </Table.Root>
+          </Box>
+          {/* Catatan */}
+          <Box
+            border="1px solid blue"
+            rounded="lg"
+            display="flex"
+            gap="20px"
+            padding="30px"
+            flexDir="column"
+          >
+            <Flex gap="10px" fontSize="20px" fontWeight="bold">
+              Catatan <Text color="gray">(Pilihan)</Text>
+            </Flex>
+            <Field position="relative" required>
+              <Textarea
+                border="1px solid gray"
+                minHeight="100px"
+                padding="10px"
+                placeholder="Tulis catatan / instruksi pesananmu"
+              />
+              <Text
+                fontSize="12px"
+                position="absolute"
+                right="0"
+                bottom="-20px"
+              >
+                0 / 150
+              </Text>
+            </Field>
+          </Box>
+        </Flex>
+        <Button
+          type="submit"
+          _active={{ shadow: 'sm' }}
+          shadow="md"
+          color="white"
+          bgColor="blue"
+        >
+          <Text>Pilih Pembayaran</Text>
+          <FaArrowRight />
+        </Button>
+      </Box>
+    </Flex>
+  </Box>;
 }

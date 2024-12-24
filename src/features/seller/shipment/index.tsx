@@ -89,7 +89,7 @@ const SwitchItem = ({
   </Flex>
 );
 
-export default function PengirimanSeller() {
+export default function ShipmentSeller() {
   const { onSubmit, setValue } = useEditShipmentStoreById();
 
   const { user } = useAuthStore();
