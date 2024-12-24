@@ -9,9 +9,19 @@ import { useCartStore } from '@/store/cart-store';
 // import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
 import { useGetProductDetail } from '@/features/product/hooks/use-get-product-detail';
 
+interface VariantItemValue {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+}
+
 export default function DetailProduct() {
   const { name } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
+  const [activeVariantId, setActiveVariantId] = useState<number | null>(null);
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+  const [selectedStock, setSelectedStock] = useState<number | null>(null);
 
   const { products, addItem, decreaseQuantity } = useCartStore();
 
@@ -25,9 +35,11 @@ export default function DetailProduct() {
     return <Text>Produk tidak ditemukan.</Text>;
 
   const product = productDetail[0];
-  const productImage = product.image[0]?.url;
 
   if (!product) return <Text>Detail produk tidak tersedia.</Text>;
+
+  const currentQuantity =
+    products?.find((p) => p.product.id === product.id)?.quantity || 0;
 
   return (
     <Box padding="0 10px">
@@ -47,12 +59,14 @@ export default function DetailProduct() {
             className="mySwiper2"
           >
             {/* {[...Array(10)].map((_, index) => ( */}
-            <SwiperSlide className="rounded">
-              <Image
-                src={productImage}
-                // alt={`Slide ${index + 1}`}
-              />
-            </SwiperSlide>
+            {product.image.map((img: { id: number; url: string }) => (
+              <SwiperSlide key={img.id} className="rounded">
+                <Image
+                  src={img.url}
+                  // alt={`Slide ${index + 1}`}
+                />
+              </SwiperSlide>
+            ))}
             {/* ))} */}
           </Swiper>
 
@@ -66,12 +80,14 @@ export default function DetailProduct() {
             className="mySwiper"
           >
             {/* {[...Array(10)].map((_, index) => ( */}
-            <SwiperSlide>
-              <img
-                src={productImage}
-                // alt={`Thumbnail ${index + 1}`}
-              />
-            </SwiperSlide>
+            {product.image.map((img: { id: number; url: string }) => (
+              <SwiperSlide key={img.id}>
+                <Image
+                  src={img.url}
+                  // alt={`Thumbnail ${index + 1}`}
+                />
+              </SwiperSlide>
+            ))}
             {/* ))} */}
           </Swiper>
         </Box>
@@ -81,6 +97,7 @@ export default function DetailProduct() {
           <Text fontWeight="bold" fontSize="30px">
             {product.name} - {product.description}
           </Text>
+
           <Table.Root borderColor="">
             <Table.Body>
               <Table.Row bgColor="white">
@@ -92,42 +109,47 @@ export default function DetailProduct() {
                   Harga
                 </Table.Cell>
                 <Table.Cell borderBottom="1px solid gainsboro">
-                  Rp. {product.price.toLocaleString('id-ID')}
+                  Rp.{' '}
+                  {selectedPrice
+                    ? selectedPrice.toLocaleString('id-ID')
+                    : product.price.toLocaleString('id-ID')}
                 </Table.Cell>
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
                 <Table.Cell borderColor="gainsboro" fontWeight="medium" w="1/3">
-                  Pilih Warna
+                  Pilih Varian
                 </Table.Cell>
                 <Table.Cell borderColor="gainsboro">
-                  <Text mb="10px">2 Pilihan</Text>
-                  <Flex gap="20px">
-                    <Button
-                      _focus={{
-                        bgColor: 'red',
-                        color: 'white',
-                        border: '1px solid white',
-                      }}
-                      border="1px solid gray"
-                      bgColor="white"
-                      color="black"
-                      padding="0 20px"
-                    >
-                      Merah
-                    </Button>
-                    <Button
-                      _focus={{
-                        bgColor: 'blue',
-                        color: 'white',
-                        border: '1px solid white',
-                      }}
-                      border="1px solid gray"
-                      bgColor="white"
-                      color="black"
-                      padding="0 20px"
-                    >
-                      Biru
-                    </Button>
+                  <Text mb="10px">
+                    {product.variant_Item_values.length} Pilihan
+                  </Text>
+                  <Flex wrap="wrap" gap="5px">
+                    {product.variant_Item_values.length === 0 ? (
+                      <Text>Tidak ada variant item yang tersedia.</Text>
+                    ) : (
+                      product.variant_Item_values.map(
+                        (item: VariantItemValue) => (
+                          <Button
+                            key={item.id}
+                            border="1px solid gray"
+                            color={
+                              activeVariantId === item.id ? 'white' : 'black'
+                            }
+                            bgColor={
+                              activeVariantId === item.id ? 'gray' : 'White'
+                            }
+                            onClick={() => {
+                              setActiveVariantId(item.id);
+                              setSelectedPrice(item.price);
+                              setSelectedStock(item.stock);
+                              console.log(`Button for ${item.name} clicked`);
+                            }}
+                          >
+                            {item.name}
+                          </Button>
+                        )
+                      )
+                    )}
                   </Flex>
                 </Table.Cell>
               </Table.Row>
@@ -139,7 +161,11 @@ export default function DetailProduct() {
                 >
                   Jumlah
                 </Table.Cell>
-                <Table.Cell borderBottom="1px solid gainsboro">
+                <Table.Cell
+                  display="flex"
+                  gap="10px"
+                  borderBottom="1px solid gainsboro"
+                >
                   <Flex gap="10px">
                     <Button
                       onClick={() => decreaseQuantity(product?.id ?? 0)}
@@ -151,6 +177,7 @@ export default function DetailProduct() {
                       border="1px solid gray"
                       boxSizing="30px"
                       rounded="sm"
+                      disabled={currentQuantity <= 0}
                     >
                       -
                     </Button>
@@ -162,13 +189,19 @@ export default function DetailProduct() {
                       width="40px"
                       rounded="sm"
                     >
-                      {products?.find((p) => p.product.id === product.id)
-                        ?.quantity || 0}
+                      {currentQuantity}
                     </Box>
                     <Button
                       onClick={() => {
                         if (product) {
-                          addItem({ product, quantity: 1 });
+                          const quantity =
+                            products?.find((p) => p.product.id === product.id)
+                              ?.quantity || 0;
+                          if (quantity >= (selectedStock ?? Infinity)) {
+                            addItem({ product, quantity: selectedStock ?? 1 });
+                          } else {
+                            addItem({ product, quantity: 1 });
+                          }
                         }
                       }}
                       display="flex"
@@ -179,10 +212,19 @@ export default function DetailProduct() {
                       border="1px solid gray"
                       boxSizing="30px"
                       rounded="sm"
+                      disabled={
+                        (products?.find((p) => p.product.id === product.id)
+                          ?.quantity || 0) >= (selectedStock ?? Infinity) ||
+                        !selectedStock ||
+                        product.variant_Item_values.length === 0
+                      }
                     >
                       +
                     </Button>
                   </Flex>
+                  {selectedStock !== null
+                    ? 'Tersedia : ' + selectedStock + ' Stock'
+                    : 'Silahkan pilih variant'}
                 </Table.Cell>
               </Table.Row>
               <Table.Row bgColor="white">
