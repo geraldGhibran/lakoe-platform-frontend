@@ -67,16 +67,6 @@ export interface Image {
 }
 
 export interface AmountData {
-  // stores: {
-  //   id: number;
-  //   amount: number;
-  // }[];
-  // pendingWithdraws: {
-  //   amount: number;
-  // }[];
-  // successWithdraws: {
-  //   amount: number;
-  // }[];
   totalStoreAmount: number;
   totalPendingAmount: number;
   totalSuccessAmount: number;
