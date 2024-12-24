@@ -70,6 +70,7 @@ export const useAddLocation = () => {
     watch,
     setValue,
     reset,
+    control,
     formState: { errors },
   } = useForm<AddLocationSchema>({
     resolver: zodResolver(addLocationSchema),
@@ -78,9 +79,12 @@ export const useAddLocation = () => {
       is_main_location: true,
       name: '',
       address: '',
-      city_district: 0,
-      subdistrict: 0,
+      city_district: '',
+      city_district_code: 0,
+      subdistrict: '',
+      subdistrict_code: 0,
       province_code: 0,
+      province: '',
       village: '',
       postal_code: 0,
       latitude: -6.520681934175305,
@@ -166,6 +170,7 @@ export const useAddLocation = () => {
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
+    console.log(errors.name);
     addLocationStoreAsync(data as AddLocationSchema);
   });
 
@@ -301,5 +306,6 @@ export const useAddLocation = () => {
     onMarkerDragEnd,
     position,
     markerRef,
+    control,
   };
 };

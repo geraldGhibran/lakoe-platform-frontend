@@ -1,0 +1,20 @@
+{
+  "available_collection_method": ["pickup"],
+  "available_for_cash_on_delivery": true,
+  "available_for_proof_of_delivery": false,
+  "available_for_instant_waybill_id": true,
+  "available_for_insurance": true,
+  "company": "jne",
+  "courier_name": "JNE",
+  "courier_code": "jne",
+  "courier_service_name": "Reguler",
+  "courier_service_code": "reg",
+  "description": "Layanan reguler",
+  "duration": "1 - 2 days",
+  "shipment_duration_range": "1 - 2",
+  "shipment_duration_unit": "days",
+  "service_type": "standard",
+  "shipping_type": "parcel",
+  "price": 30000,
+  "type": "reg"
+}

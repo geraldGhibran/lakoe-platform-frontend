@@ -1,4 +1,5 @@
 import { BankAccount } from './bank-account';
+import { CourierDto } from './courier';
 import { Location } from './locations';
 import { Product } from './product';
 import { UserType } from './user';
@@ -10,6 +11,7 @@ export interface Store {
   logo_img?: string;
   user_id: number;
   location?: Location[];
+  couriers: CourierDto[];
   bankAccount?: BankAccount;
   products?: Product[];
   user: UserType;

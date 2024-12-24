@@ -3,20 +3,31 @@ import { useState } from 'react';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import SwiperCore from 'swiper';
 import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import '@/styles/styes.css';
+import { useCartStore } from '@/store/cart-store';
+// import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
+import { useGetProductDetail } from '@/features/product/hooks/use-get-product-detail';
 
 export default function DetailProduct() {
+  const { name } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
-  const [step, setStep] = useState<number>(1);
 
-  function increment() {
-    setStep(step + 1);
-  }
+  const { products, addItem, decreaseQuantity } = useCartStore();
 
-  function decrement() {
-    if (step > 1) setStep(step - 1);
-  }
+  // const { data: product } = useGetDummyProduct();
+  const { data: productDetail, isLoading } = useGetProductDetail(name ?? '');
+
+  console.log('Products:', products);
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (!productDetail || !productDetail.length)
+    return <Text>Produk tidak ditemukan.</Text>;
+
+  const product = productDetail[0];
+  const productImage = product.image[0]?.url;
+
+  if (!product) return <Text>Detail produk tidak tersedia.</Text>;
 
   return (
     <Box padding="0 10px">
@@ -35,14 +46,14 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2"
           >
-            {[...Array(10)].map((_, index) => (
-              <SwiperSlide className="rounded" key={index}>
-                <Image
-                  src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
-                  alt={`Slide ${index + 1}`}
-                />
-              </SwiperSlide>
-            ))}
+            {/* {[...Array(10)].map((_, index) => ( */}
+            <SwiperSlide className="rounded">
+              <Image
+                src={productImage}
+                // alt={`Slide ${index + 1}`}
+              />
+            </SwiperSlide>
+            {/* ))} */}
           </Swiper>
 
           <Swiper
@@ -54,21 +65,21 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper"
           >
-            {[...Array(10)].map((_, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
-                  alt={`Thumbnail ${index + 1}`}
-                />
-              </SwiperSlide>
-            ))}
+            {/* {[...Array(10)].map((_, index) => ( */}
+            <SwiperSlide>
+              <img
+                src={productImage}
+                // alt={`Thumbnail ${index + 1}`}
+              />
+            </SwiperSlide>
+            {/* ))} */}
           </Swiper>
         </Box>
 
         {/* Descriptions */}
         <Box gap="20px" padding="20px" w="full" display="flex" flexDir="column">
           <Text fontWeight="bold" fontSize="30px">
-            Sepatu mantap
+            {product.name} - {product.description}
           </Text>
           <Table.Root borderColor="">
             <Table.Body>
@@ -81,7 +92,7 @@ export default function DetailProduct() {
                   Harga
                 </Table.Cell>
                 <Table.Cell borderBottom="1px solid gainsboro">
-                  Rp 123 - Rp 321
+                  Rp. {product.price.toLocaleString('id-ID')}
                 </Table.Cell>
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
@@ -131,7 +142,7 @@ export default function DetailProduct() {
                 <Table.Cell borderBottom="1px solid gainsboro">
                   <Flex gap="10px">
                     <Button
-                      onClick={decrement}
+                      onClick={() => decreaseQuantity(product?.id ?? 0)}
                       display="flex"
                       justifyContent="center"
                       bgColor="white"
@@ -151,10 +162,15 @@ export default function DetailProduct() {
                       width="40px"
                       rounded="sm"
                     >
-                      {step}
+                      {products?.find((p) => p.product.id === product.id)
+                        ?.quantity || 0}
                     </Box>
                     <Button
-                      onClick={increment}
+                      onClick={() => {
+                        if (product) {
+                          addItem({ product, quantity: 1 });
+                        }
+                      }}
                       display="flex"
                       justifyContent="center"
                       alignItems="center"
@@ -183,9 +199,11 @@ export default function DetailProduct() {
                         Beli Langsung
                       </Button>
                     </Link>
-                    <Button bgColor="#0080FF" color="white" padding="0 20px">
-                      + Keranjang
-                    </Button>
+                    <Link to="cart">
+                      <Button bgColor="#0080FF" color="white" padding="0 20px">
+                        + Keranjang
+                      </Button>
+                    </Link>
                   </Flex>
                 </Table.Cell>
               </Table.Row>

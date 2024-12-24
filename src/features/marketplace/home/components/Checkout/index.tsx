@@ -29,9 +29,14 @@ import { MdOutlineAttachMoney } from 'react-icons/md';
 import { IoIosArrowForward } from 'react-icons/io';
 import { FaArrowRight } from 'react-icons/fa6';
 import { formatCurrency } from '@/features/add-other/format-currency';
-import DeliveryMethod from './deliveryMethod';
+// import DeliveryMethod fro../Form/deliveryMethodhod';
+import { useCartStore } from '@/store/cart-store';
+import DeliveryMethod from '../Form/deliveryMethod';
+import { useGetRates } from '../../hooks/useGetRates';
 
 export default function Checkout() {
+  const { totalPrice, products } = useCartStore();
+  const { onSubmit, rates } = useGetRates();
   return (
     <Box padding="10px 100px" pb="100px">
       <Text fontSize="30px" fontWeight="medium" mb="20px">
@@ -211,80 +216,85 @@ export default function Checkout() {
             defaultValue={['b']}
             variant="enclosed"
           >
-            <AccordionItem bgColor="white" value="a">
-              <AccordionItemTrigger
-                padding="20px"
-                cursor="pointer"
-                rounded="0"
-                bgColor="#fee2e2"
-              >
-                Pesanan 1
-              </AccordionItemTrigger>
-              <AccordionItemContent
-                display="flex"
-                flexDir="column"
-                fontSize="20px"
-                gap="20px"
-                bgColor="white"
-              >
-                <Text>Depok</Text>
-                <Flex gap="15px">
-                  <Image
-                    boxSize="100px"
-                    src="https://th.bing.com/th/id/OIP.STUm1W-vyQmnx5ZRRhI9kgHaHa?rs=1&pid=ImgDetMain"
-                  />
-                  <Box fontSize="20px" display="flex" flexDir="column">
-                    <Text>Sepatu mantap</Text>
-                    <Text color="gray" fontSize="15px">
-                      Biru - 1 barang (123 g)
-                    </Text>
-                    <Text fontWeight="medium">{formatCurrency(321)}</Text>
-                  </Box>
-                </Flex>
-                <Box borderY="1px solid gainsboro" py="20px">
-                  <DeliveryMethod />
-                </Box>
-
-                <AccordionRoot
-                  borderColor="transparent"
-                  rounded="lg"
-                  collapsible
-                  defaultValue={['b']}
-                  variant="enclosed"
+            {products.map((item) => (
+              <AccordionItem bgColor="white" value="a">
+                <AccordionItemTrigger
+                  padding="20px"
+                  cursor="pointer"
+                  rounded="0"
+                  bgColor="#fee2e2"
                 >
-                  <AccordionItem bgColor="white" value="a">
-                    <AccordionItemTrigger
-                      cursor="pointer"
-                      padding="20px"
-                      rounded="0"
-                    >
-                      <Flex width="full" justify="space-between">
-                        <Text color="gray">Subtotal</Text>
-                        {formatCurrency(321)}
-                      </Flex>
-                    </AccordionItemTrigger>
-                    <AccordionItemContent
-                      display="flex"
-                      flexDir="column"
-                      padding="20px"
-                      rounded="md"
-                      fontWeight="light"
-                      gap="20px"
-                      bgColor="#F9FAFB"
-                    >
-                      <Flex
-                        fontSize="15px"
-                        width="full"
-                        justify="space-between"
+                  {item?.product?.title}
+                </AccordionItemTrigger>
+                <AccordionItemContent
+                  display="flex"
+                  flexDir="column"
+                  fontSize="20px"
+                  gap="20px"
+                  bgColor="white"
+                >
+                  {/* <Text>Depok</Text> */}
+                  <Flex gap="15px">
+                    <Image boxSize="100px" src={item?.product?.image} />
+                    <Box fontSize="20px" display="flex" flexDir="column">
+                      <Text>{item?.product?.title}</Text>
+                      <Text color="gray" fontSize="15px">
+                        {item?.product?.category} - {item?.quantity} barang (100
+                        g)
+                      </Text>
+                      <Text fontWeight="medium">
+                        {formatCurrency(totalPrice)}
+                      </Text>
+                    </Box>
+                  </Flex>
+                  <Box borderY="1px solid gainsboro" py="20px">
+                    <DeliveryMethod
+                      onSubmit={onSubmit}
+                      rates={{ pricing: rates }}
+                    />
+                  </Box>
+
+                  <AccordionRoot
+                    borderColor="transparent"
+                    rounded="lg"
+                    collapsible
+                    defaultValue={['b']}
+                    variant="enclosed"
+                  >
+                    <AccordionItem bgColor="white" value="a">
+                      <AccordionItemTrigger
+                        cursor="pointer"
+                        padding="20px"
+                        rounded="0"
                       >
-                        <Text>Subtotal (items)</Text>
-                        {formatCurrency(321)}
-                      </Flex>
-                    </AccordionItemContent>
-                  </AccordionItem>
-                </AccordionRoot>
-              </AccordionItemContent>
-            </AccordionItem>
+                        <Flex width="full" justify="space-between">
+                          <Text color="gray">Total</Text>
+                          {formatCurrency(totalPrice)}
+                        </Flex>
+                      </AccordionItemTrigger>
+                      <AccordionItemContent
+                        display="flex"
+                        flexDir="column"
+                        padding="20px"
+                        rounded="md"
+                        fontWeight="light"
+                        gap="20px"
+                        bgColor="#F9FAFB"
+                      >
+                        <Flex
+                          fontSize="15px"
+                          width="full"
+                          justify="space-between"
+                        >
+                          <Text>Total (items)</Text>
+                          {formatCurrency(totalPrice)}
+                        </Flex>
+                      </AccordionItemContent>
+                    </AccordionItem>
+                  </AccordionRoot>
+                </AccordionItemContent>
+              </AccordionItem>
+            ))}
           </AccordionRoot>
         </Box>
 

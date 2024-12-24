@@ -59,7 +59,6 @@ export const useAddTemplateMessage = () => {
   });
 
   const onSubmit = handleSubmit((data) => {
-    console.log('data', data);
     createTemplateMessageAsync(data as TemplateSchema);
   });
 

@@ -8,6 +8,7 @@ import {
 import { Icon } from '@iconify/react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '@/store/auth';
+import { ColorModeButton } from '../ui/color-mode';
 
 interface NavLinkProps {
   children: React.ReactNode;
@@ -138,6 +139,8 @@ export default function SideBar() {
                 >
                   <Icon icon="solar:logout-2-outline" /> Logout
                 </Button>
+
+                <ColorModeButton />
               </Box>
             </Flex>
           </HStack>

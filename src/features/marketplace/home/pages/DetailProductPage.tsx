@@ -2,6 +2,7 @@ import { Box, Button, Flex } from '@chakra-ui/react';
 import { Link, Outlet } from 'react-router-dom';
 import { BsHandbag } from 'react-icons/bs';
 import { BsPerson } from 'react-icons/bs';
+import { IoIosArrowBack } from 'react-icons/io';
 import '@/styles/styes.css';
 
 export default function DetailProductPage() {
@@ -26,16 +27,14 @@ export default function DetailProductPage() {
         height="10%"
         borderBottom="1px solid gainsboro"
       >
-        <Link to="/">
+        <Link to="/products">
           <Button
             color="black"
             _hover={{ bgColor: 'gainsboro' }}
             padding="10px"
             bgColor="white"
-            rounded="full"
-            border="1px solid gainsboro"
           >
-            SS
+            <IoIosArrowBack /> All Products
           </Button>
         </Link>
         <Flex alignItems="center" gap="10px" justify="center">
