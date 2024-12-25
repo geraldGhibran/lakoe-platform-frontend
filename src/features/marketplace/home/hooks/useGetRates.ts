@@ -75,7 +75,6 @@ export const useGetRates = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // getRatesAsync(data as RatesSchema);
       const rates = await getRatesAsync(data as RatesSchema);
       return setRates(rates);
     } catch (error) {
