@@ -9,11 +9,6 @@ import {
   shipmentAddressSchema,
   ShipmentAddressSchema,
 } from '../schemas/ShipmentAddressSchema';
-// import {
-//   addLocationSchema,
-//   AddLocationSchema,
-// } from '../schemas/addLocationSchema';
-// import { shipmentAddressSchema } from '../services/store';
 
 interface Provinsi {
   id: number;
@@ -43,7 +38,7 @@ function removeKotaKabupaten(city: string): string {
   return city.replace(regex, '');
 }
 
-export const useAddLocation = () => {
+export const useShipmentAddress = () => {
   const [provinsi, setProvinsi] = useState<Provinsi[]>([]);
   const [kabupaten, setKabupaten] = useState<Kabupaten[]>([]);
   const [kecamatan, setKecamatan] = useState<Kecamatan[]>([]);
@@ -82,10 +77,7 @@ export const useAddLocation = () => {
       name: '',
       address: '',
       city_district: '',
-      city_district_code: 0,
       subdistrict: '',
-      subdistrict_code: 0,
-      province_code: 0,
       province: '',
       village: '',
       postal_code: 0,
@@ -170,6 +162,7 @@ export const useAddLocation = () => {
   });
 
   const onSubmit = handleSubmit((data) => {
+    console.log(data);
     shipmentPaymentAsync(data as ShipmentAddressSchema);
   });
 

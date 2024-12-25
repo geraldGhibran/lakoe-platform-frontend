@@ -1,6 +1,23 @@
 import {
+  AccordionItem,
+  AccordionItemContent,
+  AccordionItemTrigger,
+  AccordionRoot,
+} from '@/components/ui/accordion';
+import { Field } from '@/components/ui/field';
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from '@/components/ui/select';
+import { formatCurrency } from '@/features/add-other/format-currency';
+import { useCartStore } from '@/store/cart-store';
+import {
   Box,
   Button,
+  createListCollection,
   Fieldset,
   Flex,
   Group,
@@ -11,31 +28,37 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from '@/components/ui/native-select';
-import {
-  AccordionItem,
-  AccordionItemContent,
-  AccordionItemTrigger,
-  AccordionRoot,
-} from '@/components/ui/accordion';
-import { Field } from '@/components/ui/field';
-import { Link } from 'react-router-dom';
-import { LuMapPinOff } from 'react-icons/lu';
-import PopUpLocation from './popUpLocation';
-import { MdOutlineAttachMoney } from 'react-icons/md';
-import { IoIosArrowForward } from 'react-icons/io';
 import { FaArrowRight } from 'react-icons/fa6';
-import { formatCurrency } from '@/features/add-other/format-currency';
-import { useCartStore } from '@/store/cart-store';
-import DeliveryMethod from '../Form/deliveryMethod';
+import { IoIosArrowForward } from 'react-icons/io';
+import { LuMapPinOff } from 'react-icons/lu';
+import { MdOutlineAttachMoney } from 'react-icons/md';
+import { Link } from 'react-router-dom';
+import { useShipmentAddress } from '../../hooks/use-shipment-address';
 import { useGetRates } from '../../hooks/useGetRates';
+import DeliveryMethod from '../Form/deliveryMethod';
+import PopUpLocation from './popUpLocation';
+import { ColorModeButton } from '@/components/ui/color-mode';
 
 export default function CheckoutPages() {
   const { totalPrice, products } = useCartStore();
   const { onSubmit, rates } = useGetRates();
+
+  const {
+    provinsi,
+    kabupaten,
+    postalCodes,
+    setSelectedProvinsi,
+    setSelectedKabupaten,
+    kelurahan,
+    kecamatan,
+    setSelectedKecamatan,
+    setSelectedKelurahan,
+    removeKotaKabupaten,
+    errors,
+    register,
+    onSubmit: onSubmitShipmentAddress,
+    setValue,
+  } = useShipmentAddress();
 
   const ratesData = {
     pricing: {
@@ -43,10 +66,45 @@ export default function CheckoutPages() {
     },
   };
 
+  const provinsiCollection = createListCollection({
+    items: provinsi.map((prov) => ({
+      label: prov.nama,
+      value: prov.id,
+    })),
+  });
+
+  const kabupatenCollection = createListCollection({
+    items: kabupaten.map((kab) => ({
+      label: kab.nama,
+      value: Number(kab.id),
+    })),
+  });
+
+  const kecamatanCollection = createListCollection({
+    items: kecamatan.map((kab) => ({
+      label: kab.nama,
+      value: kab.id,
+    })),
+  });
+
+  const kelurahanCollection = createListCollection({
+    items: kelurahan.map((kab) => ({
+      label: kab.nama,
+      value: kab.id,
+    })),
+  });
+
+  const postalCodeCollection = createListCollection({
+    items: postalCodes.map((pos) => ({
+      label: pos.code,
+      value: Number(pos.code),
+    })),
+  });
+
   return (
     <Box padding="10px 100px" pb="100px">
       <Text fontSize="30px" fontWeight="medium" mb="20px">
-        Checkout
+        Checkout <ColorModeButton />
       </Text>
       <Flex gap="20px">
         {/* Formulir */}
@@ -88,69 +146,260 @@ export default function CheckoutPages() {
             <Text fontSize="20px" fontWeight="medium">
               Alamat Pengiriman
             </Text>
-            <Fieldset.Root width="full">
-              <Field label="Nama Penerima">
-                <Input px="20px" border="1px solid gray" name="name" />
-              </Field>
-
-              <Field label="Nomor HP">
-                <Group
-                  width="full"
-                  border="1px solid gray"
-                  rounded="md"
-                  attached
+            <form onSubmit={onSubmitShipmentAddress}>
+              <Fieldset.Root width="full">
+                <Field
+                  label="Nama Penerima"
+                  invalid={!!errors.name || !!errors.name}
+                  errorText={errors.name?.message || errors.name?.message}
                 >
-                  <InputAddon bgColor="gainsboro">+62</InputAddon>
-                  <Input px="20px" placeholder="Phone number..." />
-                </Group>
-              </Field>
-            </Fieldset.Root>
-            <Field label="Kecamatan">
-              <NativeSelectRoot size="md" width="full">
-                <NativeSelectField>
-                  <option value="react">React</option>
-                  <option value="vue">Vue</option>
-                  <option value="svelte">Svelte</option>
-                  <option value="angular">Angular</option>
-                </NativeSelectField>
-              </NativeSelectRoot>
-            </Field>
+                  <Input
+                    {...register('name')}
+                    px="20px"
+                    border="1px solid gray"
+                    name="name"
+                  />
+                </Field>
 
-            <Field label="Kelurahan">
-              <NativeSelectRoot size="md" width="full">
-                <NativeSelectField>
-                  <option value="react">React</option>
-                  <option value="vue">Vue</option>
-                  <option value="svelte">Svelte</option>
-                  <option value="angular">Angular</option>
-                </NativeSelectField>
-              </NativeSelectRoot>
-            </Field>
-
-            <Field label="Detail Alamat" required>
-              <Textarea
-                padding="10px"
-                minHeight="100px"
-                border="1px solid gray"
-                placeholder="isi dengan jalan, nomor rumah, nomor gedung, lantai atau nomor unit"
-              />
-            </Field>
-            <Field label="Pin Alamat (Pilihan)">
-              <Flex
-                justify="space-between"
-                padding="20px"
-                rounded="md"
-                border="1px solid gray"
-                width="full"
-                bgColor="gainsboro"
+                <Field
+                  label=""
+                  invalid={!!errors.name || !!errors.name}
+                  errorText={errors.name?.message || errors.name?.message}
+                >
+                  <Group
+                    width="full"
+                    border="1px solid gray"
+                    rounded="md"
+                    attached
+                  >
+                    <InputAddon bgColor="gainsboro">+62</InputAddon>
+                    <Input px="20px" placeholder="Phone number..." />
+                  </Group>
+                </Field>
+              </Fieldset.Root>
+              <Field
+                label="Provinsi"
+                invalid={!!errors.province || !!errors.province}
+                errorText={errors.province?.message || errors.province?.message}
               >
-                <Flex color="gray" alignItems="center" gap="10px">
-                  <LuMapPinOff />
-                  Belum Pinpoint
+                <SelectRoot
+                  collection={provinsiCollection}
+                  size="sm"
+                  disabled={!provinsi.length}
+                  {...register('province')}
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0;
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+
+                    setSelectedProvinsi(selectedValue);
+                    setValue('province', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        provinsi.length
+                          ? 'Pilih Provinsi'
+                          : 'Pilih provinsi terlebih dahulu'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={2} w="100%">
+                    {provinsiCollection.items.map((kab) => (
+                      <SelectItem item={kab} key={kab.value}>
+                        {kab.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+
+              <Field
+                label="Kabupaten/Kota"
+                invalid={!!errors.city_district || !!errors.city_district}
+                errorText={
+                  errors.city_district?.message || errors.city_district?.message
+                }
+              >
+                <SelectRoot
+                  collection={kabupatenCollection}
+                  size="sm"
+                  disabled={!kabupaten.length}
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0;
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+
+                    setSelectedKabupaten(selectedValue);
+                    setValue('city_district', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        kabupaten.length
+                          ? 'Pilih Kabupaten/Kota'
+                          : 'Pilih provinsi terlebih dahulu'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={2} w="100%">
+                    {kabupatenCollection.items.map((kab) => (
+                      <SelectItem item={kab} key={kab.value}>
+                        {kab.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+              <Field
+                label="Kecamatan"
+                invalid={!!errors.subdistrict || !!errors.subdistrict}
+                errorText={
+                  errors.subdistrict?.message || errors.subdistrict?.message
+                }
+              >
+                <SelectRoot
+                  disabled={!kecamatan.length}
+                  collection={kecamatanCollection}
+                  size="sm"
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0;
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+
+                    setSelectedKecamatan(selectedValue);
+                    setValue('subdistrict', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        kecamatan.length
+                          ? 'Pilih Kecamatan'
+                          : 'Pilih Kota/kabupaten terlebih dahulu'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={3} w="100%">
+                    {kecamatanCollection.items.map((kec) => (
+                      <SelectItem item={kec} key={kec.value}>
+                        {kec.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+              <Field
+                label="Kelurahan"
+                invalid={!!errors.village}
+                errorText={errors.village?.message}
+              >
+                <SelectRoot
+                  disabled={!kelurahan.length}
+                  collection={kelurahanCollection}
+                  size="sm"
+                  onValueChange={(details) => {
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+                    setSelectedKelurahan(removeKotaKabupaten(selectedLabel));
+                    setValue('village', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        kelurahan.length
+                          ? 'Pilih Kelurahan terlebih dahulu'
+                          : 'Pilih Kecamatan'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={3} w="100%">
+                    {kelurahanCollection.items.map((kel) => (
+                      <SelectItem item={kel} key={kel.value}>
+                        {kel.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+              <Field
+                label="Kode Pos"
+                invalid={!!errors.postal_code}
+                errorText={errors.postal_code?.message}
+              >
+                <SelectRoot
+                  {...register('postal_code', { valueAsNumber: true })}
+                  collection={postalCodeCollection}
+                >
+                  <SelectTrigger>
+                    <SelectValueText placeholder="Masukan Kode Pos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {postalCodeCollection.items.map((pos, index) => (
+                      <SelectItem item={pos} key={index}>
+                        {pos.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+
+              <Field
+                label="Detail Alamat"
+                invalid={!!errors.address}
+                errorText={errors.address?.message}
+              >
+                <Textarea
+                  {...register('address')}
+                  padding="10px"
+                  minHeight="100px"
+                  border="1px solid gray"
+                  placeholder="isi dengan jalan, nomor rumah, nomor gedung, lantai atau nomor unit"
+                />
+              </Field>
+              <Field label="Pin Alamat (Pilihan)">
+                <Flex
+                  justify="space-between"
+                  padding="20px"
+                  rounded="md"
+                  border="1px solid gray"
+                  width="full"
+                  bgColor="gainsboro"
+                >
+                  <Flex color="gray" alignItems="center" gap="10px">
+                    <LuMapPinOff />
+                    Belum Pinpoint
+                  </Flex>
+                  <PopUpLocation />
                 </Flex>
-                <PopUpLocation />
-              </Flex>
-            </Field>
+              </Field>
+              <Field label="Pin Alamat (Pilihan)">
+                <Flex
+                  justify="space-between"
+                  padding="20px"
+                  rounded="md"
+                  border="1px solid gray"
+                  width="full"
+                  bgColor="gainsboro"
+                >
+                  <Button type="submit">Submit</Button>
+                  <PopUpLocation />
+                </Flex>
+              </Field>
+            </form>
           </Flex>
           {/* Metode Pembayaran */}
           <AccordionRoot
