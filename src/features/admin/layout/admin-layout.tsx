@@ -17,12 +17,32 @@ export function AdminLayout() {
   }
   return (
     <>
-      <Box top={0} bg="white" zIndex={10} boxShadow="md" p={3} mb={4}></Box>
-      <Flex bg={'gray.100'}>
-        <Box flex={1}>
+      <Box
+        h={'2vh'}
+        top={0}
+        bg="white"
+        zIndex={10}
+        boxShadow="md"
+        p={3}
+        mb={4}
+      ></Box>
+      <Flex h={'95vh'} bg={'gray.100'}>
+        <Box flex={1} position={'sticky'}>
           <LeftBarAdmin />
         </Box>
-        <Box flex={3} m={4}>
+        <Box
+          flex={3}
+          m={4}
+          zIndex="base"
+          bgColor="#F4F4F5"
+          pb="50px"
+          className="hide-scrollbar"
+          overflowY="auto"
+          display="flex"
+          height="90vh"
+          width="full"
+          flexDirection={'column'}
+        >
           <Outlet />
         </Box>
         <Box flex={1}>

@@ -7,9 +7,7 @@ import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { AuthLayout } from '@/features/auth/layout';
 import CartPage from '@/features/marketplace/home/pages/Cart';
-// import CheckoutPage from '@/features/marketplace/home/';
 import Cart from '@/features/marketplace/home/components/Cart';
-import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import OrderPage from '@/features/order/orderPage';
@@ -21,6 +19,8 @@ import { SellerLayout } from '@/features/seller/layout/seller-layout';
 import PaymentMethod from '@/features/seller/payment-method';
 import ShipmentSeller from '@/features/seller/shipment';
 import { createBrowserRouter } from 'react-router-dom';
+import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
+import { DetailSeller } from '@/features/admin/seller/detail-seller';
 
 export const router = createBrowserRouter([
   {
@@ -80,7 +80,16 @@ export const router = createBrowserRouter([
       },
       {
         path: 'seller',
-        element: <SellerInfo />,
+        children: [
+          {
+            index: true,
+            element: <SellerInfo />,
+          },
+          {
+            path: ':storeId',
+            element: <DetailSeller />,
+          },
+        ],
       },
     ],
   },
