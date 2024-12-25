@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const shipmentAddressSchema = z.object({
   name: z.string().min(1, { message: 'Masukan nama lokasi' }),
+  phone: z.number().min(1, { message: 'Masukan nomor telepon' }),
   address: z.string().min(1, { message: 'Masukan alamat lengkap' }),
   province: z.string().min(1, { message: 'provinsi tidak boleh kosong' }),
   city_district: z

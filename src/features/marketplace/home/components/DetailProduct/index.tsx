@@ -1,13 +1,16 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { useState } from 'react';
-import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-import SwiperCore from 'swiper';
-import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
-import { Link, useParams } from 'react-router-dom';
-import '@/styles/styes.css';
 import { useCartStore } from '@/store/cart-store';
+import '@/styles/styes.css';
+import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import SwiperCore from 'swiper';
+import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
 // import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
-import { useGetProductDetail } from '@/features/product/hooks/use-get-product-detail';
+import {
+  useGetProductDetail,
+  useSetCourierAndAreaId,
+} from '@/features/product/hooks/use-get-product-detail';
 
 interface VariantItemValue {
   id: number;
@@ -25,10 +28,9 @@ export default function DetailProduct() {
 
   const { products, addItem, decreaseQuantity } = useCartStore();
 
-  // const { data: product } = useGetDummyProduct();
   const { data: productDetail, isLoading } = useGetProductDetail(name ?? '');
 
-  console.log('Products:', products);
+  useSetCourierAndAreaId(productDetail);
 
   if (isLoading) return <Text>Loading...</Text>;
   if (!productDetail || !productDetail.length)
@@ -58,16 +60,11 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2"
           >
-            {/* {[...Array(10)].map((_, index) => ( */}
             {product.image.map((img: { id: number; url: string }) => (
               <SwiperSlide key={img.id} className="rounded">
-                <Image
-                  src={img.url}
-                  // alt={`Slide ${index + 1}`}
-                />
+                <Image src={img.url} />
               </SwiperSlide>
             ))}
-            {/* ))} */}
           </Swiper>
 
           <Swiper
@@ -79,16 +76,11 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper"
           >
-            {/* {[...Array(10)].map((_, index) => ( */}
             {product.image.map((img: { id: number; url: string }) => (
               <SwiperSlide key={img.id}>
-                <Image
-                  src={img.url}
-                  // alt={`Thumbnail ${index + 1}`}
-                />
+                <Image src={img.url} />
               </SwiperSlide>
             ))}
-            {/* ))} */}
           </Swiper>
         </Box>
 
@@ -142,7 +134,6 @@ export default function DetailProduct() {
                               setActiveVariantId(item.id);
                               setSelectedPrice(item.price);
                               setSelectedStock(item.stock);
-                              console.log(`Button for ${item.name} clicked`);
                             }}
                           >
                             {item.name}

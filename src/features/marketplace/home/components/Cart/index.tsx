@@ -54,7 +54,7 @@ export default function Cart() {
               >
                 <Table.Cell padding="10px 20px">
                   <Flex gap="10px">
-                    <Image boxSize="100px" src={item?.product?.image} />
+                    <Image boxSize="100px" src={item?.product?.image[0].url} />
                     <Box>
                       <Text fontSize="20px">{item?.product?.title}</Text>
                       <Text color="gray" fontSize="15px">

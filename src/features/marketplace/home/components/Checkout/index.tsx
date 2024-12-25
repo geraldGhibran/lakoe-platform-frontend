@@ -4,6 +4,7 @@ import {
   AccordionItemTrigger,
   AccordionRoot,
 } from '@/components/ui/accordion';
+import { ColorModeButton } from '@/components/ui/color-mode';
 import { Field } from '@/components/ui/field';
 import {
   SelectContent,
@@ -14,6 +15,8 @@ import {
 } from '@/components/ui/select';
 import { formatCurrency } from '@/features/add-other/format-currency';
 import { useCartStore } from '@/store/cart-store';
+import { usePinpoint } from '@/store/pinpoint';
+import { useRatesStore } from '@/store/rates';
 import {
   Box,
   Button,
@@ -23,21 +26,34 @@ import {
   Group,
   Image,
   Input,
-  InputAddon,
   Table,
   Text,
   Textarea,
 } from '@chakra-ui/react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { IoIosArrowForward } from 'react-icons/io';
-import { LuMapPinOff } from 'react-icons/lu';
+import { LuMapPin, LuMapPinOff } from 'react-icons/lu';
 import { MdOutlineAttachMoney } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { useShipmentAddress } from '../../hooks/use-shipment-address';
 import { useGetRates } from '../../hooks/useGetRates';
+import { getAreaId } from '../../services/rates';
 import DeliveryMethod from '../Form/deliveryMethod';
 import PopUpLocation from './popUpLocation';
-import { ColorModeButton } from '@/components/ui/color-mode';
+
+interface AllFields {
+  name: string;
+  phone: number;
+  address: string;
+  province: string;
+  city_district: string;
+  subdistrict: string;
+  village: string;
+  postal_code: number;
+  latitude: number;
+  longitude: number;
+  [key: string]: string | number;
+}
 
 export default function CheckoutPages() {
   const { totalPrice, products } = useCartStore();
@@ -58,13 +74,50 @@ export default function CheckoutPages() {
     register,
     onSubmit: onSubmitShipmentAddress,
     setValue,
+    watch,
   } = useShipmentAddress();
+
+  const { pinpoint } = usePinpoint();
+  const { setDestinationAreaId } = useRatesStore();
+
+  const allFields = watch() as AllFields;
+
+  const requiredFields = [
+    'name',
+    'phone',
+    'address',
+    'province',
+    'city_district',
+    'subdistrict',
+    'village',
+    'postal_code',
+  ];
+
+  const isAllFilled = requiredFields.every((field) => allFields[field]);
 
   const ratesData = {
     pricing: {
       pricing: rates.length < 0 ? rates : rates.pricing,
     },
   };
+
+  const cityDistrictValue = watch('city_district');
+  const subdistrictValue = watch('subdistrict');
+  const postalCodeValue = watch('postal_code');
+
+  const input =
+    cityDistrictValue + ' ' + subdistrictValue + ' ' + postalCodeValue;
+
+  const fetchAreaId = async (input: string) => {
+    const areaId = await getAreaId(input);
+    return setDestinationAreaId(areaId);
+  };
+
+  if (isAllFilled) {
+    fetchAreaId(input);
+  } else {
+    console.warn('Please fill in all required fields.');
+  }
 
   const provinsiCollection = createListCollection({
     items: provinsi.map((prov) => ({
@@ -162,9 +215,9 @@ export default function CheckoutPages() {
                 </Field>
 
                 <Field
-                  label=""
-                  invalid={!!errors.name || !!errors.name}
-                  errorText={errors.name?.message || errors.name?.message}
+                  label="Phone"
+                  invalid={!!errors.phone || !!errors.phone}
+                  errorText={errors.phone?.message || errors.phone?.message}
                 >
                   <Group
                     width="full"
@@ -172,8 +225,12 @@ export default function CheckoutPages() {
                     rounded="md"
                     attached
                   >
-                    <InputAddon bgColor="gainsboro">+62</InputAddon>
-                    <Input px="20px" placeholder="Phone number..." />
+                    <Input
+                      {...register('phone')}
+                      px="20px"
+                      placeholder="Phone number..."
+                      type="tel"
+                    />
                   </Group>
                 </Field>
               </Fieldset.Root>
@@ -375,27 +432,23 @@ export default function CheckoutPages() {
                   justify="space-between"
                   padding="20px"
                   rounded="md"
-                  border="1px solid gray"
+                  border={pinpoint ? '1px solid blue' : '1px solid gray'}
                   width="full"
-                  bgColor="gainsboro"
+                  bgColor={pinpoint ? 'white' : 'gainsboro'}
                 >
                   <Flex color="gray" alignItems="center" gap="10px">
-                    <LuMapPinOff />
-                    Belum Pinpoint
+                    {pinpoint ? (
+                      <>
+                        <LuMapPin color="blue" />{' '}
+                        <Text color="blue">Sudah Pinpoint</Text>
+                      </>
+                    ) : (
+                      <>
+                        <LuMapPinOff />
+                        Belum Pinpoint
+                      </>
+                    )}
                   </Flex>
-                  <PopUpLocation />
-                </Flex>
-              </Field>
-              <Field label="Pin Alamat (Pilihan)">
-                <Flex
-                  justify="space-between"
-                  padding="20px"
-                  rounded="md"
-                  border="1px solid gray"
-                  width="full"
-                  bgColor="gainsboro"
-                >
-                  <Button type="submit">Submit</Button>
                   <PopUpLocation />
                 </Flex>
               </Field>
@@ -428,7 +481,7 @@ export default function CheckoutPages() {
                 >
                   {/* <Text>Depok</Text> */}
                   <Flex gap="15px">
-                    <Image boxSize="100px" src={item?.product?.image} />
+                    <Image boxSize="100px" src={item?.product?.image[0].url} />
                     <Box fontSize="20px" display="flex" flexDir="column">
                       <Text>{item?.product?.title}</Text>
                       <Text color="gray" fontSize="15px">

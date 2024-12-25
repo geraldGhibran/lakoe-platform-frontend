@@ -6,11 +6,14 @@ import { ratesSchema, RatesSchema } from '../schemas/RatesSchema';
 import { getRates } from '../services/rates';
 import { useState } from 'react';
 import { ShipmentDetails } from '@/types/pricing';
+import { useRatesStore } from '@/store/rates';
 
 export const useGetRates = () => {
   const queryClient = useQueryClient();
 
   const [rates, setRates] = useState([]);
+
+  const { destinationAreaId, originAreaId, couriers } = useRatesStore();
 
   const {
     control,
@@ -19,9 +22,9 @@ export const useGetRates = () => {
   } = useForm<RatesSchema>({
     resolver: zodResolver(ratesSchema),
     values: {
-      origin_area_id: 'IDNP9IDNC111IDND264IDZ16413',
-      destination_area_id: 'IDNP6IDNC148IDND843IDZ12250',
-      couriers: 'jne,jnt,sicepat,gojek,tiki,anteraja,grabexpress',
+      origin_area_id: originAreaId,
+      destination_area_id: destinationAreaId,
+      couriers: couriers,
       items: [
         {
           name: 'Shoes',

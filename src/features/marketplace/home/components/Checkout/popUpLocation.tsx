@@ -14,10 +14,17 @@ import 'leaflet/dist/leaflet.css';
 import { IoInformationCircleOutline } from 'react-icons/io5';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import { useShipmentAddress } from '../../hooks/use-shipment-address';
+import { usePinpoint } from '@/store/pinpoint';
 
 export default function PopUpLocation() {
   const { onMarkerDragEnd, position, address, markerRef } =
     useShipmentAddress();
+
+  const { setPinpoint } = usePinpoint();
+
+  const handlePinpoint = () => {
+    setPinpoint(true);
+  };
 
   return (
     <HStack wrap="wrap" gap="4">
@@ -101,16 +108,19 @@ export default function PopUpLocation() {
                 Kembali
               </Button>
             </DialogActionTrigger>
-            <Box width="1/2">
-              <Button
-                width="full"
-                padding="20px"
-                color="white"
-                bgColor="#2E4399"
-              >
-                Pilih Lokasi
-              </Button>
-            </Box>
+            <DialogActionTrigger asChild>
+              <Box width="1/2">
+                <Button
+                  width="full"
+                  padding="20px"
+                  color="white"
+                  bgColor="#2E4399"
+                  onClick={() => handlePinpoint()}
+                >
+                  Pilih Lokasi
+                </Button>
+              </Box>
+            </DialogActionTrigger>
           </DialogFooter>
           <DialogCloseTrigger />
         </DialogContent>

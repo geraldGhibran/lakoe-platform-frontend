@@ -51,6 +51,11 @@ export const getLocationById = async (id: number) => {
   return response.data;
 };
 
+export const getStoreCourierById = async () => {
+  const response = await API.get(`/biteship/couriers`);
+  return response.data;
+};
+
 export const addLocationStore = async (data: AddLocationSchema) => {
   const response = await API.post(`/location`, data);
   return response.data;

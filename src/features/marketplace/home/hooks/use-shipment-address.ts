@@ -58,6 +58,7 @@ export const useShipmentAddress = () => {
   const [selectedPostalCodes, setSelectedPostalCodes] = useState<number | null>(
     null
   );
+
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,6 +76,7 @@ export const useShipmentAddress = () => {
     resolver: zodResolver(shipmentAddressSchema),
     values: {
       name: '',
+      phone: 0,
       address: '',
       city_district: '',
       subdistrict: '',
@@ -261,8 +263,7 @@ export const useShipmentAddress = () => {
         );
         const data = response.data.data || [];
         setPostalCodes(data);
-      } catch (error) {
-        console.error('Error fetching postal code:', error);
+      } catch {
         setPostalCodes([]);
       }
     };

@@ -1,12 +1,21 @@
+import { Store } from '@/types/store';
+
 export interface Product {
   id: number;
   title: string;
   price: number;
   description: string;
   category: Category;
-  image: string;
+  image: Image[];
   rating: Rating;
+  Store: Store;
   weight: number;
+}
+
+export interface Image {
+  id: number;
+  product_id: number;
+  url: string;
 }
 
 interface Rating {
