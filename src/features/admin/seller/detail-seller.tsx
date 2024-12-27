@@ -16,8 +16,14 @@ import { useParams } from 'react-router-dom';
 import { useStoreById } from '../hooks';
 
 export function DetailSeller() {
-  const { storeId } = useParams<{ storeId: any }>();
-  const { data: store, isLoading, isError, error } = useStoreById(storeId);
+  const { storeId } = useParams<{ storeId: string }>();
+  const numericStoreId = Number(storeId);
+  const {
+    data: store,
+    isLoading,
+    isError,
+    error,
+  } = useStoreById(numericStoreId);
 
   if (isLoading) {
     return <Spinner size="xl" />;

@@ -1,92 +1,28 @@
 import { Box, Stack, Tabs, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import HeaderMenu from '../component/headerMenu';
-import OrderItem from '../component/orderItem';
+import OrderItem, { Order } from '../component/orderItem';
 import '@/styles/styes.css';
+import { useGetInvoices } from '../hooks/use-get-invoices';
 
 export default function OrderPage() {
+  const { data: invoices, isLoading, error } = useGetInvoices();
   const [value, setValue] = useState<string | null>('first');
 
-  const orders = [
-    {
-      status: 'Belum Dibayar',
-      invoice: 'INV-00123',
-      name: 'Produk A',
-      quantity: 2,
-      image: 'cardImage/Rectangle 40352.png',
-      total: 150000,
-    },
-
-    {
-      status: 'Belum Dibayar',
-      invoice: 'INV-00123',
-      name: 'Produk A',
-      quantity: 2,
-      image: 'cardImage/Rectangle 40352.png',
-      total: 150000,
-    },
-    {
-      status: 'Pesanan Baru',
-      invoice: 'INV-00124',
-      name: 'Produk B',
-      quantity: 1,
-      image: 'cardImage/Rectangle 40352.png',
-      total: 200000,
-    },
-    {
-      status: 'Siap Dikirim',
-      invoice: 'INV-00125',
-      name: 'Produk C',
-      quantity: 3,
-      image: 'cardImage/Rectangle 40352.png',
-      total: 300000,
-    },
-    {
-      status: 'Dalam Pengiriman',
-      invoice: 'INV-00126',
-      name: 'Produk D',
-      quantity: 4,
-      image: 'cardImage/Rectangle 40352.png',
-      total: 400000,
-    },
-    {
-      status: 'Pesanan Selesai',
-      invoice: 'INV-00127',
-      name: 'Produk E',
-      quantity: 5,
-      image: 'https://via.placeholder.com/70',
-      total: 500000,
-    },
-    {
-      status: 'Pesanan Selesai',
-      invoice: 'INV-00127',
-      name: 'Produk E',
-      quantity: 5,
-      image: 'https://via.placeholder.com/70',
-      total: 500000,
-    },
-    {
-      status: 'Pesanan Selesai',
-      invoice: 'INV-00127',
-      name: 'Produk E',
-      quantity: 5,
-      image: 'https://via.placeholder.com/70',
-      total: 500000,
-    },
-    {
-      status: 'Pesanan Selesai',
-      invoice: 'INV-00127',
-      name: 'Produk E',
-      quantity: 5,
-      image: 'https://via.placeholder.com/70',
-      total: 500000,
-    },
-  ];
-
+  // Safely handle the filtering operation
   const filterOrders = (status: string) => {
-    return orders.filter((order) => order.status === status);
+    return invoices
+      ? invoices?.invoices?.filter((order: Order) => order.status === status)
+      : [];
   };
 
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error loading invoices: {error.message}</Text>;
+  }
   return (
     <Stack direction="row" w={'100%'}>
       <Box bg="gray.100" w={'100%'}>
@@ -112,6 +48,7 @@ export default function OrderPage() {
                 borderBottomColor: '#0086B4',
                 color: '#0086B4',
               }}
+              fontSize={'xs'}
               borderBottom="4px solid transparent"
             >
               Semua
@@ -125,19 +62,20 @@ export default function OrderPage() {
                 borderBottomColor: '#0086B4',
                 color: '#0086B4',
               }}
+              fontSize={'xs'}
               borderBottom="4px solid transparent"
             >
               <Box
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'20px'}
+                w={'30px'}
               >
                 {''}
-                {filterOrders('Belum Dibayar').length > 0 &&
-                  `${filterOrders('Belum Dibayar').length}`}
+                {filterOrders('UNPAID').length > 0 &&
+                  `${filterOrders('UNPAID').length}`}
               </Box>
-              Belum Dibayar
+              UNPAID
             </Tabs.Trigger>
             <Tabs.Trigger
               value="third"
@@ -148,19 +86,20 @@ export default function OrderPage() {
                 borderBottomColor: '#0086B4',
                 color: '#0086B4',
               }}
+              fontSize={'xs'}
               borderBottom="4px solid transparent"
             >
               <Box
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'20px'}
+                w={'30px'}
               >
                 {''}
-                {filterOrders('Pesanan Baru').length > 0 &&
-                  `${filterOrders('Pesanan Baru').length}`}
+                {filterOrders('PAID').length > 0 &&
+                  `${filterOrders('PAID').length}`}
               </Box>
-              Pesanan Baru
+              PAID
             </Tabs.Trigger>
             <Tabs.Trigger
               value="fourth"
@@ -172,18 +111,19 @@ export default function OrderPage() {
                 color: '#0086B4',
               }}
               borderBottom="4px solid transparent"
+              fontSize={'xs'}
             >
               <Box
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'20px'}
+                w={'30px'}
               >
                 {''}
-                {filterOrders('Siap Dikirim').length > 0 &&
-                  `${filterOrders('Siap Dikirim').length}`}
+                {filterOrders('PROCESS').length > 0 &&
+                  `${filterOrders('PROCESS').length}`}
               </Box>
-              Siap Dikirim
+              PROCESS
             </Tabs.Trigger>
             <Tabs.Trigger
               value="fifth"
@@ -195,18 +135,19 @@ export default function OrderPage() {
                 color: '#0086B4',
               }}
               borderBottom="4px solid transparent"
+              fontSize={'xs'}
             >
               <Box
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'20px'}
+                w={'40px'}
               >
                 {''}
-                {filterOrders('Dalam Pengiriman').length > 0 &&
-                  `${filterOrders('Dalam Pengiriman').length}`}
+                {filterOrders('WAIT_TO_PICKUP').length > 0 &&
+                  `${filterOrders('WAIT_TO_PICKUP').length}`}
               </Box>
-              Dalam Pengiriman
+              WAIT_TO_PICKUP
             </Tabs.Trigger>
             <Tabs.Trigger
               value="sixth"
@@ -218,18 +159,43 @@ export default function OrderPage() {
                 color: '#0086B4',
               }}
               borderBottom="4px solid transparent"
+              fontSize={'xs'}
             >
               <Box
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'20px'}
+                w={'30px'}
               >
                 {''}
-                {filterOrders('Pesanan Selesai').length > 0 &&
-                  `${filterOrders('Pesanan Selesai').length}`}
+                {filterOrders('DELIVERING').length > 0 &&
+                  `${filterOrders('DELIVERING').length}`}
               </Box>
-              Pesanan selesai
+              DELIVERING
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="seventh"
+              textAlign={'center'}
+              py={2}
+              justifyContent={'center'}
+              _selected={{
+                borderBottomColor: '#0086B4',
+                color: '#0086B4',
+              }}
+              borderBottom="4px solid transparent"
+              fontSize={'xs'}
+            >
+              <Box
+                bgColor={'#0086B4'}
+                color={'white'}
+                borderRadius={'50%'}
+                w={'30px'}
+              >
+                {''}
+                {filterOrders('DELIVERED').length > 0 &&
+                  `${filterOrders('DELIVERED').length}`}
+              </Box>
+              DELIVERED
             </Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content
@@ -248,7 +214,7 @@ export default function OrderPage() {
             >
               <HeaderMenu />
             </Box>
-            {orders.map((order, index) => (
+            {invoices?.invoices?.map((order: Order, index: number) => (
               <OrderItem key={index} {...order} />
             ))}
           </Tabs.Content>
@@ -263,7 +229,7 @@ export default function OrderPage() {
             >
               <HeaderMenu />
             </Box>
-            {filterOrders('Belum Dibayar').map((order, index) => (
+            {filterOrders('UNPAID').map((order: Order, index: number) => (
               <OrderItem key={index} {...order} />
             ))}
           </Tabs.Content>
@@ -278,7 +244,7 @@ export default function OrderPage() {
             >
               <HeaderMenu />
             </Box>
-            {filterOrders('Pesanan Baru').map((order, index) => (
+            {filterOrders('PAID').map((order: Order, index: number) => (
               <OrderItem key={index} {...order} />
             ))}
           </Tabs.Content>
@@ -293,7 +259,7 @@ export default function OrderPage() {
             >
               <HeaderMenu />
             </Box>
-            {filterOrders('Siap Dikirim').map((order, index) => (
+            {filterOrders('PROCESS').map((order: Order, index: number) => (
               <OrderItem key={index} {...order} />
             ))}
           </Tabs.Content>
@@ -308,9 +274,11 @@ export default function OrderPage() {
             >
               <HeaderMenu />
             </Box>
-            {filterOrders('Dalam Pengiriman').map((order, index) => (
-              <OrderItem key={index} {...order} />
-            ))}
+            {filterOrders('WAIT_TO_PICKUP').map(
+              (order: Order, index: number) => (
+                <OrderItem key={index} {...order} />
+              )
+            )}
           </Tabs.Content>
           <Tabs.Content value="sixth" overflowY="auto" h="calc(100vh - 120px)">
             <Box
@@ -323,7 +291,26 @@ export default function OrderPage() {
             >
               <HeaderMenu />
             </Box>
-            {filterOrders('Pesanan Selesai').map((order, index) => (
+            {filterOrders('DELIVERING').map((order: Order, index: number) => (
+              <OrderItem key={index} {...order} />
+            ))}
+          </Tabs.Content>
+          <Tabs.Content
+            value="seventh"
+            overflowY="auto"
+            h="calc(100vh - 120px)"
+          >
+            <Box
+              position="sticky"
+              top="0"
+              bg="white"
+              zIndex="10"
+              borderBottom="1px solid #E6E6E6"
+              py={4}
+            >
+              <HeaderMenu />
+            </Box>
+            {filterOrders('DELIVERED').map((order: Order, index: number) => (
               <OrderItem key={index} {...order} />
             ))}
           </Tabs.Content>

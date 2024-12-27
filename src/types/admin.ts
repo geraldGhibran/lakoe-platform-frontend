@@ -1,3 +1,5 @@
+import { Location } from './locations';
+
 export interface Product {
   id: number;
   name: string;
@@ -36,7 +38,7 @@ export interface Store {
   user_id: number;
   amount: number;
   courier: string | null;
-  Locations: any[];
+  Locations: Location[];
   bankAccount: BankAccount;
   products: Product[];
   user: User;

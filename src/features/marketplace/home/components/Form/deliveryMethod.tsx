@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Radio, RadioGroup } from '@/components/ui/radio';
+import { useCostRateStore } from '@/store/cost-rate';
 import { Pricing } from '@/types/pricing';
 import { Box, Flex, HStack, Text } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
@@ -19,6 +20,8 @@ export default function DeliveryMethod({
   onSubmit: () => void;
   rates: { pricing: { pricing: Pricing[] } };
 }) {
+  const { setRatesCourier, setIsSelected, setCost } = useCostRateStore();
+
   return (
     <HStack wrap="wrap" gap="4">
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
@@ -51,7 +54,6 @@ export default function DeliveryMethod({
               type="submit"
             >
               Pilih Metode Pengiriman
-              {/* Simpan */}
             </Button>
           </DialogHeader>
           <DialogBody
@@ -60,7 +62,6 @@ export default function DeliveryMethod({
             flexDir="column"
             gap="20px"
           >
-            {/* Close Form */}
             <Box display="flex" flexDir="column" gap="10px">
               <Text>
                 Pengiriman di atas jam 3 sore berpotensi dikirim besok
@@ -77,30 +78,37 @@ export default function DeliveryMethod({
                     variant="subtle"
                     colorPalette="blue"
                   >
-                    <Radio
-                      _hover={{ bgColor: 'blue.300' }}
-                      rounded="md"
-                      padding="20px"
-                      value="0"
-                    >
-                      <Flex alignItems="center">
-                        {/* <Image
+                    <DialogTrigger asChild>
+                      <Radio
+                        _hover={{ bgColor: 'blue.300' }}
+                        rounded="md"
+                        padding="20px"
+                        value="0"
+                        onClick={() => {
+                          setRatesCourier(rate);
+                          setCost(rate.price);
+                          setIsSelected(true);
+                        }}
+                      >
+                        <Flex alignItems="center">
+                          {/* <Image
                           width="100px"
                           src="https://1.bp.blogspot.com/-awkmdr1rWGI/YILHglBLkFI/AAAAAAAAIVw/lvFK6WSrOo0ki_-FU80DVNtDKR6eDwnWgCLcBGAsYHQ/s16000/jnt.png"
                         /> */}
-                        <Text fontWeight="medium" fontSize="20px">
-                          {rate.courier_name} {rate.courier_service_code} (
-                          {rate.shipment_duration_range}) hari{' '}
+                          <Text fontWeight="medium" fontSize="20px">
+                            {rate.courier_name} {rate.courier_service_code} (
+                            {rate.shipment_duration_range}) hari{' '}
+                          </Text>
+                          <Text fontSize="20px" fontWeight="bold">
+                            {' '}
+                            RP. {rate.price}
+                          </Text>
+                        </Flex>
+                        <Text color="gray">
+                          {rate.available_for_cash_on_delivery && 'COD'}
                         </Text>
-                        <Text fontSize="20px" fontWeight="bold">
-                          {' '}
-                          RP. {rate.price}
-                        </Text>
-                      </Flex>
-                      <Text color="gray">
-                        {rate.available_for_cash_on_delivery && 'COD'}
-                      </Text>
-                    </Radio>
+                      </Radio>
+                    </DialogTrigger>
                   </RadioGroup>
                 </>
               ))}

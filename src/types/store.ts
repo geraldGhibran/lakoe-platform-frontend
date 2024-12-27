@@ -10,7 +10,9 @@ export interface Store {
   description?: string;
   logo_img?: string;
   user_id: number;
+  courier: string;
   location?: Location[];
+  Locations: Location[];
   couriers: CourierDto[];
   bankAccount?: BankAccount;
   products?: Product[];

@@ -6,11 +6,54 @@ import { ratesSchema, RatesSchema } from '../schemas/RatesSchema';
 import { getRates } from '../services/rates';
 import { useState } from 'react';
 import { ShipmentDetails } from '@/types/pricing';
+import { useRatesStore } from '@/store/rates';
+import { useCartStore } from '@/store/cart-store';
 
 export const useGetRates = () => {
   const queryClient = useQueryClient();
 
   const [rates, setRates] = useState([]);
+
+  const { destinationAreaId, originAreaId, couriers } = useRatesStore();
+  const { height, length, width, products, description } = useCartStore();
+
+  const updatedProducts = products.map((product) => ({
+    ...product,
+    variant: {
+      ...product.variant,
+      height: height,
+      length: length,
+      width: width,
+      value: product.variant.price,
+      description: description,
+      quantity: product.quantity,
+    },
+  }));
+
+  const removeUnusedProducts = updatedProducts.map((product) => ({
+    ...product,
+    variant: {
+      name: product.variant.name,
+      description: product.variant.description,
+      weight: product.variant.weight,
+      height: product.variant.height,
+      length: product.variant.length,
+      width: product.variant.width,
+      value: product.variant.value,
+      quantity: product.quantity,
+    },
+  }));
+
+  const itemsProducts = removeUnusedProducts.map((product) => ({
+    length: product.variant.length,
+    description: product.variant.description,
+    width: product.variant.width,
+    height: product.variant.height,
+    value: product.variant.value,
+    quantity: product.quantity,
+    weight: product.variant.weight,
+    name: product.variant.name,
+  }));
 
   const {
     control,
@@ -19,21 +62,10 @@ export const useGetRates = () => {
   } = useForm<RatesSchema>({
     resolver: zodResolver(ratesSchema),
     values: {
-      origin_area_id: 'IDNP9IDNC111IDND264IDZ16413',
-      destination_area_id: 'IDNP6IDNC148IDND843IDZ12250',
-      couriers: 'jne,jnt,sicepat,gojek,tiki,anteraja,grabexpress',
-      items: [
-        {
-          name: 'Shoes',
-          description: 'Black colored size 45',
-          value: 199000,
-          length: 30,
-          width: 15,
-          height: 20,
-          weight: 200,
-          quantity: 2,
-        },
-      ],
+      origin_area_id: originAreaId,
+      destination_area_id: destinationAreaId,
+      couriers: couriers,
+      items: itemsProducts,
     },
   });
 
@@ -75,7 +107,6 @@ export const useGetRates = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // getRatesAsync(data as RatesSchema);
       const rates = await getRatesAsync(data as RatesSchema);
       return setRates(rates);
     } catch (error) {
