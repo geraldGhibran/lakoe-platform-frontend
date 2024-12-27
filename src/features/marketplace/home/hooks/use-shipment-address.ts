@@ -9,6 +9,7 @@ import {
   shipmentAddressSchema,
   ShipmentAddressSchema,
 } from '../schemas/ShipmentAddressSchema';
+import { useCustomerDetailStore } from '@/store/customer-detail';
 
 interface Provinsi {
   id: number;
@@ -64,6 +65,8 @@ export const useShipmentAddress = () => {
 
   const { user } = useAuthStore();
 
+  const { setCustomerDetails } = useCustomerDetailStore();
+
   const {
     register,
     handleSubmit,
@@ -78,6 +81,7 @@ export const useShipmentAddress = () => {
       name: '',
       phone: 0,
       address: '',
+      email: '',
       city_district: '',
       subdistrict: '',
       province: '',
@@ -165,6 +169,7 @@ export const useShipmentAddress = () => {
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
+    setCustomerDetails(data);
     shipmentPaymentAsync(data as ShipmentAddressSchema);
   });
 

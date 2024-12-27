@@ -6,6 +6,7 @@ import { MdOutlineAttachMoney } from 'react-icons/md';
 
 import { useCartStore } from '@/store/cart-store';
 import { Link, useNavigate } from 'react-router-dom';
+import { formatCurrency } from '@/features/add-other/format-currency';
 
 export default function Cart() {
   const {
@@ -14,6 +15,7 @@ export default function Cart() {
     increaseQuantity,
     removeItem,
     totalPrice,
+    productImage,
   } = useCartStore();
   const navigate = useNavigate();
 
@@ -54,22 +56,19 @@ export default function Cart() {
               >
                 <Table.Cell padding="10px 20px">
                   <Flex gap="10px">
-                    <Image boxSize="100px" src={item?.product?.image[0].url} />
+                    <Image boxSize="100px" src={productImage} />
                     <Box>
-                      <Text fontSize="20px">{item?.product?.title}</Text>
-                      <Text color="gray" fontSize="15px">
-                        {item?.product?.category}
-                      </Text>
+                      <Text fontSize="20px">{item?.variant?.name}</Text>
                     </Box>
                   </Flex>
                 </Table.Cell>
                 <Table.Cell padding="20px" fontSize="20px" textAlign="start">
-                  {item?.product?.price * item?.quantity}
+                  {formatCurrency(item?.variant?.price * item?.quantity)}
                 </Table.Cell>
                 <Table.Cell>
                   <Flex gap="10px" padding="10px" height="full" fontSize="20px">
                     <Button
-                      onClick={() => removeItem(item?.product?.id)}
+                      onClick={() => removeItem(item?.variant?.id)}
                       display="flex"
                       bgColor="white"
                       justifyContent="center"
@@ -81,7 +80,7 @@ export default function Cart() {
                       <LuTrash2 />
                     </Button>
                     <Button
-                      onClick={() => decreaseQuantity(item?.product?.id)}
+                      onClick={() => decreaseQuantity(item?.variant?.id)}
                       display="flex"
                       bgColor="white"
                       color="black"
@@ -104,7 +103,7 @@ export default function Cart() {
                       {item?.quantity}
                     </Button>
                     <Button
-                      onClick={() => increaseQuantity(item?.product?.id)}
+                      onClick={() => increaseQuantity(item?.variant?.id)}
                       display="flex"
                       bgColor="white"
                       color="black"
@@ -185,7 +184,7 @@ export default function Cart() {
                     Subtotal
                   </Table.ColumnHeader>
                   <Table.ColumnHeader textAlign="end" color="black">
-                    $ {totalPrice}
+                    {formatCurrency(totalPrice)}
                   </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
@@ -197,7 +196,10 @@ export default function Cart() {
                   borderColor="red"
                 >
                   <Table.Cell py="10px">Total</Table.Cell>
-                  <Table.Cell textAlign="end">$ {totalPrice}</Table.Cell>
+                  <Table.Cell textAlign="end">
+                    {' '}
+                    {formatCurrency(totalPrice)}
+                  </Table.Cell>
                 </Table.Row>
               </Table.Body>
             </Table.Root>

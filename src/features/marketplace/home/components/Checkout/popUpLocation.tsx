@@ -115,6 +115,7 @@ export default function PopUpLocation() {
                   padding="20px"
                   color="white"
                   bgColor="#2E4399"
+                  type="submit"
                   onClick={() => handlePinpoint()}
                 >
                   Pilih Lokasi

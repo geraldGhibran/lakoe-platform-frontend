@@ -31,6 +31,12 @@ type Category =
 
 export interface CartItem {
   product: Product;
+  variant: {
+    id: number;
+    name: string;
+    product_id: number;
+  };
+
   quantity: number;
 }
 

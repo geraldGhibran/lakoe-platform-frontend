@@ -19,11 +19,12 @@ import { usePinpoint } from '@/store/pinpoint';
 import { useRatesStore } from '@/store/rates';
 import {
   Box,
-  Button,
   createListCollection,
+  DialogRoot,
   Fieldset,
   Flex,
   Group,
+  HStack,
   Image,
   Input,
   Table,
@@ -40,6 +41,11 @@ import { useGetRates } from '../../hooks/useGetRates';
 import { getAreaId } from '../../services/rates';
 import DeliveryMethod from '../Form/deliveryMethod';
 import PopUpLocation from './popUpLocation';
+import { useEffect } from 'react';
+import { useCostRateStore } from '@/store/cost-rate';
+import { useCheckout } from '../../hooks/use-checkout';
+import { Button } from '@/components/ui/button';
+import { useCustomerDetailStore } from '@/store/customer-detail';
 
 interface AllFields {
   name: string;
@@ -56,8 +62,11 @@ interface AllFields {
 }
 
 export default function CheckoutPages() {
-  const { totalPrice, products } = useCartStore();
+  const { totalPrice, products, productImage } = useCartStore();
+  const { cost } = useCostRateStore();
   const { onSubmit, rates } = useGetRates();
+
+  const { ratesCourier, isSelected } = useCostRateStore();
 
   const {
     provinsi,
@@ -82,6 +91,10 @@ export default function CheckoutPages() {
 
   const allFields = watch() as AllFields;
 
+  const { isGettingCheckout, onSubmit: onSubmitCheckout } = useCheckout();
+
+  const { setCustomerDetails } = useCustomerDetailStore();
+
   const requiredFields = [
     'name',
     'phone',
@@ -91,6 +104,8 @@ export default function CheckoutPages() {
     'subdistrict',
     'village',
     'postal_code',
+    'latitude',
+    'longitude',
   ];
 
   const isAllFilled = requiredFields.every((field) => allFields[field]);
@@ -108,16 +123,21 @@ export default function CheckoutPages() {
   const input =
     cityDistrictValue + ' ' + subdistrictValue + ' ' + postalCodeValue;
 
-  const fetchAreaId = async (input: string) => {
-    const areaId = await getAreaId(input);
-    return setDestinationAreaId(areaId);
-  };
+  useEffect(() => {
+    const fetchArea = async () => {
+      if (isAllFilled) {
+        try {
+          const areaId = await getAreaId(input);
+          setDestinationAreaId(areaId);
+          setCustomerDetails(allFields);
+        } catch (error) {
+          console.error('Failed to fetch area ID:', error);
+        }
+      }
+    };
 
-  if (isAllFilled) {
-    fetchAreaId(input);
-  } else {
-    console.warn('Please fill in all required fields.');
-  }
+    fetchArea();
+  }, [input, isAllFilled, allFields, setDestinationAreaId, setCustomerDetails]);
 
   const provinsiCollection = createListCollection({
     items: provinsi.map((prov) => ({
@@ -154,6 +174,8 @@ export default function CheckoutPages() {
     })),
   });
 
+  console.log(ratesCourier);
+
   return (
     <Box padding="10px 100px" pb="100px">
       <Text fontSize="30px" fontWeight="medium" mb="20px">
@@ -172,19 +194,7 @@ export default function CheckoutPages() {
               justifyContent="start"
               alignItems="start"
             >
-              <Text color="blue">Langkah 1</Text>
               <Text fontWeight="medium">Info Pengiriman</Text>
-            </Box>
-            <Box
-              display="flex"
-              padding="10px 20px"
-              color="gray"
-              flexDir="column"
-              justifyContent="start"
-              alignItems="start"
-            >
-              <Text>Langkah 2</Text>
-              <Text fontWeight="medium">Metode Pembayaran</Text>
             </Box>
           </Flex>
 
@@ -211,6 +221,19 @@ export default function CheckoutPages() {
                     px="20px"
                     border="1px solid gray"
                     name="name"
+                  />
+                </Field>
+
+                <Field
+                  label="Email"
+                  invalid={!!errors.email || !!errors.email}
+                  errorText={errors.email?.message || errors.email?.message}
+                >
+                  <Input
+                    {...register('email')}
+                    px="20px"
+                    border="1px solid gray"
+                    type="email"
                   />
                 </Field>
 
@@ -456,88 +479,129 @@ export default function CheckoutPages() {
           </Flex>
           {/* Metode Pembayaran */}
           <AccordionRoot
-            border="1px solid red"
+            border={isSelected ? '1px solid gray' : '1px solid red'}
             rounded="lg"
             collapsible
             defaultValue={['b']}
             variant="enclosed"
           >
-            {products.map((item) => (
-              <AccordionItem bgColor="white" value="a">
-                <AccordionItemTrigger
-                  padding="20px"
-                  cursor="pointer"
-                  rounded="0"
-                  bgColor="#fee2e2"
-                >
-                  {item?.product?.title}
-                </AccordionItemTrigger>
-                <AccordionItemContent
-                  display="flex"
-                  flexDir="column"
-                  fontSize="20px"
-                  gap="20px"
-                  bgColor="white"
-                >
-                  {/* <Text>Depok</Text> */}
-                  <Flex gap="15px">
-                    <Image boxSize="100px" src={item?.product?.image[0].url} />
-                    <Box fontSize="20px" display="flex" flexDir="column">
-                      <Text>{item?.product?.title}</Text>
-                      <Text color="gray" fontSize="15px">
-                        {item?.product?.category} - {item?.quantity} barang (100
-                        g)
-                      </Text>
-                      <Text fontWeight="medium">
-                        {formatCurrency(totalPrice)}
-                      </Text>
-                    </Box>
-                  </Flex>
-                  <Box borderY="1px solid gainsboro" py="20px">
-                    <DeliveryMethod onSubmit={onSubmit} rates={ratesData} />
-                  </Box>
-
-                  <AccordionRoot
-                    borderColor="transparent"
-                    rounded="lg"
-                    collapsible
-                    defaultValue={['b']}
-                    variant="enclosed"
+            <AccordionItem bgColor="white" value="a">
+              <AccordionItemTrigger
+                padding="20px"
+                cursor="pointer"
+                rounded="0"
+                bgColor={isSelected ? 'gray.200' : '#fee2e2'}
+              >
+                List Product
+              </AccordionItemTrigger>
+              {products.map((item) => (
+                <>
+                  <AccordionItemContent
+                    display="flex"
+                    flexDir="column"
+                    fontSize="20px"
+                    gap="20px"
+                    bgColor="white"
                   >
-                    <AccordionItem bgColor="white" value="a">
-                      <AccordionItemTrigger
-                        cursor="pointer"
-                        padding="20px"
-                        rounded="0"
-                      >
-                        <Flex width="full" justify="space-between">
-                          <Text color="gray">Total</Text>
-                          {formatCurrency(totalPrice)}
-                        </Flex>
-                      </AccordionItemTrigger>
-                      <AccordionItemContent
-                        display="flex"
-                        flexDir="column"
-                        padding="20px"
-                        rounded="md"
-                        fontWeight="light"
-                        gap="20px"
-                        bgColor="#F9FAFB"
-                      >
-                        <Flex
-                          fontSize="15px"
-                          width="full"
-                          justify="space-between"
+                    <Flex gap="15px">
+                      <Image boxSize="100px" src={productImage} />
+                      <Box fontSize="20px" display="flex" flexDir="column">
+                        <Text>{item?.variant.name}</Text>
+                        <Text color="gray" fontSize="15px">
+                          {item?.variant.name} - {item?.quantity} barang ({' '}
+                          {item?.variant.weight}
+                          g)
+                        </Text>
+                        <Text fontWeight="medium">{item?.variant.price}</Text>
+                      </Box>
+                    </Flex>
+                  </AccordionItemContent>
+                </>
+              ))}
+
+              {isSelected && (
+                <Box p="30px">
+                  <Flex
+                    justify="space-between"
+                    padding="20px"
+                    rounded="md"
+                    border={'1px solid blue'}
+                    width="full"
+                    bgColor={'white'}
+                  >
+                    <Flex color="gray" alignItems="center" gap="10px">
+                      <HStack wrap="wrap" gap="4">
+                        <DialogRoot
+                          placement="center"
+                          motionPreset="slide-in-bottom"
                         >
-                          <Text>Total (items)</Text>
-                          {formatCurrency(totalPrice)}
-                        </Flex>
-                      </AccordionItemContent>
-                    </AccordionItem>
-                  </AccordionRoot>
-                </AccordionItemContent>
-              </AccordionItem>
-            ))}
+                          <Button
+                            fontSize="14px"
+                            fontWeight="medium"
+                            color="blue"
+                            height="30px"
+                            bgColor="white"
+                            padding="20px"
+                            border="1px solid blue"
+                            variant="outline"
+                          >
+                            {ratesCourier.courier_name}
+                          </Button>
+                          <Text fontSize="12px" fontWeight="normal" px="10px">
+                            {ratesCourier.courier_name}
+                          </Text>
+                          <Text fontSize="12px" fontWeight="normal" px="10px">
+                            {ratesCourier.duration}
+                          </Text>
+                          <Text
+                            fontSize="12px"
+                            fontWeight="extrabold"
+                            color="black"
+                            px="10px"
+                          >
+                            {formatCurrency(ratesCourier.price)}
+                          </Text>
+                        </DialogRoot>
+                      </HStack>
+                    </Flex>
+                  </Flex>
+                </Box>
+              )}
+
+              <AccordionRoot
+                borderColor="transparent"
+                rounded="lg"
+                collapsible
+                defaultValue={['b']}
+                variant="enclosed"
+              >
+                <AccordionItem bgColor="white" value="a">
+                  <AccordionItemTrigger
+                    cursor="pointer"
+                    padding="20px"
+                    rounded="0"
+                  >
+                    <Flex width="full" justify="space-between">
+                      <Text color="gray">Total</Text>
+                      {formatCurrency(totalPrice)}
+                    </Flex>
+                  </AccordionItemTrigger>
+                  <AccordionItemContent
+                    display="flex"
+                    flexDir="column"
+                    padding="20px"
+                    rounded="md"
+                    fontWeight="light"
+                    gap="20px"
+                    bgColor="#F9FAFB"
+                  >
+                    <Box py="20px">
+                      <DeliveryMethod onSubmit={onSubmit} rates={ratesData} />
+                    </Box>
+                  </AccordionItemContent>
+                </AccordionItem>
+              </AccordionRoot>
+            </AccordionItem>
           </AccordionRoot>
         </Box>
 
@@ -587,7 +651,7 @@ export default function CheckoutPages() {
                       Total Harga (1)
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(567)}
+                      {formatCurrency(totalPrice)}
                     </Table.ColumnHeader>
                   </Table.Row>
                   <Table.Row bgColor="#E5F2FF">
@@ -595,7 +659,7 @@ export default function CheckoutPages() {
                       Biaya Pengiriman
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(0)}
+                      {formatCurrency(cost)}
                     </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
@@ -611,7 +675,7 @@ export default function CheckoutPages() {
                       Total
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      {formatCurrency(567)}
+                      {formatCurrency(totalPrice + cost)}
                     </Table.Cell>
                   </Table.Row>
                 </Table.Body>
@@ -647,16 +711,19 @@ export default function CheckoutPages() {
               </Field>
             </Box>
           </Flex>
-          <Button
-            type="submit"
-            _active={{ shadow: 'sm' }}
-            shadow="md"
-            color="white"
-            bgColor="blue"
-          >
-            <Text>Pilih Pembayaran</Text>
-            <FaArrowRight />
-          </Button>
+          <form onSubmit={onSubmitCheckout}>
+            <Button
+              type="submit"
+              _active={{ shadow: 'sm' }}
+              shadow="md"
+              color="white"
+              loading={isGettingCheckout}
+              bgColor="blue"
+            >
+              <Text>Pilih Pembayaran</Text>
+              <FaArrowRight />
+            </Button>
+          </form>
         </Box>
       </Flex>
     </Box>
