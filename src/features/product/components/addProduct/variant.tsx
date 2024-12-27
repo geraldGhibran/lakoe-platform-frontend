@@ -11,7 +11,13 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
-import { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
+import {
+  useState,
+  ChangeEvent,
+  KeyboardEvent,
+  useEffect,
+  useCallback,
+} from 'react';
 import { Tag } from '@/components/ui/tag';
 import { Switch } from '@/components/ui/switch';
 import VariantModal from '../modal/variant';
@@ -108,7 +114,7 @@ export default function VariantComponent({
 
   const combinations = generateCombinations();
 
-  const preparePayload = () => {
+  const preparePayload = useCallback(() => {
     const variants = [
       { name: 'warna', variantItem: colorTags },
       { name: 'ukuran', variantItem: sizeTags },
@@ -129,12 +135,12 @@ export default function VariantComponent({
     );
 
     return { variants, variantCombination };
-  };
+  }, [colorTags, sizeTags, dynamicVariant, combinationData]);
 
   useEffect(() => {
     const payload = preparePayload();
     onSubmit(payload.variants, payload.variantCombination);
-  }, [onSubmit]);
+  }, [preparePayload, onSubmit]);
 
   const handleInputChangeUkuran = (
     event: ChangeEvent<HTMLInputElement>
