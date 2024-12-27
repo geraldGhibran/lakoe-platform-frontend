@@ -8,6 +8,7 @@ import { createListCollection } from '@chakra-ui/react';
 import { useMutation } from '@tanstack/react-query';
 import API from '@/libs/axios';
 import { toaster } from '@/components/ui/toaster-placement';
+import { useAuthStore } from '@/store/auth';
 
 interface ProductFormData {
   name: string;
@@ -70,6 +71,7 @@ const useAddProduct = () => {
   const [sizeTags, setSizeTags] = useState<string[]>([]);
   const [images, setImages] = useState<ImageObject[]>([]);
   const [files, setFiles] = useState<File[]>([]);
+  const { user } = useAuthStore();
 
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
@@ -173,7 +175,6 @@ const useAddProduct = () => {
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
       const response = await API.post('/product/create', formData);
-      console.log('API Response:', response);
       return response.data;
     },
     onSuccess: () => {
@@ -188,7 +189,7 @@ const useAddProduct = () => {
       toaster.create({
         title: 'Error',
         type: 'error',
-        description: error.message || 'An error occurred, please try again',
+        description: error.message,
         duration: 3000,
       });
     },
@@ -209,6 +210,7 @@ const useAddProduct = () => {
         length: data.length,
         width: data.width,
         height: data.height,
+        store_id: Number(user?.store?.id),
       })
     );
 

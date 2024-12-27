@@ -51,7 +51,6 @@ export default function AddProductPage() {
     categoryCollection,
     updateVariantsAndCombination,
   } = useAddProduct();
-
   return (
     <Stack direction="row">
       <Box bg="gray.100" minH="270vh" w="100%">

@@ -27,6 +27,12 @@ const AddVariant: React.FC<AddVariantProps> = ({ onAddVariant }) => {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit(e as unknown as React.FormEvent);
+    }
+  };
   return (
     <PopoverRoot lazyMount unmountOnExit>
       <PopoverTrigger asChild>
@@ -44,7 +50,7 @@ const AddVariant: React.FC<AddVariantProps> = ({ onAddVariant }) => {
         <PopoverBody>
           <PopoverTitle fontWeight="medium">Tambahkan Varian</PopoverTitle>
           <Text my="4">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} onKeyDown={handleKeyDown}>
               <Field label="Nama Varian">
                 <Input
                   value={variantName}
