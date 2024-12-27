@@ -8,13 +8,29 @@ import {
   Image,
   Group,
   InputAddon,
+  Flex,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
-import { useState, ChangeEvent, KeyboardEvent } from 'react';
+import { useState, ChangeEvent, KeyboardEvent, useEffect } from 'react';
 import { Tag } from '@/components/ui/tag';
 import { Switch } from '@/components/ui/switch';
 import VariantModal from '../modal/variant';
 import { Field } from '@/components/ui/field';
+import AddVariant from '../modal/add-variant';
+
+type Variant = {
+  name: string;
+  variantItem: string[];
+};
+
+type VariantCombination = {
+  name: string;
+  sku: string;
+  weight: number;
+  stock: number;
+  price: number;
+  isActive: boolean;
+};
 
 interface VariantComponentProps {
   colorTags: string[];
@@ -25,6 +41,10 @@ interface VariantComponentProps {
   onRemoveSizeTag: (index: number) => void;
   onToggleVariantTypeCreate: () => void;
   isVariantTypeCreate: boolean;
+  onSubmit: (
+    variants: Variant[],
+    variantCombination: VariantCombination[]
+  ) => void;
 }
 
 export default function VariantComponent({
@@ -36,13 +56,31 @@ export default function VariantComponent({
   onRemoveSizeTag,
   onToggleVariantTypeCreate,
   isVariantTypeCreate,
+  onSubmit,
 }: VariantComponentProps) {
+  const [dynamicVariant, setDynamicVariant] = useState<
+    Record<string, string[]>
+  >({});
+  const [dynamicInput, setDynamicInput] = useState<Record<string, string>>({});
   const [inputWarna, setInputWarna] = useState('');
   const [inputUkuran, setInputUkuran] = useState('');
   const [activeVariants, setActiveVariants] = useState<string[]>([]);
+  const [dynamicVariants, setDynamicVariants] = useState<string[]>([]);
   const [imagePreviews, setImagePreviews] = useState<{
     [key: string]: string | null;
   }>({});
+  const [combinationData, setCombinationData] = useState<
+    Record<
+      string,
+      {
+        sku: string;
+        weight: number;
+        stock: number;
+        price: number;
+        isActive: boolean;
+      }
+    >
+  >({});
 
   const handleInputChangeWarna = (
     event: ChangeEvent<HTMLInputElement>
@@ -50,9 +88,53 @@ export default function VariantComponent({
     setInputWarna(event.target.value);
   };
 
-  const combinations = colorTags.flatMap((color) =>
-    sizeTags.map((size) => `${color}-${size}`)
-  );
+  const generateCombinations = () => {
+    return colorTags.flatMap((color) =>
+      sizeTags.flatMap((size) => {
+        const dynamicCombinations = Object.entries(dynamicVariant).reduce(
+          (acc, [, values]) =>
+            acc.flatMap((combo) => values.map((value) => `${combo}${value}`)),
+          ['']
+        );
+
+        return dynamicCombinations.map((dynamicCombo) =>
+          [color, size, dynamicCombo]
+            .filter((part) => part.trim() !== '')
+            .join(',')
+        );
+      })
+    );
+  };
+
+  const combinations = generateCombinations();
+
+  const preparePayload = () => {
+    const variants = [
+      { name: 'warna', variantItem: colorTags },
+      { name: 'ukuran', variantItem: sizeTags },
+      ...Object.entries(dynamicVariant).map(([name, variantItem]) => ({
+        name,
+        variantItem,
+      })),
+    ];
+    const variantCombination = Object.entries(combinationData).map(
+      ([combination, data]) => ({
+        name: combination,
+        sku: data.sku,
+        weight: data.weight,
+        stock: data.stock,
+        price: data.price,
+        isActive: data.isActive,
+      })
+    );
+
+    return { variants, variantCombination };
+  };
+
+  useEffect(() => {
+    const payload = preparePayload();
+    onSubmit(payload.variants, payload.variantCombination);
+  }, [onSubmit]);
 
   const handleInputChangeUkuran = (
     event: ChangeEvent<HTMLInputElement>
@@ -60,6 +142,26 @@ export default function VariantComponent({
     setInputUkuran(event.target.value);
   };
 
+  const handleDynamicInputChange = (variant: string, value: string) => {
+    setDynamicInput((prev) => ({
+      ...prev,
+      [variant]: value,
+    }));
+  };
+
+  const handleDynamicKeyDown = (
+    variant: string,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === 'Enter' && dynamicInput[variant]?.trim()) {
+      e.preventDefault();
+      handleAddDynamicTag(variant, dynamicInput[variant]);
+      setDynamicInput((prev) => ({
+        ...prev,
+        [variant]: '',
+      }));
+    }
+  };
   const handleKeyDownWarna = (event: KeyboardEvent<HTMLInputElement>): void => {
     const value = inputWarna.trim();
     if (event.key === 'Enter' && value) {
@@ -88,6 +190,23 @@ export default function VariantComponent({
     );
   };
 
+  const handleAddDynamicTag = (variant: string, tag: string): void => {
+    if (tag.trim()) {
+      setDynamicVariant((prev) => ({
+        ...prev,
+        [variant]: [...(prev[variant] || []), tag],
+      }));
+    }
+  };
+
+  const handleRemoveDynamicTag = (variant: string, index: number): void => {
+    setDynamicVariant((prev) => {
+      const updatedTags = [...(prev[variant] || [])];
+      updatedTags.splice(index, 1);
+      return { ...prev, [variant]: updatedTags };
+    });
+  };
+
   const handleImageChange =
     (tag: string) => (e: ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -109,6 +228,25 @@ export default function VariantComponent({
       delete newState[tag];
       return newState;
     });
+  };
+
+  const handleAddVariant = (variantName: string) => {
+    setDynamicVariants((prev) => [...prev, variantName]);
+    setActiveVariants((prev) => [...prev, variantName]);
+  };
+
+  const handleCombinationChange = (
+    combination: string,
+    field: keyof (typeof combinationData)[string],
+    value: string | number | boolean
+  ) => {
+    setCombinationData((prev) => ({
+      ...prev,
+      [combination]: {
+        ...prev[combination],
+        [field]: value,
+      },
+    }));
   };
 
   return (
@@ -141,14 +279,19 @@ export default function VariantComponent({
               >
                 Ukuran
               </Button>
-              <Button
-                bg={'white'}
-                color={'black'}
-                border={'1px solid black'}
-                borderRadius={'100px'}
-              >
-                <Icon icon="formkit:add" /> Tambah Varian
-              </Button>
+              {dynamicVariants.map((variant) => (
+                <Button
+                  key={variant}
+                  bg={activeVariants.includes(variant) ? 'cyan.500' : 'white'}
+                  color={activeVariants.includes(variant) ? 'white' : 'black'}
+                  border={'1px solid black'}
+                  borderRadius={'100px'}
+                  onClick={() => handleVariantClick(variant)}
+                >
+                  {variant}
+                </Button>
+              ))}
+              <AddVariant onAddVariant={handleAddVariant} />
             </HStack>
 
             {activeVariants.includes('warna') && (
@@ -194,6 +337,7 @@ export default function VariantComponent({
                     minWidth="120px"
                   />
                 </Box>
+
                 <Box py={5}>
                   <Switch colorPalette={'cyan'}>Gunakan Foto Variant</Switch>
                   <HStack wrap="wrap" align="flex-start">
@@ -290,6 +434,62 @@ export default function VariantComponent({
                 </Box>
               </>
             )}
+            {dynamicVariants.map((variant) =>
+              activeVariants.includes(variant) ? (
+                <Box key={variant} mt={4}>
+                  <Flex justify="space-between" align="center">
+                    <Text py={2} fontWeight={500}>
+                      {variant}
+                    </Text>
+                  </Flex>
+                  <Box
+                    display="flex"
+                    flexWrap="wrap"
+                    w={'810px'}
+                    alignItems="center"
+                    padding="2px"
+                    border="1px solid"
+                    borderColor="gray.300"
+                    borderRadius="md"
+                  >
+                    {dynamicVariant[variant]?.map((tag, index) => (
+                      <Tag
+                        key={index}
+                        size="md"
+                        p={1}
+                        m={2}
+                        variant="solid"
+                        bgColor={'gray.200'}
+                        color={'black'}
+                        marginRight={2}
+                        marginBottom={2}
+                        closable
+                        onClick={() => handleRemoveDynamicTag(variant, index)}
+                      >
+                        {tag}
+                      </Tag>
+                    ))}
+                    <Input
+                      autoFocus
+                      variant="subtle"
+                      flex={1}
+                      minWidth="120px"
+                      placeholder={`Masukan ${variant}...`}
+                      value={dynamicInput[variant] || ''}
+                      onChange={(e) =>
+                        handleDynamicInputChange(variant, e.target.value)
+                      }
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleDynamicKeyDown(variant, e);
+                        }
+                      }}
+                    />
+                  </Box>
+                </Box>
+              ) : null
+            )}
             {activeVariants.includes('ukuran') && (
               <>
                 <Text py={2} fontWeight={500}>
@@ -357,7 +557,21 @@ export default function VariantComponent({
                       <Text py={2} fontWeight={500}>
                         {combination}
                       </Text>
-                      <Switch colorPalette={'cyan'}>Aktif</Switch>
+                      <Switch
+                        colorPalette={'cyan'}
+                        checked={
+                          combinationData[combination]?.isActive || false
+                        }
+                        onChange={(e) =>
+                          handleCombinationChange(
+                            combination,
+                            'isActive',
+                            (e.target as HTMLInputElement).checked
+                          )
+                        }
+                      >
+                        Aktif
+                      </Switch>
                     </HStack>
                     <HStack gap="2" width="full">
                       <Box>
@@ -365,9 +579,17 @@ export default function VariantComponent({
                           <Group attached>
                             <InputAddon>Rp</InputAddon>
                             <Input
-                              placeholder="Masukan Harga"
+                              placeholder={`Masukan Harga untuk ${combination}`}
                               variant="outline"
                               width="350px"
+                              value={combinationData[combination]?.price || ''}
+                              onChange={(e) =>
+                                handleCombinationChange(
+                                  combination,
+                                  'price',
+                                  Number(e.target.value)
+                                )
+                              }
                             />
                           </Group>
                         </Field>
@@ -375,20 +597,36 @@ export default function VariantComponent({
                       <Box>
                         <Field label="Stok Produk">
                           <Input
-                            placeholder="Masukan Stok"
+                            placeholder={`Masukan Stok untuk ${combination}`}
                             variant="outline"
                             width="410px"
+                            value={combinationData[combination]?.stock || ''}
+                            onChange={(e) =>
+                              handleCombinationChange(
+                                combination,
+                                'stock',
+                                Number(e.target.value)
+                              )
+                            }
                           />
                         </Field>
                       </Box>
                     </HStack>
                     <HStack gap="2" width="full" my={4}>
                       <Box>
-                        <Field label="SKU(Stock Keeping Unit)">
+                        <Field label="SKU (Stock Keeping Unit)">
                           <Input
-                            placeholder="Masukan SkU"
+                            placeholder={`Masukan SKU untuk ${combination}`}
                             variant="outline"
                             width="395px"
+                            value={combinationData[combination]?.sku || ''}
+                            onChange={(e) =>
+                              handleCombinationChange(
+                                combination,
+                                'sku',
+                                e.target.value
+                              )
+                            }
                           />
                         </Field>
                       </Box>
@@ -396,9 +634,17 @@ export default function VariantComponent({
                         <Field label="Berat Produk">
                           <Group attached>
                             <Input
-                              placeholder="Masukan SKU"
+                              placeholder={`Masukan Berat untuk ${combination}`}
                               variant="outline"
                               width="350px"
+                              value={combinationData[combination]?.weight || ''}
+                              onChange={(e) =>
+                                handleCombinationChange(
+                                  combination,
+                                  'weight',
+                                  Number(e.target.value)
+                                )
+                              }
                             />
                             <InputAddon>Gram</InputAddon>
                           </Group>

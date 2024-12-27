@@ -13,7 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { Field } from '@/components/ui/field';
 import VariantComponent from './variant';
-import useAddProduct from '../hooks/useAddProduct';
+import useAddProduct from '../hooks/use-add-product';
 import { Icon } from '@iconify/react';
 import {
   SelectContent,
@@ -49,6 +49,7 @@ export default function AddProductPage() {
     setSelectedSubcategory,
     setSelectedSubSubcategory,
     categoryCollection,
+    updateVariantsAndCombination,
   } = useAddProduct();
 
   return (
@@ -130,7 +131,7 @@ export default function AddProductPage() {
                               setSelectedSubSubcategory(null);
                             }}
                           >
-                            <Text ml={5}>
+                            <Text>
                               {selectedCategory?.value === category.value ? (
                                 <strong>{category.label}</strong>
                               ) : (
@@ -141,7 +142,7 @@ export default function AddProductPage() {
                         ))}
                       </Box>
                       {selectedCategory?.subcategories && (
-                        <Box width="35%">
+                        <Box width="35%" borderLeft={'1px solid gray'}>
                           {selectedCategory.subcategories.map((subcategory) => (
                             <SelectItem
                               item={subcategory}
@@ -156,7 +157,7 @@ export default function AddProductPage() {
                                 setSelectedSubSubcategory(null);
                               }}
                             >
-                              <Text pl={5}>
+                              <Text>
                                 {selectedSubcategory?.value ===
                                 subcategory.value ? (
                                   <strong>{subcategory.label}</strong>
@@ -169,7 +170,7 @@ export default function AddProductPage() {
                         </Box>
                       )}
                       {selectedSubcategory?.subcategories && (
-                        <Box width="35%" p={5}>
+                        <Box width="35%" borderLeft={'1px solid gray'}>
                           {selectedSubcategory.subcategories.map(
                             (subSubcategory) => (
                               <SelectItem
@@ -185,7 +186,7 @@ export default function AddProductPage() {
                                   setSelectedSubSubcategory(subSubcategory)
                                 }
                               >
-                                <Text pl={5}>
+                                <Text>
                                   {selectedSubSubcategory?.value ===
                                   subSubcategory.value ? (
                                     <strong>{subSubcategory.label}</strong>
@@ -194,7 +195,7 @@ export default function AddProductPage() {
                                   )}
                                   <input
                                     type="hidden"
-                                    {...register('categories', {
+                                    {...register('categories_id', {
                                       valueAsNumber: true,
                                     })}
                                     value={subSubcategory.id}
@@ -209,9 +210,9 @@ export default function AddProductPage() {
                   </SelectContent>
                 </SelectRoot>
               </Box>
-              {errors.categories && (
+              {errors.categories_id && (
                 <Text color={'red.500'}>
-                  {errors.categories.message as string}
+                  {errors.categories_id.message as string}
                 </Text>
               )}
             </Box>
@@ -250,28 +251,29 @@ export default function AddProductPage() {
                 Foto Produk
               </Text>
               <Stack direction="row">
-                <Box display="flex" gap="4" flexWrap="wrap">
-                  {images.map((preview, index) => (
-                    <Box
-                      key={index}
-                      width="188px"
-                      height="200px"
-                      borderWidth="2px"
-                      borderStyle="dashed"
-                      borderRadius="md"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      position="relative"
-                      overflow="hidden"
-                    >
-                      {preview ? (
+                <div>
+                  <Box display="flex" flexWrap="wrap" gap="10px">
+                    {images.map((image, index) => (
+                      <Box
+                        key={index}
+                        width="188px"
+                        height="200px"
+                        borderWidth="2px"
+                        borderStyle="dashed"
+                        borderRadius="md"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        position="relative"
+                        overflow="hidden"
+                      >
                         <Box position="relative" width="100%" height="100%">
                           <Image
-                            src={preview}
+                            src={image.preview || ''}
                             width="100%"
                             height="100%"
                             objectFit="cover"
+                            alt={`Image ${index + 1}`}
                           />
                           <Button
                             size="sm"
@@ -284,42 +286,49 @@ export default function AddProductPage() {
                             Remove
                           </Button>
                         </Box>
-                      ) : (
-                        <Box textAlign="center" position="relative">
-                          <Text fontSize="sm">
-                            <Icon
-                              icon="hugeicons:image-upload-01"
-                              color="green"
-                              width="50px"
-                              height="50px"
-                            />
-                          </Text>
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            position="absolute"
-                            top="0"
-                            left="0"
-                            width="100%"
-                            height="100%"
-                            opacity="0"
-                            cursor="pointer"
-                            {...register(`image.${index}`)}
-                            onChange={(e) => handleImageChange(e, index)}
-                            borderColor={
-                              errors.image?.[index] ? 'red.500' : 'gray.200'
-                            }
-                          />
-                        </Box>
-                      )}
-                      {errors.image?.[index] && (
-                        <Text color="red.500" fontSize="sm" mt="2">
-                          {errors.image[index]?.message as string}
-                        </Text>
-                      )}
+                      </Box>
+                    ))}
+                  </Box>
+                  <Box textAlign="center" position="relative" mt="10px">
+                    <Box
+                      width="188px"
+                      height="200px"
+                      borderWidth="2px"
+                      borderStyle="dashed"
+                      borderRadius="md"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      position="relative"
+                      overflow="hidden"
+                    >
+                      <Box
+                        bgColor={'white'}
+                        borderRadius={'full'}
+                        p={2}
+                        onClick={() =>
+                          document.getElementById('fileInput')?.click()
+                        }
+                      >
+                        <Icon
+                          icon="hugeicons:image-upload"
+                          color="green"
+                          width="60px"
+                          height="60px"
+                          aria-label="Upload Gambar"
+                        />
+                        <Input
+                          id="fileInput"
+                          multiple
+                          type="file"
+                          hidden
+                          accept="image/*"
+                          onChange={handleImageChange}
+                        />
+                      </Box>
                     </Box>
-                  ))}
-                </Box>
+                  </Box>
+                </div>
               </Stack>
             </Box>
           </Box>
@@ -342,6 +351,7 @@ export default function AddProductPage() {
               onRemoveSizeTag={handleRemoveSizeTag}
               onToggleVariantTypeCreate={handleVariantTypeCreateToggle}
               isVariantTypeCreate={isVariantTypeCreate}
+              onSubmit={updateVariantsAndCombination}
             />
           </Box>
           <Box
@@ -378,7 +388,7 @@ export default function AddProductPage() {
               </Text>
               <Group attached>
                 <Input
-                  value={'1'}
+                  placeholder="minimum order"
                   {...register('minimum_order')}
                   borderColor={errors.minimum_order ? 'red.500' : 'gray.200'}
                 />
@@ -393,81 +403,17 @@ export default function AddProductPage() {
           </Box>
           <Box
             px={10}
-            py={1}
+            py={5}
             m="auto"
             width="100%"
-            h={220}
             bg="white"
             my={5}
             boxShadow="md"
             borderRadius="lg"
           >
-            <Text fontSize="2xl" mt={10} mb={5} fontWeight="bold">
-              Pengelolaan Produk
-            </Text>
-            <HStack gap="10" width="full">
-              <Box>
-                <Field label="Stock Produk">
-                  <Input
-                    placeholder="Masukan Jumlah stok"
-                    variant="outline"
-                    {...register('stock')}
-                    borderColor={errors.stock ? 'red.500' : 'gray.200'}
-                    width="350px"
-                  />
-                </Field>
-                {errors.stock && (
-                  <Text color={'red.500'}>
-                    {errors.stock.message as string}
-                  </Text>
-                )}
-              </Box>
-              <Box>
-                <Field label="SKU(Stock Keeping Unit)">
-                  <Input
-                    placeholder="Masukan SKU"
-                    variant="outline"
-                    {...register('sku')}
-                    borderColor={errors.sku ? 'red.500' : 'gray.200'}
-                    width="350px"
-                  />
-                </Field>
-                {errors.sku && (
-                  <Text color={'red.500'}>{errors.sku.message as string}</Text>
-                )}
-              </Box>
-            </HStack>
-          </Box>
-          <Box
-            px={10}
-            py={1}
-            m="auto"
-            width="100%"
-            h={350}
-            bg="white"
-            my={5}
-            boxShadow="md"
-            borderRadius="lg"
-          >
-            <Text fontSize="2xl" mt={10} mb={5} fontWeight="bold">
+            <Text fontSize="2xl" mt={5} mb={5} fontWeight="bold">
               Berat & Pengiriman
             </Text>
-            <Stack>
-              <Text fontSize="14px" mb={1} mt={2} fontWeight="500">
-                Berat Produk
-              </Text>
-              <Group attached>
-                <Input
-                  placeholder="Masukan berat produk"
-                  {...register('weight')}
-                  borderColor={errors.weight ? 'red.500' : 'gray.200'}
-                />
-                <InputAddon>Gram</InputAddon>
-              </Group>
-              {errors.weight && (
-                <Text color={'red.500'}>{errors.weight.message as string}</Text>
-              )}
-            </Stack>
             <HStack gap="20" width="100%" mt={5}>
               <Box>
                 <Text fontSize="14px" mb={1} mt={2} fontWeight="500">
