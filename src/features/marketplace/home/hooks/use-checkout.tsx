@@ -126,7 +126,6 @@ export const useCheckout = () => {
     isGettingCheckout,
     errors,
     control,
-    onSubmit,
-    rates,
+    onSubmit
   };
 };

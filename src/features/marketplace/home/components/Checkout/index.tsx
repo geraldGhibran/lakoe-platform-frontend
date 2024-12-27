@@ -137,7 +137,7 @@ export default function CheckoutPages() {
     };
 
     fetchArea();
-  }, [input, isAllFilled, allFields, setDestinationAreaId, setCustomerDetails]);
+  }, []);
 
   const provinsiCollection = createListCollection({
     items: provinsi.map((prov) => ({
