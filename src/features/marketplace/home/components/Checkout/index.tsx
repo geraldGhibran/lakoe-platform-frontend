@@ -49,7 +49,7 @@ import { useCustomerDetailStore } from '@/store/customer-detail';
 
 interface AllFields {
   name: string;
-  phone: number;
+  phone: string;
   address: string;
   province: string;
   city_district: string;
