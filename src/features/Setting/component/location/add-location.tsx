@@ -80,7 +80,7 @@ const AddLocation = () => {
   const kelurahanCollection = createListCollection({
     items: kelurahan.map((kab) => ({
       label: kab.nama,
-      value: kab.nama,
+      value: kab.id,
     })),
   });
 
@@ -145,6 +145,15 @@ const AddLocation = () => {
                 type="number"
                 hidden
               />
+
+              {/* <Input
+                {...register('province_code', { valueAsNumber: true })}
+                value={Number(selectedProvinsi)}
+                border="2px solid black"
+                placeholder="ID"
+                type="number"
+              /> */}
+
               <Field
                 label="Nama Lokasi"
                 invalid={!!errors.name}
@@ -153,47 +162,80 @@ const AddLocation = () => {
                 <Input placeholder="Cth. Toko Alamanda" {...register('name')} />
               </Field>
               <Field
-                label="Provinsi"
-                invalid={!!errors.province_code}
-                errorText={errors.province_code?.message}
+                label="Kabupaten/Kota"
+                invalid={!!errors.province_code || !!errors.province}
+                errorText={
+                  errors.province_code?.message || errors.province?.message
+                }
               >
                 <SelectRoot
                   collection={provinsiCollection}
-                  {...register('province_code', { valueAsNumber: true })}
                   size="sm"
-                  onValueChange={(details) =>
-                    setSelectedProvinsi(
-                      details.value ? Number(details.value) : null
-                    )
-                  }
+                  disabled={!provinsi.length}
+                  {...register('province_code', { valueAsNumber: true })}
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0; // Default to 0 if details.value is null/undefined
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : ''; // Ensure label exists
+
+                    setSelectedProvinsi(selectedValue); // Update custom state
+                    setValue('province_code', selectedValue); // Update form field for province_code
+                    setValue('province', selectedLabel); // Update form field for province
+                  }}
                 >
                   <SelectTrigger>
-                    <SelectValueText placeholder="Pilih Provinsi" />
+                    <SelectValueText
+                      placeholder={
+                        provinsi.length
+                          ? 'Pilih Provinsi'
+                          : 'Pilih provinsi terlebih dahulu'
+                      }
+                    />
                   </SelectTrigger>
-                  <SelectContent position="absolute" zIndex={3} w="100%">
-                    {provinsiCollection.items.map((prov) => (
-                      <SelectItem item={prov} key={prov.value}>
-                        {prov.label}
+                  <SelectContent position="absolute" zIndex={2} w="100%">
+                    {provinsiCollection.items.map((kab) => (
+                      <SelectItem item={kab} key={kab.value}>
+                        {kab.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </SelectRoot>
               </Field>
+
               <Field
                 label="Kabupaten/Kota"
-                invalid={!!errors.city_district}
-                errorText={errors.city_district?.message}
+                invalid={!!errors.city_district || !!errors.city_district_code}
+                errorText={
+                  errors.city_district?.message ||
+                  errors.city_district_code?.message
+                }
               >
                 <SelectRoot
                   collection={kabupatenCollection}
                   size="sm"
                   disabled={!kabupaten.length}
-                  {...register('city_district', { valueAsNumber: true })}
-                  onValueChange={(details) =>
-                    setSelectedKabupaten(
-                      details.value ? Number(details.value) : null
-                    )
-                  }
+                  // {...register('city_district_code', { valueAsNumber: true })}
+                  // onValueChange={(details) => {
+                  //   setSelectedKabupaten(
+                  //     details.value ? Number(details.value) : null
+                  //   );
+
+                  // }}
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0; // Default to 0 if details.value is null/undefined
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : ''; // Ensure label exists
+
+                    setSelectedKabupaten(selectedValue); // Update custom state
+                    setValue('city_district_code', selectedValue); // Update form field for city_district_code
+                    setValue('city_district', selectedLabel); // Update form field for city_district
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValueText
@@ -215,19 +257,29 @@ const AddLocation = () => {
               </Field>
               <Field
                 label="Kecamatan"
-                invalid={!!errors.subdistrict}
-                errorText={errors.subdistrict?.message}
+                invalid={!!errors.subdistrict || !!errors.subdistrict_code}
+                errorText={
+                  errors.subdistrict?.message ||
+                  errors.subdistrict_code?.message
+                }
               >
                 <SelectRoot
                   disabled={!kecamatan.length}
-                  {...register('subdistrict', { valueAsNumber: true })}
+                  // {...register('subdistrict', { valueAsNumber: true })}
                   collection={kecamatanCollection}
                   size="sm"
-                  onValueChange={(details) =>
-                    setSelectedKecamatan(
-                      details.value ? Number(details.value) : null
-                    )
-                  }
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0; // Default to 0 if details.value is null/undefined
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : ''; // Ensure label exists
+
+                    setSelectedKecamatan(selectedValue); // Update custom state
+                    setValue('subdistrict_code', selectedValue); // Update form field for subdistrict_code
+                    setValue('subdistrict', selectedLabel); // Update form field for subdistrict
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValueText
@@ -249,21 +301,20 @@ const AddLocation = () => {
               </Field>
               <Field
                 label="Kelurahan"
-                invalid={!!errors.subdistrict}
-                errorText={errors.subdistrict?.message}
+                invalid={!!errors.village}
+                errorText={errors.village?.message}
               >
                 <SelectRoot
                   disabled={!kelurahan.length}
-                  {...register('village')}
                   collection={kelurahanCollection}
                   size="sm"
-                  onValueChange={(details) =>
-                    setSelectedKelurahan(
-                      details.value
-                        ? removeKotaKabupaten(details.value[0])
-                        : null
-                    )
-                  }
+                  onValueChange={(details) => {
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+                    setSelectedKelurahan(removeKotaKabupaten(selectedLabel));
+                    setValue('village', selectedLabel);
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValueText
