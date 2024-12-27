@@ -1,46 +1,185 @@
 import {
-  Box,
-  Button,
-  Fieldset,
-  Flex,
-  Group,
-  Image,
-  Input,
-  InputAddon,
-  Table,
-  Text,
-  Textarea,
-} from '@chakra-ui/react';
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from '@/components/ui/native-select';
-import {
   AccordionItem,
   AccordionItemContent,
   AccordionItemTrigger,
   AccordionRoot,
 } from '@/components/ui/accordion';
+import { ColorModeButton } from '@/components/ui/color-mode';
 import { Field } from '@/components/ui/field';
-import { Link } from 'react-router-dom';
-import { LuMapPinOff } from 'react-icons/lu';
-import PopUpLocation from './popUpLocation';
-import { MdOutlineAttachMoney } from 'react-icons/md';
-import { IoIosArrowForward } from 'react-icons/io';
-import { FaArrowRight } from 'react-icons/fa6';
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from '@/components/ui/select';
 import { formatCurrency } from '@/features/add-other/format-currency';
-// import DeliveryMethod fro../Form/deliveryMethodhod';
 import { useCartStore } from '@/store/cart-store';
-import DeliveryMethod from '../Form/deliveryMethod';
+import { usePinpoint } from '@/store/pinpoint';
+import { useRatesStore } from '@/store/rates';
+import {
+  Box,
+  createListCollection,
+  DialogRoot,
+  Fieldset,
+  Flex,
+  Group,
+  HStack,
+  Image,
+  Input,
+  Table,
+  Text,
+  Textarea,
+} from '@chakra-ui/react';
+import { FaArrowRight } from 'react-icons/fa6';
+import { IoIosArrowForward } from 'react-icons/io';
+import { LuMapPin, LuMapPinOff } from 'react-icons/lu';
+import { MdOutlineAttachMoney } from 'react-icons/md';
+import { Link } from 'react-router-dom';
+import { useShipmentAddress } from '../../hooks/use-shipment-address';
 import { useGetRates } from '../../hooks/useGetRates';
+import { getAreaId } from '../../services/rates';
+import DeliveryMethod from '../Form/deliveryMethod';
+import PopUpLocation from './popUpLocation';
+import { useEffect } from 'react';
+import { useCostRateStore } from '@/store/cost-rate';
+import { useCheckout } from '../../hooks/use-checkout';
+import { Button } from '@/components/ui/button';
+import { useCustomerDetailStore } from '@/store/customer-detail';
 
-export default function Checkout() {
-  const { totalPrice, products } = useCartStore();
+interface AllFields {
+  name: string;
+  phone: number;
+  address: string;
+  province: string;
+  city_district: string;
+  subdistrict: string;
+  village: string;
+  postal_code: number;
+  latitude: number;
+  longitude: number;
+  [key: string]: string | number;
+}
+
+export default function CheckoutPages() {
+  const { totalPrice, products, productImage } = useCartStore();
+  const { cost } = useCostRateStore();
   const { onSubmit, rates } = useGetRates();
+
+  const { ratesCourier, isSelected } = useCostRateStore();
+
+  const {
+    provinsi,
+    kabupaten,
+    postalCodes,
+    setSelectedProvinsi,
+    setSelectedKabupaten,
+    kelurahan,
+    kecamatan,
+    setSelectedKecamatan,
+    setSelectedKelurahan,
+    removeKotaKabupaten,
+    errors,
+    register,
+    onSubmit: onSubmitShipmentAddress,
+    setValue,
+    watch,
+  } = useShipmentAddress();
+
+  const { pinpoint } = usePinpoint();
+  const { setDestinationAreaId } = useRatesStore();
+
+  const allFields = watch() as AllFields;
+
+  const { isGettingCheckout, onSubmit: onSubmitCheckout } = useCheckout();
+
+  const { setCustomerDetails } = useCustomerDetailStore();
+
+  const requiredFields = [
+    'name',
+    'phone',
+    'address',
+    'province',
+    'city_district',
+    'subdistrict',
+    'village',
+    'postal_code',
+    'latitude',
+    'longitude',
+  ];
+
+  const isAllFilled = requiredFields.every((field) => allFields[field]);
+
+  const ratesData = {
+    pricing: {
+      pricing: rates.length < 0 ? rates : rates.pricing,
+    },
+  };
+
+  const cityDistrictValue = watch('city_district');
+  const subdistrictValue = watch('subdistrict');
+  const postalCodeValue = watch('postal_code');
+
+  const input =
+    cityDistrictValue + ' ' + subdistrictValue + ' ' + postalCodeValue;
+
+  useEffect(() => {
+    const fetchArea = async () => {
+      if (isAllFilled) {
+        try {
+          const areaId = await getAreaId(input);
+          setDestinationAreaId(areaId);
+          setCustomerDetails(allFields);
+        } catch (error) {
+          console.error('Failed to fetch area ID:', error);
+        }
+      }
+    };
+
+    fetchArea();
+  }, [input, isAllFilled, allFields, setDestinationAreaId, setCustomerDetails]);
+
+  const provinsiCollection = createListCollection({
+    items: provinsi.map((prov) => ({
+      label: prov.nama,
+      value: prov.id,
+    })),
+  });
+
+  const kabupatenCollection = createListCollection({
+    items: kabupaten.map((kab) => ({
+      label: kab.nama,
+      value: Number(kab.id),
+    })),
+  });
+
+  const kecamatanCollection = createListCollection({
+    items: kecamatan.map((kab) => ({
+      label: kab.nama,
+      value: kab.id,
+    })),
+  });
+
+  const kelurahanCollection = createListCollection({
+    items: kelurahan.map((kab) => ({
+      label: kab.nama,
+      value: kab.id,
+    })),
+  });
+
+  const postalCodeCollection = createListCollection({
+    items: postalCodes.map((pos) => ({
+      label: pos.code,
+      value: Number(pos.code),
+    })),
+  });
+
+  console.log(ratesCourier);
+
   return (
     <Box padding="10px 100px" pb="100px">
       <Text fontSize="30px" fontWeight="medium" mb="20px">
-        Checkout
+        Checkout <ColorModeButton />
       </Text>
       <Flex gap="20px">
         {/* Formulir */}
@@ -55,82 +194,8 @@ export default function Checkout() {
               justifyContent="start"
               alignItems="start"
             >
-              <Text color="blue">Langkah 1</Text>
               <Text fontWeight="medium">Info Pengiriman</Text>
             </Box>
-            <Box
-              display="flex"
-              padding="10px 20px"
-              color="gray"
-              flexDir="column"
-              justifyContent="start"
-              alignItems="start"
-            >
-              <Text>Langkah 2</Text>
-              <Text fontWeight="medium">Metode Pembayaran</Text>
-            </Box>
-          </Flex>
-          {/* Form Informasi Kontak */}
-          <Flex
-            flexDir="column"
-            padding="20px"
-            rounded="lg"
-            gap="20px"
-            border="1px solid gainsboro"
-          >
-            <Text fontSize="20px" fontWeight="medium">
-              Informasi Kontak
-            </Text>
-            <Fieldset.Root width="1/2">
-              <Field position="relative" label="Nama Kontak">
-                <Input px="20px" border="1px solid gray" name="name" />
-                <Text position="absolute" right="0" bottom="-25px">
-                  0 / 50
-                </Text>
-              </Field>
-
-              <Field label="Alamat Email">
-                <Input
-                  px="20px"
-                  border="1px solid gray"
-                  name="email"
-                  type="email"
-                />
-              </Field>
-
-              <Field position="relative" label="Nomor WhatsApp">
-                <Group
-                  width="full"
-                  rounded="md"
-                  _focus={{ border: 'red' }}
-                  attached
-                >
-                  <InputAddon bgColor="gainsboro">+62</InputAddon>
-                  <Input
-                    px="20px"
-                    roundedEnd="md"
-                    placeholder="Phone number..."
-                  />
-                  <Link to="/login">
-                    <Button
-                      top="-25px"
-                      color="blue"
-                      bgColor="transparent"
-                      boxSize="auto"
-                      fontWeight="medium"
-                      right="0"
-                      position="absolute"
-                    >
-                      Masuk
-                    </Button>
-                  </Link>
-                </Group>
-              </Field>
-              <Text fontSize="10px">
-                Kami akan mengirimkan konfirmasi dan informasi perubahan status
-                pesanan ke WhatsApp kamu
-              </Text>
-            </Fieldset.Root>
           </Flex>
 
           {/* Form Alamat Pengiriman */}
@@ -144,157 +209,399 @@ export default function Checkout() {
             <Text fontSize="20px" fontWeight="medium">
               Alamat Pengiriman
             </Text>
-            <Fieldset.Root width="full">
-              <Field label="Nama Penerima">
-                <Input px="20px" border="1px solid gray" name="name" />
-              </Field>
-
-              <Field label="Nomor HP">
-                <Group
-                  width="full"
-                  border="1px solid gray"
-                  rounded="md"
-                  attached
+            <form onSubmit={onSubmitShipmentAddress}>
+              <Fieldset.Root width="full">
+                <Field
+                  label="Nama Penerima"
+                  invalid={!!errors.name || !!errors.name}
+                  errorText={errors.name?.message || errors.name?.message}
                 >
-                  <InputAddon bgColor="gainsboro">+62</InputAddon>
-                  <Input px="20px" placeholder="Phone number..." />
-                </Group>
-              </Field>
-            </Fieldset.Root>
-            <Field label="Kecamatan">
-              <NativeSelectRoot size="md" width="full">
-                <NativeSelectField>
-                  <option value="react">React</option>
-                  <option value="vue">Vue</option>
-                  <option value="svelte">Svelte</option>
-                  <option value="angular">Angular</option>
-                </NativeSelectField>
-              </NativeSelectRoot>
-            </Field>
+                  <Input
+                    {...register('name')}
+                    px="20px"
+                    border="1px solid gray"
+                    name="name"
+                  />
+                </Field>
 
-            <Field label="Kelurahan">
-              <NativeSelectRoot size="md" width="full">
-                <NativeSelectField>
-                  <option value="react">React</option>
-                  <option value="vue">Vue</option>
-                  <option value="svelte">Svelte</option>
-                  <option value="angular">Angular</option>
-                </NativeSelectField>
-              </NativeSelectRoot>
-            </Field>
+                <Field
+                  label="Email"
+                  invalid={!!errors.email || !!errors.email}
+                  errorText={errors.email?.message || errors.email?.message}
+                >
+                  <Input
+                    {...register('email')}
+                    px="20px"
+                    border="1px solid gray"
+                    type="email"
+                  />
+                </Field>
 
-            <Field label="Detail Alamat" required>
-              <Textarea
-                padding="10px"
-                minHeight="100px"
-                border="1px solid gray"
-                placeholder="isi dengan jalan, nomor rumah, nomor gedung, lantai atau nomor unit"
-              />
-            </Field>
-            <Field label="Pin Alamat (Pilihan)">
-              <Flex
-                justify="space-between"
-                padding="20px"
-                rounded="md"
-                border="1px solid gray"
-                width="full"
-                bgColor="gainsboro"
+                <Field
+                  label="Phone"
+                  invalid={!!errors.phone || !!errors.phone}
+                  errorText={errors.phone?.message || errors.phone?.message}
+                >
+                  <Group
+                    width="full"
+                    border="1px solid gray"
+                    rounded="md"
+                    attached
+                  >
+                    <Input
+                      {...register('phone')}
+                      px="20px"
+                      placeholder="Phone number..."
+                      type="tel"
+                    />
+                  </Group>
+                </Field>
+              </Fieldset.Root>
+              <Field
+                label="Provinsi"
+                invalid={!!errors.province || !!errors.province}
+                errorText={errors.province?.message || errors.province?.message}
               >
-                <Flex color="gray" alignItems="center" gap="10px">
-                  <LuMapPinOff />
-                  Belum Pinpoint
+                <SelectRoot
+                  collection={provinsiCollection}
+                  size="sm"
+                  disabled={!provinsi.length}
+                  {...register('province')}
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0;
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+
+                    setSelectedProvinsi(selectedValue);
+                    setValue('province', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        provinsi.length
+                          ? 'Pilih Provinsi'
+                          : 'Pilih provinsi terlebih dahulu'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={2} w="100%">
+                    {provinsiCollection.items.map((kab) => (
+                      <SelectItem item={kab} key={kab.value}>
+                        {kab.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+
+              <Field
+                label="Kabupaten/Kota"
+                invalid={!!errors.city_district || !!errors.city_district}
+                errorText={
+                  errors.city_district?.message || errors.city_district?.message
+                }
+              >
+                <SelectRoot
+                  collection={kabupatenCollection}
+                  size="sm"
+                  disabled={!kabupaten.length}
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0;
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+
+                    setSelectedKabupaten(selectedValue);
+                    setValue('city_district', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        kabupaten.length
+                          ? 'Pilih Kabupaten/Kota'
+                          : 'Pilih provinsi terlebih dahulu'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={2} w="100%">
+                    {kabupatenCollection.items.map((kab) => (
+                      <SelectItem item={kab} key={kab.value}>
+                        {kab.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+              <Field
+                label="Kecamatan"
+                invalid={!!errors.subdistrict || !!errors.subdistrict}
+                errorText={
+                  errors.subdistrict?.message || errors.subdistrict?.message
+                }
+              >
+                <SelectRoot
+                  disabled={!kecamatan.length}
+                  collection={kecamatanCollection}
+                  size="sm"
+                  onValueChange={(details) => {
+                    const selectedValue = details?.value
+                      ? Number(details.value)
+                      : 0;
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+
+                    setSelectedKecamatan(selectedValue);
+                    setValue('subdistrict', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        kecamatan.length
+                          ? 'Pilih Kecamatan'
+                          : 'Pilih Kota/kabupaten terlebih dahulu'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={3} w="100%">
+                    {kecamatanCollection.items.map((kec) => (
+                      <SelectItem item={kec} key={kec.value}>
+                        {kec.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+              <Field
+                label="Kelurahan"
+                invalid={!!errors.village}
+                errorText={errors.village?.message}
+              >
+                <SelectRoot
+                  disabled={!kelurahan.length}
+                  collection={kelurahanCollection}
+                  size="sm"
+                  onValueChange={(details) => {
+                    const selectedLabel = details?.items
+                      ? details.items[0]?.label
+                      : '';
+                    setSelectedKelurahan(removeKotaKabupaten(selectedLabel));
+                    setValue('village', selectedLabel);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={
+                        kelurahan.length
+                          ? 'Pilih Kelurahan terlebih dahulu'
+                          : 'Pilih Kecamatan'
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent position="absolute" zIndex={3} w="100%">
+                    {kelurahanCollection.items.map((kel) => (
+                      <SelectItem item={kel} key={kel.value}>
+                        {kel.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+              <Field
+                label="Kode Pos"
+                invalid={!!errors.postal_code}
+                errorText={errors.postal_code?.message}
+              >
+                <SelectRoot
+                  {...register('postal_code', { valueAsNumber: true })}
+                  collection={postalCodeCollection}
+                >
+                  <SelectTrigger>
+                    <SelectValueText placeholder="Masukan Kode Pos" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {postalCodeCollection.items.map((pos, index) => (
+                      <SelectItem item={pos} key={index}>
+                        {pos.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </SelectRoot>
+              </Field>
+
+              <Field
+                label="Detail Alamat"
+                invalid={!!errors.address}
+                errorText={errors.address?.message}
+              >
+                <Textarea
+                  {...register('address')}
+                  padding="10px"
+                  minHeight="100px"
+                  border="1px solid gray"
+                  placeholder="isi dengan jalan, nomor rumah, nomor gedung, lantai atau nomor unit"
+                />
+              </Field>
+              <Field label="Pin Alamat (Pilihan)">
+                <Flex
+                  justify="space-between"
+                  padding="20px"
+                  rounded="md"
+                  border={pinpoint ? '1px solid blue' : '1px solid gray'}
+                  width="full"
+                  bgColor={pinpoint ? 'white' : 'gainsboro'}
+                >
+                  <Flex color="gray" alignItems="center" gap="10px">
+                    {pinpoint ? (
+                      <>
+                        <LuMapPin color="blue" />{' '}
+                        <Text color="blue">Sudah Pinpoint</Text>
+                      </>
+                    ) : (
+                      <>
+                        <LuMapPinOff />
+                        Belum Pinpoint
+                      </>
+                    )}
+                  </Flex>
+                  <PopUpLocation />
                 </Flex>
-                <PopUpLocation />
-              </Flex>
-            </Field>
+              </Field>
+            </form>
           </Flex>
           {/* Metode Pembayaran */}
           <AccordionRoot
-            border="1px solid red"
+            border={isSelected ? '1px solid gray' : '1px solid red'}
             rounded="lg"
             collapsible
             defaultValue={['b']}
             variant="enclosed"
           >
-            {products.map((item) => (
-              <AccordionItem bgColor="white" value="a">
-                <AccordionItemTrigger
-                  padding="20px"
-                  cursor="pointer"
-                  rounded="0"
-                  bgColor="#fee2e2"
-                >
-                  {item?.product?.title}
-                </AccordionItemTrigger>
-                <AccordionItemContent
-                  display="flex"
-                  flexDir="column"
-                  fontSize="20px"
-                  gap="20px"
-                  bgColor="white"
-                >
-                  {/* <Text>Depok</Text> */}
-                  <Flex gap="15px">
-                    <Image boxSize="100px" src={item?.product?.image} />
-                    <Box fontSize="20px" display="flex" flexDir="column">
-                      <Text>{item?.product?.title}</Text>
-                      <Text color="gray" fontSize="15px">
-                        {item?.product?.category} - {item?.quantity} barang (100
-                        g)
-                      </Text>
-                      <Text fontWeight="medium">
-                        {formatCurrency(totalPrice)}
-                      </Text>
-                    </Box>
-                  </Flex>
-                  <Box borderY="1px solid gainsboro" py="20px">
-                    <DeliveryMethod
-                      onSubmit={onSubmit}
-                      rates={{ pricing: rates }}
-                    />
-                  </Box>
-
-                  <AccordionRoot
-                    borderColor="transparent"
-                    rounded="lg"
-                    collapsible
-                    defaultValue={['b']}
-                    variant="enclosed"
+            <AccordionItem bgColor="white" value="a">
+              <AccordionItemTrigger
+                padding="20px"
+                cursor="pointer"
+                rounded="0"
+                bgColor={isSelected ? 'gray.200' : '#fee2e2'}
+              >
+                List Product
+              </AccordionItemTrigger>
+              {products.map((item) => (
+                <>
+                  <AccordionItemContent
+                    display="flex"
+                    flexDir="column"
+                    fontSize="20px"
+                    gap="20px"
+                    bgColor="white"
                   >
-                    <AccordionItem bgColor="white" value="a">
-                      <AccordionItemTrigger
-                        cursor="pointer"
-                        padding="20px"
-                        rounded="0"
-                      >
-                        <Flex width="full" justify="space-between">
-                          <Text color="gray">Total</Text>
-                          {formatCurrency(totalPrice)}
-                        </Flex>
-                      </AccordionItemTrigger>
-                      <AccordionItemContent
-                        display="flex"
-                        flexDir="column"
-                        padding="20px"
-                        rounded="md"
-                        fontWeight="light"
-                        gap="20px"
-                        bgColor="#F9FAFB"
-                      >
-                        <Flex
-                          fontSize="15px"
-                          width="full"
-                          justify="space-between"
+                    <Flex gap="15px">
+                      <Image boxSize="100px" src={productImage} />
+                      <Box fontSize="20px" display="flex" flexDir="column">
+                        <Text>{item?.variant.name}</Text>
+                        <Text color="gray" fontSize="15px">
+                          {item?.variant.name} - {item?.quantity} barang ({' '}
+                          {item?.variant.weight}
+                          g)
+                        </Text>
+                        <Text fontWeight="medium">{item?.variant.price}</Text>
+                      </Box>
+                    </Flex>
+                  </AccordionItemContent>
+                </>
+              ))}
+
+              {isSelected && (
+                <Box p="30px">
+                  <Flex
+                    justify="space-between"
+                    padding="20px"
+                    rounded="md"
+                    border={'1px solid blue'}
+                    width="full"
+                    bgColor={'white'}
+                  >
+                    <Flex color="gray" alignItems="center" gap="10px">
+                      <HStack wrap="wrap" gap="4">
+                        <DialogRoot
+                          placement="center"
+                          motionPreset="slide-in-bottom"
                         >
-                          <Text>Total (items)</Text>
-                          {formatCurrency(totalPrice)}
-                        </Flex>
-                      </AccordionItemContent>
-                    </AccordionItem>
-                  </AccordionRoot>
-                </AccordionItemContent>
-              </AccordionItem>
-            ))}
+                          <Button
+                            fontSize="14px"
+                            fontWeight="medium"
+                            color="blue"
+                            height="30px"
+                            bgColor="white"
+                            padding="20px"
+                            border="1px solid blue"
+                            variant="outline"
+                          >
+                            {ratesCourier.courier_name}
+                          </Button>
+                          <Text fontSize="12px" fontWeight="normal" px="10px">
+                            {ratesCourier.courier_name}
+                          </Text>
+                          <Text fontSize="12px" fontWeight="normal" px="10px">
+                            {ratesCourier.duration}
+                          </Text>
+                          <Text
+                            fontSize="12px"
+                            fontWeight="extrabold"
+                            color="black"
+                            px="10px"
+                          >
+                            {formatCurrency(ratesCourier.price)}
+                          </Text>
+                        </DialogRoot>
+                      </HStack>
+                    </Flex>
+                  </Flex>
+                </Box>
+              )}
+
+              <AccordionRoot
+                borderColor="transparent"
+                rounded="lg"
+                collapsible
+                defaultValue={['b']}
+                variant="enclosed"
+              >
+                <AccordionItem bgColor="white" value="a">
+                  <AccordionItemTrigger
+                    cursor="pointer"
+                    padding="20px"
+                    rounded="0"
+                  >
+                    <Flex width="full" justify="space-between">
+                      <Text color="gray">Total</Text>
+                      {formatCurrency(totalPrice)}
+                    </Flex>
+                  </AccordionItemTrigger>
+                  <AccordionItemContent
+                    display="flex"
+                    flexDir="column"
+                    padding="20px"
+                    rounded="md"
+                    fontWeight="light"
+                    gap="20px"
+                    bgColor="#F9FAFB"
+                  >
+                    <Box py="20px">
+                      <DeliveryMethod onSubmit={onSubmit} rates={ratesData} />
+                    </Box>
+                  </AccordionItemContent>
+                </AccordionItem>
+              </AccordionRoot>
+            </AccordionItem>
           </AccordionRoot>
         </Box>
 
@@ -344,7 +651,7 @@ export default function Checkout() {
                       Total Harga (1)
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(567)}
+                      {formatCurrency(totalPrice)}
                     </Table.ColumnHeader>
                   </Table.Row>
                   <Table.Row bgColor="#E5F2FF">
@@ -352,7 +659,7 @@ export default function Checkout() {
                       Biaya Pengiriman
                     </Table.ColumnHeader>
                     <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(0)}
+                      {formatCurrency(cost)}
                     </Table.ColumnHeader>
                   </Table.Row>
                 </Table.Header>
@@ -368,7 +675,7 @@ export default function Checkout() {
                       Total
                     </Table.Cell>
                     <Table.Cell textAlign="end">
-                      {formatCurrency(567)}
+                      {formatCurrency(totalPrice + cost)}
                     </Table.Cell>
                   </Table.Row>
                 </Table.Body>
@@ -404,16 +711,19 @@ export default function Checkout() {
               </Field>
             </Box>
           </Flex>
-          <Button
-            type="submit"
-            _active={{ shadow: 'sm' }}
-            shadow="md"
-            color="white"
-            bgColor="blue"
-          >
-            <Text>Pilih Pembayaran</Text>
-            <FaArrowRight />
-          </Button>
+          <form onSubmit={onSubmitCheckout}>
+            <Button
+              type="submit"
+              _active={{ shadow: 'sm' }}
+              shadow="md"
+              color="white"
+              loading={isGettingCheckout}
+              bgColor="blue"
+            >
+              <Text>Pilih Pembayaran</Text>
+              <FaArrowRight />
+            </Button>
+          </form>
         </Box>
       </Flex>
     </Box>
