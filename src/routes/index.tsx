@@ -7,20 +7,19 @@ import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { AuthLayout } from '@/features/auth/layout';
 import CartPage from '@/features/marketplace/home/pages/Cart';
+import Cart from '@/features/marketplace/home/components/Cart';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import OrderPage from '@/features/order/orderPage';
+import DetailOrder from '@/features/order/orderPage/detail-order';
 import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
 import { Dashboard } from '@/features/seller/dashboard';
 import { SellerLayout } from '@/features/seller/layout/seller-layout';
+import PaymentMethod from '@/features/seller/payment-method';
+import ShipmentSeller from '@/features/seller/shipment';
 import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
-import Cart from '@/features/marketplace/home/components/Cart';
-import Checkout from '@/features/marketplace/home/components/Checkout';
-import PengirimanSeller from '@/features/seller/pengiriman';
-import MetodePembayaran from '@/features/seller/metode-pembayaran';
-import DetailOrder from '@/features/order/orderPage/detail-order';
 import { DetailSeller } from '@/features/admin/seller/detail-seller';
 
 export const router = createBrowserRouter([
@@ -38,7 +37,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'checkout',
-        element: <Checkout />,
+        element: <CheckoutPage />,
       },
     ],
   },
@@ -123,11 +122,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'pengiriman',
-        element: <PengirimanSeller />,
+        element: <ShipmentSeller />,
       },
       {
         path: 'metode-pembayaran',
-        element: <MetodePembayaran />,
+        element: <PaymentMethod />,
       },
     ],
   },

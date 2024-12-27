@@ -1,3 +1,5 @@
+import { CourierDto } from './courier';
+
 export interface UserType {
   id?: number;
   name?: string;
@@ -12,6 +14,7 @@ export interface UserType {
 
 export interface StoreType {
   id: number;
+  couriers: CourierDto[];
 }
 
 export enum RoleEnum {

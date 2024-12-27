@@ -1,6 +1,6 @@
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 
-export default function MetodePembayaran() {
+export default function PaymentMethod() {
   return (
     <Box display="flex" gap="20px" flexDir="column">
       <Text fontSize="20px" fontWeight="bold">

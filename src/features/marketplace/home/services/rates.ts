@@ -10,3 +10,17 @@ export const getRates = async (data: ShipmentDetails) => {
     throw error;
   }
 };
+
+export const getAreaId = async (data: string) => {
+  try {
+    const response = await API.get('/biteship/areaId', {
+      params: {
+        input: data,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};

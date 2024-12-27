@@ -5,9 +5,24 @@ import { persist } from 'zustand/middleware';
 interface CartStore extends Cart {
   totalPrice: number;
   setTotalPrice: (totalPrice: number) => void;
+  productImage: string;
+  setProductImage: (productImage: string) => void;
+  description: string;
+  setDescription: (description: string) => void;
+  length: number;
+  setLengthProduct: (length: number) => void;
+  width: number;
+  setWidthProduct: (width: number) => void;
+  height: number;
+  setHeightProduct: (height: number) => void;
+  quantity: number;
+  setTotalQuantity: (quantity: number) => void;
+  storeId: number;
+  setStoreId: (storeId: number) => void;
   addItem: (p: CartItem) => void;
   removeItem: (id: number) => void;
   removeAll: () => void;
+  doneCheckout: () => void;
   increaseQuantity: (id: number) => void;
   decreaseQuantity: (id: number) => void;
   updateTotalPrice: () => void;
@@ -17,12 +32,26 @@ export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       products: [],
+      quantity: 0,
+      storeId: 0,
+      setStoreId: (storeId) => set({ storeId }),
+      description: '',
+      setDescription: (description) => set({ description }),
+      length: 0,
+      setLengthProduct: (length) => set({ length }),
+      width: 0,
+      setWidthProduct: (width) => set({ width }),
+      height: 0,
+      setHeightProduct: (height) => set({ height }),
+      productImage: '',
+      setProductImage: (productImage) => set({ productImage }),
+      setTotalQuantity: (quantity) => set({ quantity }),
       totalPrice: 0,
       setTotalPrice: (totalPrice) => set({ totalPrice }),
       addItem: (p) => {
         set((state) => {
           const existingProductIndex = state.products.findIndex(
-            (item) => item.product.id === p.product.id
+            (item) => item.variant.id === p.variant.id
           );
 
           if (existingProductIndex !== -1) {
@@ -38,23 +67,37 @@ export const useCartStore = create<CartStore>()(
       },
       removeItem: (id) => {
         set((state) => {
+          console.log(state);
           const updatedCart = state.products.filter(
-            (item) => item.product.id !== id
+            (item) => item.variant.id !== id
           );
           return { products: updatedCart };
         });
         // Recalculate total price
         get().updateTotalPrice();
       },
+
       removeAll: () => {
         set({ products: [] });
-        // Reset total price
         set({ totalPrice: 0 });
+      },
+      doneCheckout: () => {
+        set({
+          products: [],
+          totalPrice: 0,
+          width: 0,
+          length: 0,
+          height: 0,
+          description: '',
+          productImage: '',
+          storeId: 0,
+        });
+        localStorage.removeItem('cart-storage-dummy');
       },
       increaseQuantity: (id) => {
         set((state) => {
           const updatedCart = state.products.map((item) => {
-            if (item.product.id === id) {
+            if (item.variant.id === id) {
               item.quantity++;
             }
             return item;
@@ -68,7 +111,7 @@ export const useCartStore = create<CartStore>()(
         set((state) => {
           const updatedCart = state.products
             .map((item) => {
-              if (item.product.id === id) {
+              if (item.variant.id === id) {
                 item.quantity--;
                 if (item.quantity <= 0) {
                   return null;
@@ -84,7 +127,7 @@ export const useCartStore = create<CartStore>()(
       },
       updateTotalPrice: () => {
         const totalPrice = get().products.reduce(
-          (sum, item) => sum + item.product.price * item.quantity,
+          (sum, item) => sum + item.variant.price * item.quantity,
           0
         );
         set({ totalPrice });

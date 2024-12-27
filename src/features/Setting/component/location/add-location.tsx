@@ -146,14 +146,6 @@ const AddLocation = () => {
                 hidden
               />
 
-              {/* <Input
-                {...register('province_code', { valueAsNumber: true })}
-                value={Number(selectedProvinsi)}
-                border="2px solid black"
-                placeholder="ID"
-                type="number"
-              /> */}
-
               <Field
                 label="Nama Lokasi"
                 invalid={!!errors.name}
@@ -162,7 +154,7 @@ const AddLocation = () => {
                 <Input placeholder="Cth. Toko Alamanda" {...register('name')} />
               </Field>
               <Field
-                label="Kabupaten/Kota"
+                label="Provinsi"
                 invalid={!!errors.province_code || !!errors.province}
                 errorText={
                   errors.province_code?.message || errors.province?.message
@@ -176,14 +168,14 @@ const AddLocation = () => {
                   onValueChange={(details) => {
                     const selectedValue = details?.value
                       ? Number(details.value)
-                      : 0; // Default to 0 if details.value is null/undefined
+                      : 0;
                     const selectedLabel = details?.items
                       ? details.items[0]?.label
-                      : ''; // Ensure label exists
+                      : '';
 
-                    setSelectedProvinsi(selectedValue); // Update custom state
-                    setValue('province_code', selectedValue); // Update form field for province_code
-                    setValue('province', selectedLabel); // Update form field for province
+                    setSelectedProvinsi(selectedValue);
+                    setValue('province_code', selectedValue);
+                    setValue('province', selectedLabel);
                   }}
                 >
                   <SelectTrigger>
@@ -217,24 +209,17 @@ const AddLocation = () => {
                   collection={kabupatenCollection}
                   size="sm"
                   disabled={!kabupaten.length}
-                  // {...register('city_district_code', { valueAsNumber: true })}
-                  // onValueChange={(details) => {
-                  //   setSelectedKabupaten(
-                  //     details.value ? Number(details.value) : null
-                  //   );
-
-                  // }}
                   onValueChange={(details) => {
                     const selectedValue = details?.value
                       ? Number(details.value)
-                      : 0; // Default to 0 if details.value is null/undefined
+                      : 0;
                     const selectedLabel = details?.items
                       ? details.items[0]?.label
-                      : ''; // Ensure label exists
+                      : '';
 
-                    setSelectedKabupaten(selectedValue); // Update custom state
-                    setValue('city_district_code', selectedValue); // Update form field for city_district_code
-                    setValue('city_district', selectedLabel); // Update form field for city_district
+                    setSelectedKabupaten(selectedValue);
+                    setValue('city_district_code', selectedValue);
+                    setValue('city_district', selectedLabel);
                   }}
                 >
                   <SelectTrigger>
@@ -265,20 +250,19 @@ const AddLocation = () => {
               >
                 <SelectRoot
                   disabled={!kecamatan.length}
-                  // {...register('subdistrict', { valueAsNumber: true })}
                   collection={kecamatanCollection}
                   size="sm"
                   onValueChange={(details) => {
                     const selectedValue = details?.value
                       ? Number(details.value)
-                      : 0; // Default to 0 if details.value is null/undefined
+                      : 0;
                     const selectedLabel = details?.items
                       ? details.items[0]?.label
-                      : ''; // Ensure label exists
+                      : '';
 
-                    setSelectedKecamatan(selectedValue); // Update custom state
-                    setValue('subdistrict_code', selectedValue); // Update form field for subdistrict_code
-                    setValue('subdistrict', selectedLabel); // Update form field for subdistrict
+                    setSelectedKecamatan(selectedValue);
+                    setValue('subdistrict_code', selectedValue);
+                    setValue('subdistrict', selectedLabel);
                   }}
                 >
                   <SelectTrigger>
