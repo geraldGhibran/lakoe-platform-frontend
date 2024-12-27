@@ -132,12 +132,12 @@ export default function DetailProduct() {
                 >
                   Harga
                 </Table.Cell>
-                <Table.Cell borderBottom="1px solid gainsboro">
+                {/* <Table.Cell borderBottom="1px solid gainsboro">
                   Rp.{' '}
                   {selectedPrice
                     ? selectedPrice.toLocaleString('id-ID')
                     : product.price.toLocaleString('id-ID')}
-                </Table.Cell>
+                </Table.Cell> */}
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
                 <Table.Cell borderColor="gainsboro" fontWeight="medium" w="1/3">
@@ -280,9 +280,9 @@ export default function DetailProduct() {
                                       +
                                     </Button>
                                   </Flex>
-                                  {selectedStock !== null
+                                  {/* {selectedStock !== null
                                     ? 'Tersedia : ' + selectedStock + ' Stock'
-                                    : 'Silahkan pilih variant'}
+                                    : 'Silahkan pilih variant'} */}
                                 </Table.Cell>
                               </Table.Row>
                               <Table.Row bgColor="white">
