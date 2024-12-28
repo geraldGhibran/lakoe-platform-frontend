@@ -36,12 +36,13 @@ export interface Store {
   user_id: number;
   amount: number;
   courier: string | null;
-  Locations: any[];
+  Locations: Location[];
   bankAccount: BankAccount;
   products: Product[];
   user: User;
   Withdraw: Withdraw[];
   totalPendingWithdrawAmount: number;
+  invoices: Invoice[];
 }
 
 export interface BankAccount {
@@ -71,4 +72,44 @@ export interface AmountData {
   totalPendingAmount: number;
   totalSuccessAmount: number;
   totalFeeAmount: number;
+}
+
+export interface Invoice {
+  id: number;
+  amount: number;
+  total_amount: number;
+  service_charge: number;
+  status: 'UNPAID' | 'PAID' | 'CANCELLED';
+  courier_price: number;
+  receiver_longitude: number;
+  receiver_latitude: number;
+  receiver_district: string;
+  receiver_phone: number | string;
+  receiver_address: string;
+  receiver_name: string;
+  receiver_email: string;
+  receiver_postal_code: number;
+  invoice_id: string;
+  payment_id: string | null;
+  courier_id: number | null;
+  store_id: number;
+}
+
+export interface Location {
+  id: number;
+  name: string;
+  address: string;
+  postal_code: number;
+  city_district: string;
+  city_district_code: number;
+  subdistrict: string;
+  subdistrict_code: number;
+  village: string;
+  area_id: number | null;
+  province_code: number;
+  province: string;
+  latitude: number;
+  longitude: number;
+  store_id: number;
+  is_main_location: boolean;
 }
