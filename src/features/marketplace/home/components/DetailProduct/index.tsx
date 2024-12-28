@@ -6,7 +6,6 @@ import { Link, useParams } from 'react-router-dom';
 import SwiperCore from 'swiper';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-// import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
 import {
   useGetProductDetail,
   useSetCourierAndAreaId,
