@@ -1,4 +1,5 @@
 export interface CustomerDetails {
+  email?: string;
   name: string;
   phone: string;
   address: string;
@@ -6,8 +7,12 @@ export interface CustomerDetails {
   receiver_longitude: number;
   receiver_latitude: number;
   receiver_district: string;
+  longitude: number;
+  latitude: number;
+  city_district: string;
+  subdistrict: string;
   store_id: number;
-  email: string;
+  province: string;
 }
 
 export interface Item {
