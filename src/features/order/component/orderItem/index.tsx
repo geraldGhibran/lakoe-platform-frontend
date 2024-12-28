@@ -1,5 +1,6 @@
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { Box, Text, Stack, Image } from '@chakra-ui/react';
+import { Box, Image, Stack, Text } from '@chakra-ui/react';
+// import { useNavigate } from 'react-router-dom';
 import ConfirmOrder from './confirmOrder';
 
 interface Image {
@@ -25,14 +26,16 @@ export interface Order {
 }
 
 export default function OrderItem({
+  id,
   status,
   invoice_id,
   Product,
   total_amount,
-  id,
 }: Order) {
+  // const navigate = useNavigate();
   const productName = Product[0]?.name;
   const productImageUrl = Product[0]?.image[0]?.url;
+
   const getStatusStyles = (status: string) => {
     switch (status.toUpperCase()) {
       case 'UNPAID':
@@ -42,9 +45,17 @@ export default function OrderItem({
       case 'PROCESS':
         return { bgColor: '#2196F3', actionText: 'Kabari Pembeli' };
       case 'WAIT_TO_PICKUP':
-        return { bgColor: '#FF9800', actionText: 'Lihat Rincian Pembelian' };
+        return {
+          bgColor: '#FF9800',
+          actionText: 'Lihat Rincian Pembelian',
+          isNavigate: true,
+        };
       case 'DELIVERING':
-        return { bgColor: '#FF9800', actionText: 'Lihat Rincian Pembelian' };
+        return {
+          bgColor: '#FF9800',
+          actionText: 'Lihat Rincian Pembelian',
+          isNavigate: true,
+        };
       case 'DELIVERED':
         return { bgColor: '#9E9E9E', actionText: 'Hubungi Pembeli' };
       case 'CANCELED':
@@ -54,7 +65,26 @@ export default function OrderItem({
     }
   };
 
-  const { bgColor, actionText } = getStatusStyles(status);
+  const {
+    bgColor,
+    actionText,
+    //  isNavigate
+  } = getStatusStyles(status);
+
+  // const handleNavigate = () => {
+  //   navigate(`/detail-order/${invoice_id}`, {
+  //     state: { status, invoice_id, productName, id },
+  //   });
+  // };
+
+  // const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.stopPropagation();
+  //   if (isNavigate) {
+  //     handleNavigate();
+  //   } else {
+  //     alert('Aksi lainnya sesuai status');
+  //   }
+  // };
 
   return (
     <Box
@@ -63,6 +93,8 @@ export default function OrderItem({
       border={'2px solid #E6E6E6'}
       borderRadius={'5px'}
       mt={5}
+      cursor="pointer"
+      // onClick={handleNavigate}
     >
       <Stack
         direction={'row'}
@@ -85,6 +117,15 @@ export default function OrderItem({
           </Text>
         </Box>
         <ConfirmOrder text={actionText} id={id} />
+        {/* <Button
+          borderRadius={'100px'}
+          bg={'white'}
+          color={'black'}
+          border={'1px solid black'}
+          onClick={handleButtonClick}
+        >
+          {actionText}
+        </Button> */}
       </Stack>
       <Stack direction={'row'} justifyContent={'space-between'}>
         <Stack direction={'row'}>

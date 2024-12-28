@@ -113,7 +113,7 @@ export const router = createBrowserRouter([
         element: <OrderPage />,
       },
       {
-        path: 'detail-order',
+        path: 'detail-order/:invoiceId',
         element: <DetailOrder />,
       },
       {

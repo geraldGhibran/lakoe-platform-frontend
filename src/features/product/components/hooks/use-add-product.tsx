@@ -5,21 +5,23 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import useCategoryStore from '../../../../store/categories';
 import { createListCollection } from '@chakra-ui/react';
+import { useMutation } from '@tanstack/react-query';
+import API from '@/libs/axios';
+import { toaster } from '@/components/ui/toaster-placement';
+import { useAuthStore } from '@/store/auth';
 
 interface ProductFormData {
   name: string;
   url: string;
-  categories: number;
+  categories_id: number;
   description: string;
   price: number;
   minimum_order: number;
-  stock: number;
-  sku: number;
-  weight: number;
   length: number;
   width: number;
   height: number;
-  image: File[];
+  isActive: boolean;
+  images: File[];
 }
 
 interface SubSubCategory {
@@ -40,16 +42,37 @@ interface Category {
   subcategories?: SubCategory[];
 }
 
+type Variant = {
+  name: string;
+  variantItem: string[];
+};
+
+type VariantCombination = {
+  name: string;
+  sku: string;
+  weight: number;
+  stock: number;
+  price: number;
+  isActive: boolean;
+};
+type ImageObject = {
+  file: File | null;
+  preview: string | null;
+};
+
 const useAddProduct = () => {
+  const [isActive] = useState<boolean>(true);
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [variantCombination, setVariantCombination] = useState<
+    VariantCombination[]
+  >([]);
   const [isVariantTypeCreate, setIsVariantTypeCreate] = useState(false);
   const [colorTags, setColorTags] = useState<string[]>([]);
   const [sizeTags, setSizeTags] = useState<string[]>([]);
-  const [images, setImages] = useState<(string | null)[]>([
-    null,
-    null,
-    null,
-    null,
-  ]);
+  const [images, setImages] = useState<ImageObject[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
+  const { user } = useAuthStore();
+
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
@@ -57,7 +80,6 @@ const useAddProduct = () => {
     useState<SubCategory | null>(null);
   const [selectedSubSubcategory, setSelectedSubSubcategory] =
     useState<SubSubCategory | null>(null);
-  const [files, setFiles] = useState<File[]>([]);
   const { categories, fetchCategories } = useCategoryStore();
 
   useEffect(() => {
@@ -98,6 +120,9 @@ const useAddProduct = () => {
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
+    defaultValues: {
+      isActive: true,
+    },
   });
 
   const handleAddColorTag = (tag: string) => {
@@ -120,72 +145,83 @@ const useAddProduct = () => {
     setIsVariantTypeCreate(!isVariantTypeCreate);
   };
 
-  const handleImageChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+  const updateVariantsAndCombination = (
+    newVariants: Variant[],
+    newVariantCombination: VariantCombination[]
   ) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFiles((prevFiles) => {
-        const newFiles = [...prevFiles];
-        newFiles[index] = file;
-        return newFiles;
-      });
+    setVariants(newVariants);
+    setVariantCombination(newVariantCombination);
+  };
 
-      const reader = new FileReader();
-      reader.onload = () => {
-        const newImages = [...images];
-        newImages[index] = reader.result as string;
-        setImages(newImages);
-      };
-      reader.readAsDataURL(file);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = e.target.files;
+    if (selectedFiles) {
+      const newImages: ImageObject[] = Array.from(selectedFiles).map(
+        (file) => ({
+          file,
+          preview: URL.createObjectURL(file),
+        })
+      );
+
+      setImages((prevImages) => [...prevImages, ...newImages]);
+      setFiles((prevFiles) => [...prevFiles, ...Array.from(selectedFiles)]);
     }
   };
 
   const handleRemoveImage = (index: number) => {
-    const newImages = [...images];
-    newImages[index] = null;
-    setImages(newImages);
-    setFiles((prevFiles) => {
-      const newFiles = [...prevFiles];
-      newFiles[index] = undefined as unknown as File;
-      return newFiles;
-    });
+    setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
+  const mutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await API.post('/product/create', formData);
+      return response.data;
+    },
+    onSuccess: () => {
+      toaster.create({
+        title: 'Success',
+        type: 'success',
+        description: 'Product successfully submitted!',
+        duration: 3000,
+      });
+    },
+    onError: (error: Error) => {
+      toaster.create({
+        title: 'Error',
+        type: 'error',
+        description: error.message,
+        duration: 3000,
+      });
+    },
+  });
 
   const onSubmit = async (data: ProductFormData) => {
     const formData = new FormData();
+    formData.append(
+      'product',
+      JSON.stringify({
+        name: data.name,
+        description: data.description,
+        price: data.price,
+        isActive: isActive.toString(),
+        minimum_order: data.minimum_order,
+        categories_id: data.categories_id,
+        url: data.url,
+        length: data.length,
+        width: data.width,
+        height: data.height,
+        store_id: Number(user?.store?.id),
+      })
+    );
 
-    const appendData = (
-      key: string,
-      value: string | number | boolean | null | undefined
-    ) => {
-      if (value !== undefined && value !== null) {
-        formData.append(key, value.toString());
-      }
-    };
+    formData.append('variant', JSON.stringify(variants));
+    formData.append('variantCombination', JSON.stringify(variantCombination));
 
-    appendData('name', data.name);
-    appendData('url', data.url);
-    appendData('categories', data.categories);
-    appendData('description', data.description);
-    appendData('price', data.price);
-    appendData('minimum_order', data.minimum_order);
-    appendData('stock', data.stock);
-    appendData('sku', data.sku);
-    appendData('weight', data.weight);
-    appendData('length', data.length);
-    appendData('width', data.width);
-    appendData('height', data.height);
+    files.forEach((file) => {
+      formData.append('images', file);
+    });
 
-    const imagesArray = files
-      .filter((file) => file)
-      .map((file) => {
-        return file;
-      });
-
-    formData.append('images', JSON.stringify(imagesArray));
-
+    console.log('FormData preview:');
     for (const [key, value] of formData.entries()) {
       console.log(`${key}:`, value);
     }
@@ -193,8 +229,7 @@ const useAddProduct = () => {
     reset();
     setColorTags([]);
     setSizeTags([]);
-    setImages([null, null, null, null]);
-    setFiles([]);
+    mutation.mutate(formData);
   };
 
   return {
@@ -222,6 +257,9 @@ const useAddProduct = () => {
     setSelectedSubSubcategory,
     categories,
     categoryCollection,
+    variants,
+    variantCombination,
+    updateVariantsAndCombination,
   };
 };
 

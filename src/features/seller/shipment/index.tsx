@@ -8,11 +8,12 @@ import {
 } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { useGetStoreDetail } from '@/features/Setting/hooks/useGetStoreDetail';
+import { getStoreCourierById } from '@/features/Setting/services/store';
 import { useAuthStore } from '@/store/auth';
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
+import { useEffect } from 'react';
 import { useEditShipmentStoreById } from './hooks/use-edit-shipment';
-import { getStoreCourierById } from '@/features/Setting/services/store';
 
 const switchOptions = [
   {
@@ -97,7 +98,15 @@ export default function ShipmentSeller() {
 
   const { data: courierStore } = useGetStoreDetail(Number(user?.id));
 
-  if (courierStore?.couriers.length === 0) return getStoreCourierById();
+  useEffect(() => {
+    const fetchCouriers = async () => {
+      if (courierStore?.couriers.length === 0) {
+        await getStoreCourierById();
+      }
+    };
+
+    fetchCouriers();
+  }, [courierStore]);
 
   return (
     <Box bgColor="white">
