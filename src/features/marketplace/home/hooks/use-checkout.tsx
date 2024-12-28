@@ -10,7 +10,6 @@ import { checkoutSchema, CheckoutSchema } from '../schemas/CheckoutSchema';
 import { paymentCheckout } from '../services/midtrans';
 
 export const useCheckout = () => {
-  // const {  } = useRatesStore();
   const {
     height,
     length,
@@ -56,10 +55,6 @@ export const useCheckout = () => {
     quantity: product.quantity,
   }));
 
-  console.log('item_prodcuts', itemsProducts);
-  console.log('customer_details', customer_details);
-  console.log('courier_price', cost);
-
   // Transformed customer details object to match the expected format
   const transformed_customer_details = {
     name: customer_details.name,
@@ -70,10 +65,8 @@ export const useCheckout = () => {
     receiver_latitude: customer_details.latitude,
     receiver_district: `${customer_details.city_district}, ${customer_details.subdistrict}`,
     store_id: storeId,
-    email: customer_details.email,
+    email: String(customer_details.email),
   };
-
-  console.log('transformed_customer_details', transformed_customer_details);
 
   const {
     control,
@@ -115,6 +108,7 @@ export const useCheckout = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const rates = await getCheckoutAsync(data as CheckoutSchema);
+      console.log(rates);
       doneCheckout();
       return (window.location.href = `${rates.redirect_url}`);
     } catch (error) {
