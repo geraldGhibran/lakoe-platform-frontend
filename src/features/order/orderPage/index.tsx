@@ -9,7 +9,6 @@ export default function OrderPage() {
   const { data: invoices, isLoading, error } = useGetInvoices();
   const [value, setValue] = useState<string | null>('first');
 
-  // Safely handle the filtering operation
   const filterOrders = (status: string) => {
     return invoices
       ? invoices?.invoices?.filter((order: Order) => order.status === status)

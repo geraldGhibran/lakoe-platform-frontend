@@ -19,9 +19,103 @@ import {
   ClipboardRoot,
   ClipboardInput,
 } from '@/components/ui/clipboard';
+import { useLocation } from 'react-router-dom';
 import TrackingModal from '../component/orderItem/modal-tracking';
 
+const getStatusMessage = (status: string) => {
+  switch (status.toUpperCase()) {
+    case 'UNPAID':
+      return {
+        bgColor: 'yellow',
+        message: (
+          <>
+            Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
+            <Text as={'span'} fontWeight={500}>
+              {' '}
+              10 Agustus 2023 - 00:00 WIB.
+            </Text>{' '}
+            Silakan tunggu sampai pembayaran terkonfirmasi sebelum mengirimkan
+            barang.
+          </>
+        ),
+      };
+    case 'PAID':
+      return {
+        bgColor: 'green',
+        message: (
+          <>
+            Pembayaran telah diterima. Silakan proses pesanan sesuai instruksi
+            pada sistem.
+          </>
+        ),
+      };
+    case 'PROCESS':
+      return {
+        bgColor: 'blue',
+        message: (
+          <>
+            Pesanan sedang diproses. Pastikan untuk menginformasikan pembeli
+            jika ada kendala.
+          </>
+        ),
+      };
+    case 'WAIT_TO_PICKUP':
+      return {
+        bgColor: 'orange',
+        message: (
+          <>
+            Pesanan sudah siap untuk diambil oleh kurir. Pastikan barang telah
+            dikemas dengan baik.
+          </>
+        ),
+      };
+    case 'DELIVERING':
+      return {
+        bgColor: 'orange',
+        message: (
+          <>
+            Pesanan sedang dalam pengiriman. Mohon pastikan status pengiriman
+            selalu diperbarui.
+          </>
+        ),
+      };
+    case 'DELIVERED':
+      return {
+        bgColor: 'gray',
+        message: (
+          <>
+            Pesanan telah berhasil dikirimkan. Terima kasih atas kerjasama Anda!
+          </>
+        ),
+      };
+    case 'CANCELED':
+      return {
+        bgColor: 'red',
+        message: (
+          <>
+            Pesanan telah dibatalkan. Silakan hubungi pembeli untuk informasi
+            lebih lanjut.
+          </>
+        ),
+      };
+    default:
+      return {
+        bgColor: 'lightgray',
+        message: (
+          <>
+            Status pesanan tidak diketahui. Silakan cek sistem untuk informasi
+            lebih lanjut.
+          </>
+        ),
+      };
+  }
+};
+
 export default function DetailOrder() {
+  const location = useLocation();
+  const status = location.state?.status || 'UNKNOWN';
+  const productName = location.state.productName || {};
+  const { bgColor, message } = getStatusMessage(status);
   return (
     <Box>
       <HStack my={2}>
@@ -29,7 +123,7 @@ export default function DetailOrder() {
           Daftar Pesanan
         </Text>
         <Icon icon="tabler:chevron-right" color="gray" width={25} height={25} />
-        <Text>Name product</Text>
+        <Text>{productName}</Text>
       </HStack>
       <Box bgColor={'white'} p={5} rounded={'md'}>
         <HStack alignItems={'start'}>
@@ -45,20 +139,14 @@ export default function DetailOrder() {
             <Text
               mx={2}
               px={2}
-              bgColor={'yellow'}
+              bgColor={bgColor}
               rounded={'md'}
               width={'fit-content'}
             >
-              Status
+              {status}
             </Text>
             <Text px={2} py={2}>
-              Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
-              <Text as={'span'} fontWeight={500}>
-                {' '}
-                10 Agustus 2023 - 00:00 WIB.
-              </Text>{' '}
-              Silakan tunggu sampai pembayaran terkonfirmasi sebelum mengirimkan
-              barang.
+              {message}
             </Text>
             <Box>
               <AccordionRoot collapsible unstyled>
