@@ -12,6 +12,17 @@ import {
   useSetCourierAndAreaId,
 } from '@/features/product/hooks/use-get-product-detail';
 
+interface VariantItemValue {
+  id: number;
+  name: string;
+  sku: string;
+  weight: number;
+  stock: number;
+  is_active: boolean;
+  price: number;
+  product_id: number;
+}
+
 export default function DetailProduct() {
   const { name } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
@@ -188,145 +199,150 @@ export default function DetailProduct() {
                       defaultValue={`tab-${product.variant_Item_values[0]?.id || '0'}`}
                     >
                       <Tabs.List colorPalette={'blue'}>
-                        {product.variant_Item_values.map((variant) => (
-                          <Tabs.Trigger
-                            key={variant.id}
-                            value={`tab-${variant.id}`}
-                          >
-                            {variant.name}
-                          </Tabs.Trigger>
-                        ))}
+                        {product.variant_Item_values.map(
+                          (variant: VariantItemValue) => (
+                            <Tabs.Trigger
+                              key={variant.id}
+                              value={`tab-${variant.id}`}
+                            >
+                              {variant.name}
+                            </Tabs.Trigger>
+                          )
+                        )}
                       </Tabs.List>
-                      {product.variant_Item_values.map((variant) => (
-                        <>
-                          <Tabs.Content
-                            key={variant.id}
-                            value={`tab-${variant.id}`}
-                          >
-                            <div>
-                              <p>
-                                <strong>SKU:</strong> {variant.sku}
-                              </p>
-                              <p>
-                                <strong>Weight:</strong> {variant.weight}g
-                              </p>
-                              <p>
-                                <strong>Stock:</strong> {variant.stock}
-                              </p>
-                              <p>
-                                <strong>Price:</strong>{' '}
-                                {variant.price.toLocaleString('id-ID', {
-                                  style: 'currency',
-                                  currency: 'IDR',
-                                })}
-                              </p>
-                              <p>
-                                <strong>Status:</strong>{' '}
-                                {variant.is_active ? 'Active' : 'Inactive'}
-                              </p>
-                              <Table.Row bgColor="white">
-                                <Table.Cell
-                                  borderColor="transparent"
-                                  fontWeight="medium"
-                                  w="1/3"
-                                >
-                                  Jumlah
-                                </Table.Cell>
-                                <Table.Cell
-                                  display="flex"
-                                  gap="10px"
-                                  borderBottom="1px solid gainsboro"
-                                >
-                                  <Flex gap="10px">
-                                    <Button
-                                      display="flex"
-                                      justifyContent="center"
-                                      bgColor="white"
-                                      color="black"
-                                      alignItems="center"
-                                      border="1px solid gray"
-                                      boxSizing="30px"
-                                      rounded="sm"
-                                      onClick={() => {
-                                        setTotalQuantity(quantity - 1);
-                                      }}
-                                      disabled={quantity <= 0}
-                                    >
-                                      -
-                                    </Button>
-                                    <Box
-                                      display="flex"
-                                      justifyContent="center"
-                                      alignItems="center"
-                                      border="1px solid gainsboro"
-                                      width="40px"
-                                      rounded="sm"
-                                    >
-                                      {quantity}
-                                    </Box>
-                                    <Button
-                                      onClick={() => {
-                                        setTotalQuantity(quantity + 1);
-                                      }}
-                                      display="flex"
-                                      justifyContent="center"
-                                      alignItems="center"
-                                      bgColor="white"
-                                      color="black"
-                                      border="1px solid gray"
-                                      boxSizing="30px"
-                                      rounded="sm"
-                                    >
-                                      +
-                                    </Button>
-                                  </Flex>
-                                  {/* {selectedStock !== null
-                                    ? 'Tersedia : ' + selectedStock + ' Stock'
-                                    : 'Silahkan pilih variant'} */}
-                                </Table.Cell>
-                              </Table.Row>
-                              <Table.Row bgColor="white">
-                                <Table.Cell
-                                  borderColor="transparent"
-                                  w="1/3"
-                                ></Table.Cell>
-                                <Table.Cell
-                                  borderColor="transparent"
-                                  padding="20px 0"
-                                >
-                                  <Flex gap="10px">
-                                    <Link to="checkout">
+                      {product.variant_Item_values.map(
+                        (variant: VariantItemValue) => (
+                          <>
+                            <Tabs.Content
+                              key={variant.id}
+                              value={`tab-${variant.id}`}
+                            >
+                              <div>
+                                <p>
+                                  <strong>SKU:</strong> {variant.sku}
+                                </p>
+                                <p>
+                                  <strong>Weight:</strong> {variant.weight}g
+                                </p>
+                                <p>
+                                  <strong>Stock:</strong> {variant.stock}
+                                </p>
+                                <p>
+                                  <strong>Price:</strong>{' '}
+                                  {variant.price.toLocaleString('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR',
+                                  })}
+                                </p>
+                                <p>
+                                  <strong>Status:</strong>{' '}
+                                  {variant.is_active ? 'Active' : 'Inactive'}
+                                </p>
+                                <Table.Row bgColor="white">
+                                  <Table.Cell
+                                    borderColor="transparent"
+                                    fontWeight="medium"
+                                    w="1/3"
+                                  >
+                                    Jumlah
+                                  </Table.Cell>
+                                  <Table.Cell
+                                    display="flex"
+                                    gap="10px"
+                                    borderBottom="1px solid gainsboro"
+                                  >
+                                    <Flex gap="10px">
                                       <Button
+                                        display="flex"
+                                        justifyContent="center"
+                                        bgColor="white"
+                                        color="black"
+                                        alignItems="center"
+                                        border="1px solid gray"
+                                        boxSizing="30px"
+                                        rounded="sm"
+                                        onClick={() => {
+                                          setTotalQuantity(quantity - 1);
+                                        }}
+                                        disabled={quantity <= 0}
+                                      >
+                                        -
+                                      </Button>
+                                      <Box
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        border="1px solid gainsboro"
+                                        width="40px"
+                                        rounded="sm"
+                                      >
+                                        {quantity}
+                                      </Box>
+                                      <Button
+                                        onClick={() => {
+                                          setTotalQuantity(quantity + 1);
+                                        }}
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
                                         bgColor="white"
                                         color="black"
                                         border="1px solid gray"
-                                        padding="0 20px"
+                                        boxSizing="30px"
+                                        rounded="sm"
                                       >
-                                        Beli Langsung
+                                        +
                                       </Button>
-                                    </Link>
-                                    <Link to="/cart">
-                                      <Button
-                                        onClick={() => {
-                                          addItem({
-                                            variant,
-                                            quantity: quantity,
-                                          });
-                                        }}
-                                        bgColor="#0080FF"
-                                        color="white"
-                                        padding="0 20px"
-                                      >
-                                        + Keranjang
-                                      </Button>
-                                    </Link>
-                                  </Flex>
-                                </Table.Cell>
-                              </Table.Row>
-                            </div>
-                          </Tabs.Content>
-                        </>
-                      ))}
+                                    </Flex>
+                                    {/* {selectedStock !== null
+                                    ? 'Tersedia : ' + selectedStock + ' Stock'
+                                    : 'Silahkan pilih variant'} */}
+                                  </Table.Cell>
+                                </Table.Row>
+                                <Table.Row bgColor="white">
+                                  <Table.Cell
+                                    borderColor="transparent"
+                                    w="1/3"
+                                  ></Table.Cell>
+                                  <Table.Cell
+                                    borderColor="transparent"
+                                    padding="20px 0"
+                                  >
+                                    <Flex gap="10px">
+                                      <Link to="checkout">
+                                        <Button
+                                          bgColor="white"
+                                          color="black"
+                                          border="1px solid gray"
+                                          padding="0 20px"
+                                        >
+                                          Beli Langsung
+                                        </Button>
+                                      </Link>
+                                      <Link to="/cart">
+                                        <Button
+                                          onClick={() => {
+                                            addItem({
+                                              product: product, // Ensure you have the product object
+                                              variant,
+                                              quantity: quantity,
+                                            });
+                                          }}
+                                          bgColor="#0080FF"
+                                          color="white"
+                                          padding="0 20px"
+                                        >
+                                          + Keranjang
+                                        </Button>
+                                      </Link>
+                                    </Flex>
+                                  </Table.Cell>
+                                </Table.Row>
+                              </div>
+                            </Tabs.Content>
+                          </>
+                        )
+                      )}
                     </Tabs.Root>
                   </Flex>
                 </Table.Cell>
