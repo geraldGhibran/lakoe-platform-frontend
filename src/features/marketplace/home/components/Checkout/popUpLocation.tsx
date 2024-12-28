@@ -1,12 +1,4 @@
 import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Popup,
-  useMapEvents,
-} from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import {
   DialogActionTrigger,
   DialogBody,
   DialogCloseTrigger,
@@ -18,20 +10,20 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Box, Button, Flex, HStack } from '@chakra-ui/react';
+import 'leaflet/dist/leaflet.css';
 import { IoInformationCircleOutline } from 'react-icons/io5';
-import { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
+import { useShipmentAddress } from '../../hooks/use-shipment-address';
+import { usePinpoint } from '@/store/pinpoint';
 
 export default function PopUpLocation() {
-  const [position, setPosition] = useState<[number, number]>([51.505, -0.09]);
+  const { onMarkerDragEnd, position, address, markerRef } =
+    useShipmentAddress();
 
-  const MapEvents = () => {
-    useMapEvents({
-      click(e) {
-        setPosition([e.latlng.lat, e.latlng.lng]);
-      },
-    });
+  const { setPinpoint } = usePinpoint();
 
-    return null;
+  const handlePinpoint = () => {
+    setPinpoint(true);
   };
 
   return (
@@ -74,20 +66,29 @@ export default function PopUpLocation() {
                 </Flex>
               </Box>
               {/* Map */}
-              <Box height="200px" overflow="hidden" shadow="sm" rounded="2xl">
+              <Box width="100%" height="20vh" position="relative">
                 <MapContainer
                   center={position}
                   zoom={13}
-                  style={{ width: '100%', height: '400px' }}
+                  style={{ height: '100%', width: '100%' }}
                 >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                   />
-                  <MapEvents />
-                  <Marker position={position}>
+                  <Marker
+                    position={position}
+                    draggable={true}
+                    eventHandlers={{ dragend: onMarkerDragEnd }}
+                    ref={markerRef}
+                  >
                     <Popup>
-                      Latitude: {position[0]}, Longitude: {position[1]}
+                      <div>
+                        Latitude: {position.lat.toFixed(4)}, Longitude:{' '}
+                        {position.lng.toFixed(4)}
+                        <br />
+                        Address: {address}
+                      </div>
                     </Popup>
                   </Marker>
                 </MapContainer>
@@ -107,16 +108,20 @@ export default function PopUpLocation() {
                 Kembali
               </Button>
             </DialogActionTrigger>
-            <Box width="1/2">
-              <Button
-                width="full"
-                padding="20px"
-                color="white"
-                bgColor="#2E4399"
-              >
-                Pilih Lokasi
-              </Button>
-            </Box>
+            <DialogActionTrigger asChild>
+              <Box width="1/2">
+                <Button
+                  width="full"
+                  padding="20px"
+                  color="white"
+                  bgColor="#2E4399"
+                  type="submit"
+                  onClick={() => handlePinpoint()}
+                >
+                  Pilih Lokasi
+                </Button>
+              </Box>
+            </DialogActionTrigger>
           </DialogFooter>
           <DialogCloseTrigger />
         </DialogContent>

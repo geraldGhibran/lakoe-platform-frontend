@@ -12,6 +12,7 @@ import { useAuthStore } from '@/store/auth';
 import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import { useEditShipmentStoreById } from './hooks/use-edit-shipment';
+import { getStoreCourierById } from '@/features/Setting/services/store';
 
 const switchOptions = [
   {
@@ -89,12 +90,14 @@ const SwitchItem = ({
   </Flex>
 );
 
-export default function PengirimanSeller() {
+export default function ShipmentSeller() {
   const { onSubmit, setValue } = useEditShipmentStoreById();
 
   const { user } = useAuthStore();
 
   const { data: courierStore } = useGetStoreDetail(Number(user?.id));
+
+  if (courierStore?.couriers.length === 0) return getStoreCourierById();
 
   return (
     <Box bgColor="white">

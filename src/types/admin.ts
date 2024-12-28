@@ -1,3 +1,5 @@
+import { Location } from './locations';
+
 export interface Product {
   id: number;
   name: string;
@@ -21,7 +23,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  phone: number;
+  phone: string;
   role: 'SELLER' | 'ADMIN';
   locationsId: number | null;
 }
