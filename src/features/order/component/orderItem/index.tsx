@@ -1,5 +1,6 @@
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { Box, Text, Stack, Button, Image } from '@chakra-ui/react';
+import { Box, Text, Stack, Image } from '@chakra-ui/react';
+import ConfirmOrder from './confirmOrder';
 
 interface Image {
   id: number;
@@ -17,7 +18,7 @@ export interface Order {
   amount: number;
   total_amount: number;
   service_charge: number;
-  status: string; // e.g., "PAID"
+  status: string;
   courier_price: number;
   invoice_id: string;
   Product: Product[];
@@ -28,6 +29,7 @@ export default function OrderItem({
   invoice_id,
   Product,
   total_amount,
+  id,
 }: Order) {
   const productName = Product[0]?.name;
   const productImageUrl = Product[0]?.image[0]?.url;
@@ -82,14 +84,7 @@ export default function OrderItem({
             {invoice_id}
           </Text>
         </Box>
-        <Button
-          borderRadius={'100px'}
-          bg={'white'}
-          color={'black'}
-          border={'1px solid black'}
-        >
-          {actionText}
-        </Button>
+        <ConfirmOrder text={actionText} id={id} />
       </Stack>
       <Stack direction={'row'} justifyContent={'space-between'}>
         <Stack direction={'row'}>
