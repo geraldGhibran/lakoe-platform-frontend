@@ -10,18 +10,13 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
-import {
-  useState,
-  ChangeEvent,
-  KeyboardEvent,
-  useEffect,
-  useCallback,
-} from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Tag } from '@/components/ui/tag';
 import { Switch } from '@/components/ui/switch';
 import VariantModal from '../modal/variant';
 import { Field } from '@/components/ui/field';
 import AddVariant from '../modal/add-variant';
+import DeleteVariant from '../modal/delete-variant';
 
 type Variant = {
   name: string;
@@ -53,12 +48,6 @@ interface VariantComponentProps {
 }
 
 export default function VariantComponent({
-  colorTags,
-  sizeTags,
-  onAddColorTag,
-  onRemoveColorTag,
-  onAddSizeTag,
-  onRemoveSizeTag,
   onToggleVariantTypeCreate,
   isVariantTypeCreate,
   onSubmit,
@@ -67,8 +56,6 @@ export default function VariantComponent({
     Record<string, string[]>
   >({});
   const [dynamicInput, setDynamicInput] = useState<Record<string, string>>({});
-  const [inputWarna, setInputWarna] = useState('');
-  const [inputUkuran, setInputUkuran] = useState('');
   const [activeVariants, setActiveVariants] = useState<string[]>([]);
   const [dynamicVariants, setDynamicVariants] = useState<string[]>([]);
   const [combinationData, setCombinationData] = useState<
@@ -84,16 +71,8 @@ export default function VariantComponent({
     >
   >({});
 
-  const handleInputChangeWarna = (
-    event: ChangeEvent<HTMLInputElement>
-  ): void => {
-    setInputWarna(event.target.value);
-  };
-
   const generateCombinations = () => {
     const activeVariantItems = activeVariants.map((variant) => {
-      if (variant === 'warna') return colorTags;
-      if (variant === 'ukuran') return sizeTags;
       return dynamicVariant[variant] || [];
     });
 
@@ -111,8 +90,6 @@ export default function VariantComponent({
 
   const preparePayload = useCallback(() => {
     const variants = [
-      { name: 'warna', variantItem: colorTags },
-      { name: 'ukuran', variantItem: sizeTags },
       ...Object.entries(dynamicVariant).map(([name, variantItem]) => ({
         name,
         variantItem,
@@ -131,18 +108,12 @@ export default function VariantComponent({
     );
 
     return { variants, variantCombination };
-  }, [colorTags, sizeTags, dynamicVariant, combinationData]);
+  }, [dynamicVariant, combinationData]);
 
   useEffect(() => {
     const payload = preparePayload();
     onSubmit(payload.variants, payload.variantCombination);
   }, [preparePayload, onSubmit]);
-
-  const handleInputChangeUkuran = (
-    event: ChangeEvent<HTMLInputElement>
-  ): void => {
-    setInputUkuran(event.target.value);
-  };
 
   const handleDynamicInputChange = (variant: string, value: string) => {
     setDynamicInput((prev) => ({
@@ -162,26 +133,6 @@ export default function VariantComponent({
         ...prev,
         [variant]: '',
       }));
-    }
-  };
-
-  const handleKeyDownWarna = (event: KeyboardEvent<HTMLInputElement>): void => {
-    const value = inputWarna.trim();
-    if (event.key === 'Enter' && value) {
-      onAddColorTag(value);
-      setInputWarna('');
-      event.preventDefault();
-    }
-  };
-
-  const handleKeyDownUkuran = (
-    event: KeyboardEvent<HTMLInputElement>
-  ): void => {
-    const value = inputUkuran.trim();
-    if (event.key === 'Enter' && value) {
-      onAddSizeTag(value);
-      setInputUkuran('');
-      event.preventDefault();
     }
   };
 
@@ -229,6 +180,12 @@ export default function VariantComponent({
     }));
   };
 
+  const handleDeleteVariant = (variantName: string) => {
+    setDynamicVariants((prev) =>
+      prev.filter((variant) => variant !== variantName)
+    );
+  };
+
   return (
     <Stack direction={'row'} justifyContent={'space-between'}>
       <Box w={'100%'}>
@@ -243,15 +200,7 @@ export default function VariantComponent({
           </Box>
           <Box mt={10}>
             {isVariantTypeCreate ? (
-              <Button
-                bg={'white'}
-                color={'black'}
-                border={'1px solid black'}
-                borderRadius={'100px'}
-              >
-                <Icon icon="mynaui:trash" />
-                Hapus Variant
-              </Button>
+              <></>
             ) : (
               <Button
                 bg={'white'}
@@ -268,297 +217,109 @@ export default function VariantComponent({
         </Stack>
         {isVariantTypeCreate && (
           <>
-            <HStack py={2}>
-              <Button
-                bg={activeVariants.includes('warna') ? 'cyan.500' : 'white'}
-                color={activeVariants.includes('warna') ? 'white' : 'black'}
-                border={'1px solid black'}
-                borderRadius={'100px'}
-                onClick={() => handleVariantClick('warna')}
-              >
-                Warna
-              </Button>
-              <Button
-                bg={activeVariants.includes('ukuran') ? 'cyan.500' : 'white'}
-                color={activeVariants.includes('ukuran') ? 'white' : 'black'}
-                border={'1px solid black'}
-                borderRadius={'100px'}
-                onClick={() => handleVariantClick('ukuran')}
-              >
-                Ukuran
-              </Button>
-              {dynamicVariants.map((variant) => (
-                <Button
-                  key={variant}
-                  bg={activeVariants.includes(variant) ? 'cyan.500' : 'white'}
-                  color={activeVariants.includes(variant) ? 'white' : 'black'}
-                  border={'1px solid black'}
-                  borderRadius={'100px'}
-                  onClick={() => handleVariantClick(variant)}
-                >
-                  {variant}
-                </Button>
-              ))}
-              <AddVariant onAddVariant={handleAddVariant} />
-            </HStack>
-
-            {activeVariants.includes('warna') && (
+            <>
               <>
-                <Text py={2} fontWeight={500}>
-                  Warna
-                </Text>
-                <Box
-                  display="flex"
-                  flexWrap="wrap"
-                  w={'100%'}
-                  alignItems="center"
-                  padding="2px"
-                  border="1px solid"
-                  borderColor="gray.300"
-                  borderRadius="md"
-                >
-                  {colorTags.map((tag, index) => (
-                    <Tag
-                      key={index}
-                      size="md"
-                      p={1}
-                      m={2}
-                      variant="solid"
-                      bgColor={'gray.200'}
-                      color={'black'}
-                      marginRight={2}
-                      marginBottom={2}
-                      closable
-                      onClick={() => onRemoveColorTag(index)}
-                    >
-                      {tag}
-                    </Tag>
-                  ))}
-                  <Input
-                    autoFocus
-                    variant={'subtle'}
-                    placeholder="Masukan Varian Warna..."
-                    value={inputWarna}
-                    onChange={handleInputChangeWarna}
-                    onKeyDown={handleKeyDownWarna}
-                    flex={1}
-                    minWidth="120px"
-                  />
-                </Box>
-
-                {/* <Box py={5}> */}
-                {/* <Switch colorPalette={'cyan'}>Gunakan Foto Variant</Switch> */}
-                {/* <HStack wrap="wrap" align="flex-start">
-                    {colorTags.map((tag) => (
-                      <Box key={tag} py={3}>
-                        <Box
-                          border={'1px solid gray'}
-                          w={'200px'}
-                          h={'200px'}
-                          borderRadius={'10px'}
-                          overflow="hidden"
-                          display="flex"
-                          justifyContent="center"
-                          alignItems="center"
-                          bg="gray.100"
-                          position="relative"
-                        >
-                          {imagePreviews[tag] ? (
-                            <>
-                              <Image
-                                src={imagePreviews[tag]}
-                                alt="Preview"
-                                objectFit="cover"
-                                w="100%"
-                                h="100%"
-                              />
-                              <Box
-                                position="absolute"
-                                bottom={29}
-                                right={20}
-                                bgColor="white"
-                                p={2}
-                                borderRadius="full"
-                                boxShadow="sm"
-                                cursor="pointer"
-                                onClick={handleRemoveImage(tag)}
-                              >
-                                <Icon
-                                  icon="pajamas:remove"
-                                  color="red"
-                                  width="20px"
-                                  height="20px"
-                                />
-                              </Box>
-                            </>
-                          ) : (
-                            <Box
-                              w="100%"
-                              h="100%"
-                              bg="gray.200"
-                              display="flex"
-                              justifyContent="center"
-                              alignItems="center"
-                            >
-                              <Icon
-                                icon="uil:image-upload"
-                                color="gray"
-                                width="30px"
-                              />
-                            </Box>
-                          )}
-                          <Box
-                            position={'absolute'}
-                            bgColor={'white'}
-                            right={5}
-                            bottom={7}
-                            borderRadius={'full'}
-                            p={2}
-                          >
-                            <Icon
-                              icon="uil:image-upload"
-                              color="green"
-                              width="20px"
-                              height="20px"
-                              aria-label="Upload Gambar"
-                              onClick={() =>
-                                document
-                                  .getElementById(`upload-${tag}`)
-                                  ?.click()
-                              }
-                            />
-                          </Box>
-                        </Box>
-                        <Input
-                          id={`upload-${tag}`}
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageChange(tag)}
-                          display="none"
-                        />
-                      </Box>
-                    ))}
-                  </HStack> */}
-                {/* </Box> */}
-              </>
-            )}
-            {dynamicVariants.map((variant) =>
-              activeVariants.includes(variant) ? (
-                <Box key={variant} mt={4}>
-                  <Flex justify="space-between" align="center">
-                    <Text py={2} fontWeight={500}>
-                      {variant}
-                    </Text>
-                  </Flex>
-                  <Box
-                    display="flex"
-                    flexWrap="wrap"
-                    alignItems="center"
-                    padding="2px"
-                    border="1px solid"
-                    borderColor="gray.300"
-                    borderRadius="md"
-                  >
-                    {dynamicVariant[variant]?.map((tag, index) => (
-                      <Tag
-                        key={index}
-                        size="md"
-                        p={1}
-                        m={2}
-                        variant="solid"
-                        bgColor={'gray.200'}
-                        color={'black'}
-                        marginRight={2}
-                        marginBottom={2}
-                        closable
-                        onClick={() => handleRemoveDynamicTag(variant, index)}
-                      >
-                        {tag}
-                      </Tag>
-                    ))}
-                    <Input
-                      autoFocus
-                      variant="subtle"
-                      flex={1}
-                      minWidth="120px"
-                      placeholder={`Masukan ${variant}...`}
-                      value={dynamicInput[variant] || ''}
-                      onChange={(e) =>
-                        handleDynamicInputChange(variant, e.target.value)
+                <HStack py={2}>
+                  {dynamicVariants.map((variant) => (
+                    <Button
+                      key={variant}
+                      bg={
+                        activeVariants.includes(variant) ? 'cyan.500' : 'white'
                       }
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          handleDynamicKeyDown(variant, e);
-                        }
-                      }}
-                    />
-                  </Box>
-                </Box>
-              ) : null
-            )}
-            {activeVariants.includes('ukuran') && (
-              <>
-                <Text py={2} fontWeight={500}>
-                  Ukuran
-                </Text>
-                <Box
-                  display="flex"
-                  flexWrap="wrap"
-                  w={'100%'}
-                  alignItems="center"
-                  padding="2px"
-                  border="1px solid"
-                  borderColor="gray.300"
-                  borderRadius="md"
-                >
-                  {sizeTags.map((tag, index) => (
-                    <Tag
-                      key={index}
-                      size="md"
-                      p={1}
-                      m={2}
-                      variant="solid"
-                      bgColor={'gray.200'}
-                      color={'black'}
-                      marginRight={2}
-                      marginBottom={2}
-                      closable
-                      onClick={() => onRemoveSizeTag(index)}
+                      color={
+                        activeVariants.includes(variant) ? 'white' : 'black'
+                      }
+                      border={'1px solid black'}
+                      borderRadius={'100px'}
+                      onClick={() => handleVariantClick(variant)}
                     >
-                      {tag}
-                    </Tag>
+                      {variant}
+                    </Button>
                   ))}
-                  <Input
-                    autoFocus
-                    variant={'subtle'}
-                    placeholder="Masukan Varian Ukuran..."
-                    value={inputUkuran}
-                    onChange={handleInputChangeUkuran}
-                    onKeyDown={handleKeyDownUkuran}
-                    flex={1}
-                    minWidth="120px"
-                  />
-                </Box>
+                  <AddVariant onAddVariant={handleAddVariant} />
+                </HStack>
+                {dynamicVariants.map((variant) =>
+                  activeVariants.includes(variant) ? (
+                    <>
+                      <Box key={variant} mt={4}>
+                        <Flex justify="space-between" align="center">
+                          <Text py={2} fontWeight={500}>
+                            {variant}
+                          </Text>
+                          <DeleteVariant
+                            variantName={variant}
+                            onDelete={handleDeleteVariant}
+                          />
+                        </Flex>
+                        <Box
+                          display="flex"
+                          flexWrap="wrap"
+                          alignItems="center"
+                          padding="2px"
+                          border="1px solid"
+                          borderColor="gray.300"
+                          borderRadius="md"
+                        >
+                          {dynamicVariant[variant]?.map((tag, index) => (
+                            <Tag
+                              key={index}
+                              size="md"
+                              p={1}
+                              m={2}
+                              variant="solid"
+                              bgColor={'gray.200'}
+                              color={'black'}
+                              marginRight={2}
+                              marginBottom={2}
+                              closable
+                              onClick={() =>
+                                handleRemoveDynamicTag(variant, index)
+                              }
+                            >
+                              {tag}
+                            </Tag>
+                          ))}
+                          <Input
+                            autoFocus
+                            variant="subtle"
+                            flex={1}
+                            minWidth="120px"
+                            placeholder={`Masukan ${variant}...`}
+                            value={dynamicInput[variant] || ''}
+                            onChange={(e) =>
+                              handleDynamicInputChange(variant, e.target.value)
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleDynamicKeyDown(variant, e);
+                              }
+                            }}
+                          />
+                        </Box>
+                      </Box>
+                    </>
+                  ) : null
+                )}
               </>
-            )}
+              <Stack direction={'row'} justifyContent={'space-between'} mt={10}>
+                <Box>
+                  <Text fontWeight={500} fontSize={'20px'}>
+                    Daftar Varian
+                  </Text>
+                  <Text color={'#909090'}>
+                    Kamu dapat mengatur harga stok dan SKU sekaligus
+                  </Text>
+                </Box>
+                <Box>
+                  <VariantModal />
+                </Box>
+              </Stack>
+            </>
           </>
         )}
         {combinations.map((combination, index) => (
           <>
-            <Stack direction={'row'} justifyContent={'space-between'} mt={10}>
-              <Box>
-                <Text fontWeight={500} fontSize={'20px'}>
-                  Daftar Varian
-                </Text>
-                <Text color={'#909090'}>
-                  Kamu dapat mengatur harga stok dan SKU sekaligus
-                </Text>
-              </Box>
-              <Box>
-                <VariantModal />
-              </Box>
-            </Stack>
             <Box key={index}>
               <HStack my={4}>
                 <Text py={2} fontWeight={500}>
