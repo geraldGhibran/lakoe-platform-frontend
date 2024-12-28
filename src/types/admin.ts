@@ -1,5 +1,3 @@
-import { Location } from './locations';
-
 export interface Product {
   id: number;
   name: string;
