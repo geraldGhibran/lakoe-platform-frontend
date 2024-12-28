@@ -20,11 +20,16 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { useStoreAndWithdrawsAmount, useTopSeller } from '../hooks';
+import {
+  useAllStores,
+  useStoreAndWithdrawsAmount,
+  useTopSeller,
+} from '../hooks';
 
 export default function AdminHomePage() {
   const { data: stores, isLoading, isError, error } = useTopSeller();
   const { data: amount } = useStoreAndWithdrawsAmount();
+  const { data: store } = useAllStores();
 
   if (isLoading) {
     return <Spinner size="xl" />;
@@ -41,6 +46,10 @@ export default function AdminHomePage() {
     { name: 'May', sales: 350 },
     { name: 'Jan', sales: 1110 },
   ];
+  const dataTest = store?.map((item) => ({
+    name: item.name,
+    sales: item.invoices.length,
+  }));
   return (
     <Box bg={'white'}>
       <Box color={'black'} p={5}>
@@ -77,6 +86,24 @@ export default function AdminHomePage() {
         </Grid>
       </Box>
 
+      <Box>
+        <Heading size="md" textAlign="center" mb={4}>
+          Sales Chart
+        </Heading>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart
+            data={dataTest}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="sales" fill="#3182ce" />
+          </BarChart>
+        </ResponsiveContainer>
+      </Box>
       <Box>
         <Heading size="md" textAlign="center" mb={4}>
           Sales Chart
