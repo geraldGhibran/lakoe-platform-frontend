@@ -1,6 +1,7 @@
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { Box, Text, Stack, Button, Image } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { Box, Image, Stack, Text } from '@chakra-ui/react';
+// import { useNavigate } from 'react-router-dom';
+import ConfirmOrder from './confirmOrder';
 
 interface Image {
   id: number;
@@ -31,7 +32,7 @@ export default function OrderItem({
   Product,
   total_amount,
 }: Order) {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const productName = Product[0]?.name;
   const productImageUrl = Product[0]?.image[0]?.url;
 
@@ -64,22 +65,26 @@ export default function OrderItem({
     }
   };
 
-  const { bgColor, actionText, isNavigate } = getStatusStyles(status);
+  const {
+    bgColor,
+    actionText,
+    //  isNavigate
+  } = getStatusStyles(status);
 
-  const handleNavigate = () => {
-    navigate(`/detail-order/${invoice_id}`, {
-      state: { status, invoice_id, productName, id },
-    });
-  };
+  // const handleNavigate = () => {
+  //   navigate(`/detail-order/${invoice_id}`, {
+  //     state: { status, invoice_id, productName, id },
+  //   });
+  // };
 
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (isNavigate) {
-      handleNavigate();
-    } else {
-      alert('Aksi lainnya sesuai status');
-    }
-  };
+  // const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  //   event.stopPropagation();
+  //   if (isNavigate) {
+  //     handleNavigate();
+  //   } else {
+  //     alert('Aksi lainnya sesuai status');
+  //   }
+  // };
 
   return (
     <Box
@@ -89,7 +94,7 @@ export default function OrderItem({
       borderRadius={'5px'}
       mt={5}
       cursor="pointer"
-      onClick={handleNavigate}
+      // onClick={handleNavigate}
     >
       <Stack
         direction={'row'}
@@ -111,7 +116,8 @@ export default function OrderItem({
             {invoice_id}
           </Text>
         </Box>
-        <Button
+        <ConfirmOrder text={actionText} id={id} />
+        {/* <Button
           borderRadius={'100px'}
           bg={'white'}
           color={'black'}
@@ -119,7 +125,7 @@ export default function OrderItem({
           onClick={handleButtonClick}
         >
           {actionText}
-        </Button>
+        </Button> */}
       </Stack>
       <Stack direction={'row'} justifyContent={'space-between'}>
         <Stack direction={'row'}>
