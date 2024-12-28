@@ -35,6 +35,8 @@ export interface CartItem {
     id: number;
     name: string;
     product_id: number;
+    weight: number;
+    price: number;
   };
 
   quantity: number;
