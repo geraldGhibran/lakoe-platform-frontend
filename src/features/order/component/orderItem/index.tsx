@@ -1,5 +1,5 @@
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { Box, Text, Stack, Button, Image } from '@chakra-ui/react';
+import { Box, Text, Stack, Image } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 
 interface Image {
@@ -64,21 +64,12 @@ export default function OrderItem({
     }
   };
 
-  const { bgColor, actionText, isNavigate } = getStatusStyles(status);
+  const { bgColor } = getStatusStyles(status);
 
   const handleNavigate = () => {
     navigate(`/detail-order/${invoice_id}`, {
       state: { status, invoice_id, productName, id },
     });
-  };
-
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (isNavigate) {
-      handleNavigate();
-    } else {
-      alert('Aksi lainnya sesuai status');
-    }
   };
 
   return (
@@ -111,15 +102,6 @@ export default function OrderItem({
             {invoice_id}
           </Text>
         </Box>
-        <Button
-          borderRadius={'100px'}
-          bg={'white'}
-          color={'black'}
-          border={'1px solid black'}
-          onClick={handleButtonClick}
-        >
-          {actionText}
-        </Button>
       </Stack>
       <Stack direction={'row'} justifyContent={'space-between'}>
         <Stack direction={'row'}>
