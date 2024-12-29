@@ -7,6 +7,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  NativeSelectField,
+  NativeSelectRoot,
+} from '@/components/ui/native-select';
 import { Button, Input, Stack, HStack } from '@chakra-ui/react';
 import { Field } from '@/components/ui/field';
 import { useForm } from 'react-hook-form';
@@ -42,11 +46,12 @@ export default function CreateRekening() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bankList'] });
       toaster.create({
-        title: 'Template Message created',
+        title: 'rekening Message created',
         type: 'success',
         duration: 3000,
-        description: 'Your template message has been created successfully.',
+        description: 'Your rekening has been created successfully.',
       });
+      window.location.reload();
       reset();
     },
     onError: (error) => {
@@ -100,7 +105,31 @@ export default function CreateRekening() {
                   invalid={!!errors.bank}
                   errorText={errors.bank?.message}
                 >
-                  <Input {...register('bank')} />
+                  <NativeSelectRoot>
+                    <NativeSelectField
+                      placeholder="Select Bank Name"
+                      {...register('bank')}
+                    >
+                      <option value="BCA">BCA (Bank Central Asia)</option>
+                      <option value="Mandiri">Mandiri (Bank Mandiri)</option>
+                      <option value="BNI">BNI (Bank Negara Indonesia)</option>
+                      <option value="BRI">BRI (Bank Rakyat Indonesia)</option>
+                      <option value="CIMB">CIMB Niaga (CIMB Niaga Bank)</option>
+                      <option value="Danamon">Danamon (Bank Danamon)</option>
+                      <option value="Permata">Permata (Bank Permata)</option>
+                      <option value="Mega">Mega (Bank Mega)</option>
+                      <option value="Sinarmas">Sinarmas (Bank Sinarmas)</option>
+                      <option value="BTPN">BTPN (Bank BTPN)</option>
+                      <option value="BTN">BTN (Bank Tabungan Negara)</option>
+                      <option value="OCBC">OCBC NISP (OCBC NISP Bank)</option>
+                      <option value="UOB">UOB (UOB Indonesia)</option>
+                      <option value="StandardChartered">
+                        Standard Chartered Indonesia
+                      </option>
+                      <option value="HSBC">HSBC Indonesia</option>
+                      <option value="Maybank">Maybank Indonesia</option>
+                    </NativeSelectField>
+                  </NativeSelectRoot>
                 </Field>
                 <Field
                   label="Account Number"

@@ -5,6 +5,7 @@ import DeleteRekening from './components/deleteRekening';
 import API from '@/libs/axios';
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/auth';
+import { useAccountStore } from '@/store/rekId';
 
 const getRekAccountByStoreId = async (storeId: number) => {
   console.log('Fetching data for storeId:', storeId);
@@ -21,7 +22,10 @@ const getRekAccountByStoreId = async (storeId: number) => {
 export default function PaymentMethod() {
   const { user } = useAuthStore();
   const storeId = user?.store?.id;
-  const { data: rekAccount } = useQuery({
+  console.log('User Data:', user);
+  console.log('Store ID:', storeId);
+
+  const { data: rekAccount, isLoading } = useQuery({
     queryKey: ['rekAccount', storeId],
     queryFn: () => getRekAccountByStoreId(storeId as number),
     enabled: !!storeId,
@@ -29,11 +33,30 @@ export default function PaymentMethod() {
     refetchOnWindowFocus: true,
   });
 
+  console.log('isLoading:', isLoading);
+  console.log('Rekening Account Data:', rekAccount);
+  const setAccountId = useAccountStore((state) => state.setAccountId);
+  if (isLoading) {
+    return <Text>Loading...</Text>;
+  }
+  const accountData = rekAccount?.length > 0 ? rekAccount[0] : null;
   const items = [
-    { id: 1, name: 'Full Name', category: rekAccount[0].acc_name },
-    { id: 2, name: 'Bank Name', category: rekAccount[0].bank },
-    { id: 3, name: 'Account Number', category: rekAccount[0].acc_number },
+    {
+      id: 1,
+      name: 'Full Name',
+      category: accountData ? accountData.acc_name : '',
+    },
+    { id: 2, name: 'Bank Name', category: accountData ? accountData.bank : '' },
+    {
+      id: 3,
+      name: 'Account Number',
+      category: accountData ? accountData.acc_number : '',
+    },
   ];
+  if (accountData) {
+    setAccountId(accountData.id);
+  }
+
   return (
     <Box display="flex" gap="20px" flexDir="column">
       <Text fontSize="20px" fontWeight="bold">
