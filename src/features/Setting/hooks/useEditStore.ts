@@ -14,6 +14,7 @@ interface typeStoreSchemas {
   slogan: string;
   description: string;
   logo_img?: FileList | File[];
+  phone: string;
 }
 
 export const useHandleEditProfile = () => {
@@ -35,6 +36,7 @@ export const useHandleEditProfile = () => {
       slogan: storeDetail?.slogan || '',
       description: storeDetail?.description || '',
       logo_img: [],
+      phone: storeDetail?.phone || '',
     },
   });
 
