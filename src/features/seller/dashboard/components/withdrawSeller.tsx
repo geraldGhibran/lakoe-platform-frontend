@@ -5,14 +5,51 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogRoot,
   DialogTitle,
+  DialogRoot,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Box, Button, HStack } from '@chakra-ui/react';
-import 'leaflet/dist/leaflet.css';
+import { Box, Button, HStack, Input, Text } from '@chakra-ui/react';
+import { useState } from 'react';
+import { useWithdraw } from '../../hooks';
+import { toaster } from '@/components/ui/toaster-placement';
 
 export default function WithdrawSeller() {
+  const [amount, setAmount] = useState<number | ''>('');
+  const withdrawMutation = useWithdraw();
+
+  const handleWithdraw = () => {
+    if (!amount || amount < 5000) {
+      toaster.create({
+        title: 'Error',
+        description: 'Minimal withdraw adalah Rp 5.000',
+        type: 'error',
+        duration: 3000,
+      });
+      return;
+    }
+
+    withdrawMutation.mutate(Number(amount), {
+      onSuccess: () => {
+        toaster.create({
+          title: 'Success',
+          description: 'Withdraw request created successfully',
+          type: 'success',
+          duration: 3000,
+        });
+        setAmount('');
+      },
+      onError: (error: Error | string) => {
+        toaster.create({
+          title: 'Error',
+          description: error.toString() || 'Something went wrong',
+          type: 'error',
+          duration: 3000,
+        });
+      },
+    });
+  };
+
   return (
     <HStack wrap="wrap" gap="4">
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
@@ -24,7 +61,7 @@ export default function WithdrawSeller() {
         <DialogContent bgColor="white" color="black">
           <DialogHeader textAlign="center" borderBottom="1px solid gainsboro">
             <DialogTitle fontSize="md" fontWeight="bold">
-              Tandai Pinpoint
+              Withdraw
             </DialogTitle>
           </DialogHeader>
           <DialogBody
@@ -33,7 +70,13 @@ export default function WithdrawSeller() {
             flexDir="column"
             gap="20px"
           >
-            ada
+            <Text>*Minimal withdraw Rp 5.000</Text>
+            <Input
+              placeholder="Nominal"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              type="number"
+            />
           </DialogBody>
           <DialogFooter>
             <DialogActionTrigger asChild>
@@ -55,7 +98,7 @@ export default function WithdrawSeller() {
                   padding="20px"
                   color="white"
                   bgColor="#2E4399"
-                  type="submit"
+                  onClick={handleWithdraw}
                 >
                   Oke
                 </Button>

@@ -5,11 +5,15 @@ import { TbHistoryToggle } from 'react-icons/tb';
 import { SiWebmoney } from 'react-icons/si';
 import MyChart from '@/components/Chart';
 import { formatCurrency } from '@/features/add-other/format-currency';
-import { useSellerData } from '../hooks';
+import { useSellerData, useWithdraws } from '../hooks';
 import WithdrawSeller from './components/withdrawSeller';
+import { Withdraw } from '@/types/admin';
+import { formatDate } from '@/features/add-other/format-date';
 
 export const Dashboard = () => {
   const { data, isLoading, isError, error } = useSellerData();
+
+  const withdraws = useWithdraws();
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error?.message}</div>;
@@ -125,19 +129,34 @@ export const Dashboard = () => {
         <Table.Root size="sm">
           <Table.Header>
             <Table.Row bgColor="white">
-              <Table.ColumnHeader color="black">Product</Table.ColumnHeader>
-              <Table.ColumnHeader color="black">Category</Table.ColumnHeader>
+              <Table.ColumnHeader color="black">No</Table.ColumnHeader>
+              <Table.ColumnHeader color="black">
+                Request Date
+              </Table.ColumnHeader>
+              <Table.ColumnHeader color="black">Amount</Table.ColumnHeader>
               <Table.ColumnHeader color="black" textAlign="end">
-                Price
+                Status
               </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {items.map((item) => (
+            {withdraws.data?.map((item: Withdraw, index: number) => (
               <Table.Row bgColor="white" key={item.id}>
-                <Table.Cell>{item.name}</Table.Cell>
-                <Table.Cell>{item.category}</Table.Cell>
-                <Table.Cell textAlign="end">{item.price}</Table.Cell>
+                <Table.Cell>{index + 1}</Table.Cell>
+                <Table.Cell>{formatDate(item.createAt)}</Table.Cell>
+                <Table.Cell>{formatCurrency(item.amount)}</Table.Cell>
+                <Table.Cell
+                  color={
+                    item.status === 'SUCCESS'
+                      ? 'green.500'
+                      : item.status === 'FAILED'
+                        ? 'red.500'
+                        : 'gray.500'
+                  }
+                  textAlign="end"
+                >
+                  {item.status}
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
@@ -156,11 +175,3 @@ export const Dashboard = () => {
     </Box>
   );
 };
-
-const items = [
-  { id: 1, name: 'Laptop', category: 'Electronics', price: 999.99 },
-  { id: 2, name: 'Coffee Maker', category: 'Home Appliances', price: 49.99 },
-  { id: 3, name: 'Desk Chair', category: 'Furniture', price: 150.0 },
-  { id: 4, name: 'Smartphone', category: 'Electronics', price: 799.99 },
-  { id: 5, name: 'Headphones', category: 'Accessories', price: 199.99 },
-];
