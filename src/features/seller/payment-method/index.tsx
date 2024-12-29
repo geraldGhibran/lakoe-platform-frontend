@@ -1,4 +1,13 @@
-import { Box, Flex, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Table, Text } from '@chakra-ui/react';
+import CreateRekening from './components/createRekening';
+import EditRekening from './components/editRekening';
+import DeleteRekening from './components/deleteRekening';
+
+const items = [
+  { id: 1, name: 'Full Name', category: 'Gerald' },
+  { id: 2, name: 'Bank Name', category: 'mandiri' },
+  { id: 3, name: 'Account Number', category: '9867875858' },
+];
 
 export default function PaymentMethod() {
   return (
@@ -6,6 +15,7 @@ export default function PaymentMethod() {
       <Text fontSize="20px" fontWeight="bold">
         Pembayaran
       </Text>
+      <CreateRekening />
       <Flex gap="10px" rounded="md">
         {/* E-Wallet */}
         <Box
@@ -13,7 +23,7 @@ export default function PaymentMethod() {
           rounded="sm"
           overflow="hidden"
           bgColor="white"
-          width="1/2"
+          width="full"
         >
           <Text
             padding="15px"
@@ -21,78 +31,25 @@ export default function PaymentMethod() {
             fontSize="15px"
             borderBottom="1px solid gainsboro"
           >
-            E-Wallet
+            Rekening Bank
           </Text>
-          <Flex gap="10px" padding="20px">
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://1.bp.blogspot.com/-rmLjPMKtx7k/XnK070LoSRI/AAAAAAAASbs/i2kIFlIzh0MUpnLZzeFoXgYN-a0EpZRvwCLcBGAsYHQ/s1600/OVO.png"
-            />
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://logowik.com/content/uploads/images/permata-bank3459.jpg"
-            />
-          </Flex>
-        </Box>
-
-        {/* Akun Virtual */}
-        <Box
-          shadow="md"
-          rounded="sm"
-          overflow="hidden"
-          bgColor="white"
-          width="1/2"
-        >
-          <Text
-            padding="15px"
-            fontWeight="medium"
-            fontSize="15px"
-            borderBottom="1px solid gainsboro"
-          >
-            Akun Virtual
-          </Text>
-          <Flex gap="10px" padding="20px">
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://1.bp.blogspot.com/-rmLjPMKtx7k/XnK070LoSRI/AAAAAAAASbs/i2kIFlIzh0MUpnLZzeFoXgYN-a0EpZRvwCLcBGAsYHQ/s1600/OVO.png"
-            />
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://logowik.com/content/uploads/images/permata-bank3459.jpg"
-            />
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://th.bing.com/th/id/R.c14259eb75c4bfb13197ea71251a70f2?rik=uY5VOX7Hr%2bEjhQ&riu=http%3a%2f%2freprime.id%2faplikasi-absensi-online%2fface-recognition-dan-human-detection%2fimg%2ficon%2fmandiri_logo.png&ehk=uz8OBrdh2fEaW2x2fjnxe9JsZvnKVVMjQxZBhdnLuxM%3d&risl=&pid=ImgRaw&r=0"
-            />
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://th.bing.com/th/id/OIP.8kr2k27j1xdMm0MDMbPPqwHaE8?rs=1&pid=ImgDetMain"
-            />
-            <Image
-              boxSize="40px"
-              objectFit="contain"
-              rounded="md"
-              shadow="sm"
-              src="https://i.pinimg.com/originals/36/38/43/36384348ef9d7bfff66da6da9e975d56.png"
-            />
+          <Flex padding="15px">
+            <Table.Root unstyled width="full">
+              <Table.Body>
+                {items.map((item) => (
+                  <Table.Row key={item.id}>
+                    <Table.Cell>{item.name}</Table.Cell>
+                    <Table.Cell width="2%">:</Table.Cell>
+                    <Table.Cell width="70%">{item.category}</Table.Cell>
+                    <Table.Cell></Table.Cell>
+                  </Table.Row>
+                ))}
+              </Table.Body>
+            </Table.Root>
+            <Box gap="10px" display="flex" flexDir="column">
+              <EditRekening />
+              <DeleteRekening />
+            </Box>
           </Flex>
         </Box>
       </Flex>
