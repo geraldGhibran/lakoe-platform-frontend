@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text } from '@chakra-ui/react';
 import { MdCrisisAlert } from 'react-icons/md';
 import { Table } from '@chakra-ui/react';
 import { TbHistoryToggle } from 'react-icons/tb';
@@ -6,6 +6,7 @@ import { SiWebmoney } from 'react-icons/si';
 import MyChart from '@/components/Chart';
 import { formatCurrency } from '@/features/add-other/format-currency';
 import { useSellerData } from '../hooks';
+import WithdrawSeller from './components/withdrawSeller';
 
 export const Dashboard = () => {
   const { data, isLoading, isError, error } = useSellerData();
@@ -111,9 +112,7 @@ export const Dashboard = () => {
             </Flex>
           </Box>
         </Flex>
-        <Button _active={{ shadow: 'xs' }} shadow="sm" bgColor="yellow.300">
-          Withdraw
-        </Button>
+        <WithdrawSeller />
       </Box>
 
       {/* Table */}
