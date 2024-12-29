@@ -8,28 +8,56 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button, Input, Stack, HStack } from '@chakra-ui/react';
-import 'leaflet/dist/leaflet.css';
 import { Field } from '@/components/ui/field';
 import { useForm } from 'react-hook-form';
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from '@/components/ui/native-select';
+import CreateformSchema from '../schema/create-rek';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { zodResolver } from '@hookform/resolvers/zod';
+import API from '@/libs/axios';
+import { toaster } from '@/components/ui/toaster-placement';
 
 interface FormValues {
-  fullName: string;
-  bankName: string;
-  accountNumber: string;
+  acc_name: string;
+  bank: string;
+  acc_number: string;
 }
 
 export default function CreateRekening() {
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    resolver: zodResolver(CreateformSchema),
+  });
 
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const mutation = useMutation({
+    mutationFn: async (data: FormValues) => {
+      const response = await API.post(`/bank`, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['bankList'] });
+      toaster.create({
+        title: 'Template Message created',
+        type: 'success',
+        duration: 3000,
+        description: 'Your template message has been created successfully.',
+      });
+      reset();
+    },
+    onError: (error) => {
+      console.error('Error creating account:', error);
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+    mutation.mutate(data);
+  });
 
   return (
     <HStack wrap="wrap" gap="4">
@@ -56,50 +84,30 @@ export default function CreateRekening() {
             flexDir="column"
             gap="20px"
           >
-            <form style={{ width: 'full' }} onSubmit={onSubmit}>
+            <form style={{ width: '100%' }} onSubmit={onSubmit}>
               <Stack gap="4" align="flex-start">
                 <Field
                   label="Full Name"
-                  invalid={!!errors.fullName}
-                  errorText={errors.fullName?.message}
+                  invalid={!!errors.acc_name}
+                  errorText={errors.acc_name?.message}
                 >
-                  <Input
-                    {...register('fullName', {
-                      required: 'Full Name is required',
-                    })}
-                  />
+                  <Input {...register('acc_name')} />
                 </Field>
                 <Field
                   label="Bank Name"
                   gap="4"
                   width="full"
-                  invalid={!!errors.bankName}
-                  errorText={errors.bankName?.message}
+                  invalid={!!errors.bank}
+                  errorText={errors.bank?.message}
                 >
-                  <NativeSelectRoot>
-                    <NativeSelectField
-                      placeholder="Select Bank Name"
-                      {...register('bankName', {
-                        required: 'Bank Name is required',
-                      })}
-                    >
-                      <option value="react">React</option>
-                      <option value="vue">Vue</option>
-                      <option value="angular">Angular</option>
-                      <option value="svelte">Svelte</option>
-                    </NativeSelectField>
-                  </NativeSelectRoot>
+                  <Input {...register('bank')} />
                 </Field>
                 <Field
                   label="Account Number"
-                  invalid={!!errors.accountNumber}
-                  errorText={errors.accountNumber?.message}
+                  invalid={!!errors.acc_number}
+                  errorText={errors.acc_number?.message}
                 >
-                  <Input
-                    {...register('accountNumber', {
-                      required: 'Account Number is required',
-                    })}
-                  />
+                  <Input {...register('acc_number')} />
                 </Field>
                 <Button
                   _focus={{ shadow: 'xs' }}
