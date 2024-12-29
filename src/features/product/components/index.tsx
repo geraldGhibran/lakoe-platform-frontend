@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
+import { Box, Button, HStack, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import NotFoundCard from './notFound';
@@ -7,6 +7,7 @@ import CardProduct from './CardProduct/card';
 import { useState, useEffect } from 'react';
 import '@/styles/styes.css';
 import { useGetProductSeller } from '../hooks/use-get-product';
+import { Skeleton, SkeletonCircle } from '@/components/ui/skeleton';
 
 interface Product {
   id: number;
@@ -106,7 +107,15 @@ function ProductList() {
 
   const renderProducts = (products: Product[]) => {
     if (isLoading) {
-      return <Text>Loading...</Text>;
+      return (
+        <HStack padding="50px" gap="5">
+          <SkeletonCircle size="12" />
+          <Stack flex="1">
+            <Skeleton height="5" />
+            <Skeleton height="5" width="80%" />
+          </Stack>
+        </HStack>
+      );
     }
     if (products.length === 0) {
       return (
