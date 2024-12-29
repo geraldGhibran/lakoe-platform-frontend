@@ -5,8 +5,14 @@ import { TbHistoryToggle } from 'react-icons/tb';
 import { SiWebmoney } from 'react-icons/si';
 import MyChart from '@/components/Chart';
 import { formatCurrency } from '@/features/add-other/format-currency';
+import { useSellerData } from '../hooks';
 
 export const Dashboard = () => {
+  const { data, isLoading, isError, error } = useSellerData();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error?.message}</div>;
+
   return (
     <Box display="flex" flexDir="column" gap="20px">
       <Box
@@ -42,7 +48,11 @@ export const Dashboard = () => {
                 <MdCrisisAlert size="20px" color="orange" />
               </Flex>
               <Text fontSize="20px" color="blue">
-                25
+                {
+                  data?.invoices.filter(
+                    (invoice) => invoice.status === 'DELIVERED'
+                  ).length
+                }
               </Text>
             </Flex>
           </Box>
@@ -69,7 +79,7 @@ export const Dashboard = () => {
                 <TbHistoryToggle size="20px" color="blue" />
               </Flex>
               <Text fontSize="20px" color="green.500">
-                25
+                {data?.invoices?.length}
               </Text>
             </Flex>
           </Box>
@@ -96,7 +106,7 @@ export const Dashboard = () => {
                 <SiWebmoney size="20px" color="red" />
               </Flex>
               <Text fontSize="20px" color="green">
-                {formatCurrency(5000000)}
+                {formatCurrency(data?.amount || 0)}
               </Text>
             </Flex>
           </Box>
