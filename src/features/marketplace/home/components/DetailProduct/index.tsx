@@ -10,6 +10,8 @@ import {
   useGetProductDetail,
   useSetCourierAndAreaId,
 } from '@/features/product/hooks/use-get-product-detail';
+import { toaster } from '@/components/ui/toaster-placement';
+import { Toaster } from '@/components/ui/toaster';
 
 interface VariantItemValue {
   id: number;
@@ -83,10 +85,10 @@ export default function DetailProduct() {
 
   if (!product) return <Text>Detail produk tidak tersedia.</Text>;
 
-  console.log(product);
-
   return (
     <Box padding="0 10px">
+      <Toaster />
+
       <Flex color="black">
         <Box width="1/2" padding="20px" height="80vh">
           <Swiper
@@ -270,8 +272,15 @@ export default function DetailProduct() {
                                     padding="20px 0"
                                   >
                                     <Flex gap="10px">
-                                      <Link to="checkout">
+                                      <Link to="/checkout">
                                         <Button
+                                          onClick={() => {
+                                            addItem({
+                                              product: product,
+                                              variant,
+                                              quantity: 1,
+                                            });
+                                          }}
                                           bgColor="white"
                                           color="black"
                                           border="1px solid gray"
@@ -283,8 +292,15 @@ export default function DetailProduct() {
                                       <Link to="/cart">
                                         <Button
                                           onClick={() => {
+                                            toaster.create({
+                                              title: 'Berhasil tambah ke cart',
+                                              type: 'success',
+                                              duration: 3000,
+                                              description:
+                                                'You have successfully logged in.',
+                                            });
                                             addItem({
-                                              product: product, // Ensure you have the product object
+                                              product: product,
                                               variant,
                                               quantity: quantity,
                                             });

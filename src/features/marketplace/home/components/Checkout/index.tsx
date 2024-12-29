@@ -95,8 +95,6 @@ export default function CheckoutPages() {
 
   const isAllFilled = requiredFields.every((field) => allFields[field]);
 
-  console.log('sdfokjdfspoodfi', rates);
-
   const cityDistrictValue = watch('city_district');
   const subdistrictValue = watch('subdistrict');
   const postalCodeValue = watch('postal_code');
@@ -154,8 +152,6 @@ export default function CheckoutPages() {
       value: Number(pos.code),
     })),
   });
-
-  console.log(ratesCourier);
 
   return (
     <Box padding="10px 100px" pb="100px">

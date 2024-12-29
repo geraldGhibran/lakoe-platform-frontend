@@ -61,8 +61,8 @@ export const useCheckout = () => {
     phone: customer_details.phone,
     address: customer_details.address,
     postal_code: customer_details.postal_code,
-    receiver_longitude: Number(customer_details.receiver_longitude),
-    receiver_latitude: Number(customer_details.receiver_latitude),
+    receiver_longitude: customer_details.longitude ?? 0,
+    receiver_latitude: customer_details.latitude ?? 0,
     receiver_district: `${customer_details.city_district}, ${customer_details.subdistrict}`,
     store_id: storeId,
     email: String(customer_details.email),
@@ -85,25 +85,7 @@ export const useCheckout = () => {
     useMutation({
       mutationKey: ['paymentCheckout'],
       mutationFn: async (data: CheckoutSchema) => {
-        const customerDetails = {
-          name: data.customer_details.name,
-          phone: data.customer_details.phone,
-          address: data.customer_details.address,
-          postal_code: data.customer_details.postal_code,
-          receiver_longitude: data.customer_details.receiver_longitude,
-          receiver_latitude: data.customer_details.receiver_latitude,
-          receiver_district: data.customer_details.receiver_district,
-          store_id: data.customer_details.store_id,
-          email: data.customer_details.email,
-        };
-
-        const datas = {
-          customer_details: customerDetails,
-          items: data.items,
-          courierPrice: data.courierPrice,
-        };
-
-        return await paymentCheckout(datas);
+        return await paymentCheckout(data);
       },
       onSuccess: async () => {
         toaster.create({
