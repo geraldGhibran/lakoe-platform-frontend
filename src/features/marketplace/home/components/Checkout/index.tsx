@@ -45,21 +45,7 @@ import { useEffect } from 'react';
 import { useCostRateStore } from '@/store/cost-rate';
 import { useCheckout } from '../../hooks/use-checkout';
 import { Button } from '@/components/ui/button';
-import { useCustomerDetailStore } from '@/store/customer-detail';
-
-interface AllFields {
-  name: string;
-  phone: string;
-  address: string;
-  province: string;
-  city_district: string;
-  subdistrict: string;
-  village: string;
-  postal_code: number;
-  latitude: number;
-  longitude: number;
-  [key: string]: string | number;
-}
+import { AllFields, useCustomerDetailStore } from '@/store/customer-detail';
 
 export default function CheckoutPages() {
   const { totalPrice, products, productImage } = useCartStore();
@@ -109,11 +95,7 @@ export default function CheckoutPages() {
 
   const isAllFilled = requiredFields.every((field) => allFields[field]);
 
-  const ratesData = {
-    pricing: {
-      pricing: rates.length < 0 ? rates : rates.pricing,
-    },
-  };
+  console.log('sdfokjdfspoodfi', rates);
 
   const cityDistrictValue = watch('city_district');
   const subdistrictValue = watch('subdistrict');
@@ -593,7 +575,7 @@ export default function CheckoutPages() {
                     bgColor="#F9FAFB"
                   >
                     <Box py="20px">
-                      <DeliveryMethod onSubmit={onSubmit} rates={ratesData} />
+                      <DeliveryMethod onSubmit={onSubmit} rates={rates ?? []} />
                     </Box>
                   </AccordionItemContent>
                 </AccordionItem>
