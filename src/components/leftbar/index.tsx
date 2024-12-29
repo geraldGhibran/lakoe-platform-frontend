@@ -82,7 +82,7 @@ export default function SideBar() {
                     icon={link.icon}
                     path={link.path}
                     isActive={location.pathname === link.path}
-                    onClick={() => {}}
+                    onClick={() => { }}
                   >
                     {link.name}
                   </NavLink>
@@ -118,7 +118,7 @@ export default function SideBar() {
                           icon=""
                           path={subLink.path}
                           isActive={location.pathname === subLink.path}
-                          onClick={() => {}}
+                          onClick={() => { }}
                         >
                           {subLink.name}
                         </NavLink>
