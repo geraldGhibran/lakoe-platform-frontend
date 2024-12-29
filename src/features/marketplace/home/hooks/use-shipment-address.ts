@@ -79,7 +79,7 @@ export const useShipmentAddress = () => {
     resolver: zodResolver(shipmentAddressSchema),
     values: {
       name: '',
-      phone: 0,
+      phone: '',
       address: '',
       email: '',
       city_district: '',
