@@ -8,81 +8,49 @@ import {
   Textarea,
   Button,
   HStack,
+  Image,
+  Flex,
 } from '@chakra-ui/react';
-import {
-  NativeSelectField,
-  NativeSelectRoot,
-} from '@/components/ui/native-select';
-import {
-  FileUploadDropzone,
-  FileUploadList,
-  FileUploadRoot,
-} from '@/components/ui/file-upload';
 import { Field } from '@/components/ui/field';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema } from '../schemas/addProductSchema/index';
-import { useState } from 'react';
 import VariantComponent from './variant';
-
-interface ProductFormData {
-  productName: string;
-  checkoutUrl: string;
-  category: string;
-  description: string;
-  price: number;
-  minPurchase: number;
-  stock: number;
-  sku: string;
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
-  image: File[];
-}
+import useAddProduct from '../hooks/use-add-product';
+import { Icon } from '@iconify/react';
+import {
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from '@/components/ui/select';
 
 export default function AddProductPage() {
-  const onSubmit = (data: ProductFormData) => {
-    console.log('Form data:', data);
-  };
-
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<ProductFormData>({
-    resolver: zodResolver(productSchema),
-  });
-  const [isVariantTypeCreate, setIsVariantTypeCreate] = useState(false);
-
-  // Pisahkan tags untuk warna dan ukuran
-  const [colorTags, setColorTags] = useState<string[]>([]);
-  const [sizeTags, setSizeTags] = useState<string[]>([]);
-
-  // Fungsi untuk menambah tag warna
-  const handleAddColorTag = (tag: string) => {
-    setColorTags((prevTags) => [...prevTags, tag]);
-  };
-
-  // Fungsi untuk menghapus tag warna
-  const handleRemoveColorTag = (index: number) => {
-    setColorTags((prevTags) => prevTags.filter((_, i) => i !== index));
-  };
-
-  // Fungsi untuk menambah tag ukuran
-  const handleAddSizeTag = (tag: string) => {
-    setSizeTags((prevTags) => [...prevTags, tag]);
-  };
-
-  // Fungsi untuk menghapus tag ukuran
-  const handleRemoveSizeTag = (index: number) => {
-    setSizeTags((prevTags) => prevTags.filter((_, i) => i !== index));
-  };
-
-  // Fungsi untuk toggle variant creation
-  const handleVariantTypeCreateToggle = () => {
-    setIsVariantTypeCreate(!isVariantTypeCreate);
-  };
+    errors,
+    isVariantTypeCreate,
+    handleAddColorTag,
+    handleRemoveColorTag,
+    handleAddSizeTag,
+    handleRemoveSizeTag,
+    handleVariantTypeCreateToggle,
+    colorTags,
+    sizeTags,
+    onSubmit,
+    images,
+    handleImageChange,
+    handleRemoveImage,
+    getSelectedPath,
+    selectedCategory,
+    selectedSubcategory,
+    selectedSubSubcategory,
+    setSelectedCategory,
+    setSelectedSubcategory,
+    setSelectedSubSubcategory,
+    categoryCollection,
+    updateVariantsAndCombination,
+  } = useAddProduct();
   return (
     <Stack direction="row">
       <Box bg="gray.100" minH="270vh" w="100%">
@@ -92,7 +60,7 @@ export default function AddProductPage() {
             py={2}
             m="auto"
             width="100%"
-            h={'480px'}
+            h={'450px'}
             bg="white"
             boxShadow="md"
             borderRadius="lg"
@@ -104,14 +72,12 @@ export default function AddProductPage() {
               <Field label="Nama produk">
                 <Input
                   placeholder="masukan nama produk"
-                  {...register('productName')}
-                  borderColor={errors.productName ? 'red.500' : 'gray.200'}
+                  {...register('name')}
+                  borderColor={errors.name ? 'red.500' : 'gray.200'}
                 />
               </Field>
-              {errors.productName && (
-                <Text color={'red.500'}>
-                  {errors.productName.message as string}
-                </Text>
+              {errors.name && (
+                <Text color={'red.500'}>{errors.name.message as string}</Text>
               )}
             </Box>
             <Box pt={5}>
@@ -123,34 +89,129 @@ export default function AddProductPage() {
                   <InputAddon>lakoe.store/</InputAddon>
                   <Input
                     placeholder="nama produk"
-                    {...register('checkoutUrl')}
-                    borderColor={errors.checkoutUrl ? 'red.500' : 'gray.200'}
+                    {...register('url')}
+                    borderColor={errors.url ? 'red.500' : 'gray.200'}
                   />
                 </Group>
-                {errors.checkoutUrl && (
-                  <Text color={'red.500'}>
-                    {errors.checkoutUrl.message as string}
-                  </Text>
+                {errors.url && (
+                  <Text color={'red.500'}>{errors.url.message as string}</Text>
                 )}
               </Stack>
             </Box>
             <Box pt={5}>
-              <Field label="Kategori">
-                <NativeSelectRoot>
-                  <NativeSelectField
-                    items={[
-                      'Pilih kategori produk',
-                      'Canada (CA)',
-                      'United States (US)',
-                    ]}
-                    {...register('category')}
-                    borderColor={errors.productName ? 'red.500' : 'gray.200'}
-                  />
-                </NativeSelectRoot>
-              </Field>
-              {errors.category && (
+              <Box>
+                <SelectRoot
+                  collection={categoryCollection}
+                  size="sm"
+                  width="100%"
+                  closeOnSelect={false}
+                >
+                  <SelectLabel>Kategori</SelectLabel>
+                  <SelectTrigger>
+                    <SelectValueText
+                      placeholder={`${getSelectedPath() || 'Pilih Kategori'}`}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <Flex gap={4}>
+                      <Box width="35%">
+                        {categoryCollection.items.map((category) => (
+                          <SelectItem
+                            colorPalette={
+                              selectedCategory?.value === category.value
+                                ? 'cyan'
+                                : undefined
+                            }
+                            item={category}
+                            key={category.value}
+                            onClick={() => {
+                              setSelectedCategory(category);
+                              setSelectedSubcategory(null);
+                              setSelectedSubSubcategory(null);
+                            }}
+                          >
+                            <Text>
+                              {selectedCategory?.value === category.value ? (
+                                <strong>{category.label}</strong>
+                              ) : (
+                                category.label
+                              )}
+                            </Text>
+                          </SelectItem>
+                        ))}
+                      </Box>
+                      {selectedCategory?.subcategories && (
+                        <Box width="35%" borderLeft={'1px solid gray'}>
+                          {selectedCategory.subcategories.map((subcategory) => (
+                            <SelectItem
+                              item={subcategory}
+                              key={subcategory.value}
+                              colorPalette={
+                                selectedSubcategory?.value === subcategory.value
+                                  ? 'blue'
+                                  : undefined
+                              }
+                              onClick={() => {
+                                setSelectedSubcategory(subcategory);
+                                setSelectedSubSubcategory(null);
+                              }}
+                            >
+                              <Text>
+                                {selectedSubcategory?.value ===
+                                subcategory.value ? (
+                                  <strong>{subcategory.label}</strong>
+                                ) : (
+                                  subcategory.label
+                                )}
+                              </Text>
+                            </SelectItem>
+                          ))}
+                        </Box>
+                      )}
+                      {selectedSubcategory?.subcategories && (
+                        <Box width="35%" borderLeft={'1px solid gray'}>
+                          {selectedSubcategory.subcategories.map(
+                            (subSubcategory) => (
+                              <SelectItem
+                                colorPalette={
+                                  selectedSubSubcategory?.value ===
+                                  subSubcategory.value
+                                    ? 'blue'
+                                    : undefined
+                                }
+                                item={subSubcategory}
+                                key={subSubcategory.value}
+                                onClick={() =>
+                                  setSelectedSubSubcategory(subSubcategory)
+                                }
+                              >
+                                <Text>
+                                  {selectedSubSubcategory?.value ===
+                                  subSubcategory.value ? (
+                                    <strong>{subSubcategory.label}</strong>
+                                  ) : (
+                                    subSubcategory.label
+                                  )}
+                                  <input
+                                    type="hidden"
+                                    {...register('categories_id', {
+                                      valueAsNumber: true,
+                                    })}
+                                    value={subSubcategory.id}
+                                  />
+                                </Text>
+                              </SelectItem>
+                            )
+                          )}
+                        </Box>
+                      )}
+                    </Flex>
+                  </SelectContent>
+                </SelectRoot>
+              </Box>
+              {errors.categories_id && (
                 <Text color={'red.500'}>
-                  {errors.category.message as string}
+                  {errors.categories_id.message as string}
                 </Text>
               )}
             </Box>
@@ -189,50 +250,85 @@ export default function AddProductPage() {
                 Foto Produk
               </Text>
               <Stack direction="row">
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto Utama"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 2"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 3"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 4"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
-                <FileUploadRoot maxW="25%" alignItems="stretch">
-                  <FileUploadDropzone
-                    description="Foto 5"
-                    label={undefined}
-                    minH={'200px'}
-                  />
-                  <FileUploadList />
-                </FileUploadRoot>
+                <div>
+                  <Box display="flex" flexWrap="wrap" gap="10px">
+                    {images.map((image, index) => (
+                      <Box
+                        key={index}
+                        width="188px"
+                        height="200px"
+                        borderWidth="2px"
+                        borderStyle="dashed"
+                        borderRadius="md"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        position="relative"
+                        overflow="hidden"
+                      >
+                        <Box position="relative" width="100%" height="100%">
+                          <Image
+                            src={image.preview || ''}
+                            width="100%"
+                            height="100%"
+                            objectFit="cover"
+                            alt={`Image ${index + 1}`}
+                          />
+                          <Button
+                            size="sm"
+                            colorScheme="red"
+                            position="absolute"
+                            top="10px"
+                            right="10px"
+                            onClick={() => handleRemoveImage(index)}
+                          >
+                            Remove
+                          </Button>
+                        </Box>
+                      </Box>
+                    ))}
+                  </Box>
+                  <Box textAlign="center" position="relative" mt="10px">
+                    <Box
+                      width="188px"
+                      height="200px"
+                      borderWidth="2px"
+                      borderStyle="dashed"
+                      borderRadius="md"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      position="relative"
+                      overflow="hidden"
+                    >
+                      <Box
+                        bgColor={'white'}
+                        borderRadius={'full'}
+                        p={2}
+                        onClick={() =>
+                          document.getElementById('fileInput')?.click()
+                        }
+                      >
+                        <Icon
+                          icon="hugeicons:image-upload"
+                          color="green"
+                          width="60px"
+                          height="60px"
+                          aria-label="Upload Gambar"
+                        />
+                        <Input
+                          id="fileInput"
+                          multiple
+                          type="file"
+                          hidden
+                          accept="image/*"
+                          onChange={handleImageChange}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                </div>
               </Stack>
-              {errors.image && (
-                <Text color={'red.500'}>{'Foto Produk wajib diisi'}</Text>
-              )}
             </Box>
           </Box>
           <Box
@@ -254,6 +350,7 @@ export default function AddProductPage() {
               onRemoveSizeTag={handleRemoveSizeTag}
               onToggleVariantTypeCreate={handleVariantTypeCreateToggle}
               isVariantTypeCreate={isVariantTypeCreate}
+              onSubmit={updateVariantsAndCombination}
             />
           </Box>
           <Box
@@ -290,102 +387,38 @@ export default function AddProductPage() {
               </Text>
               <Group attached>
                 <Input
-                  value={'1'}
-                  {...register('minPurchase')}
-                  borderColor={errors.minPurchase ? 'red.500' : 'gray.200'}
+                  placeholder="minimum order"
+                  {...register('minimum_order')}
+                  borderColor={errors.minimum_order ? 'red.500' : 'gray.200'}
                 />
                 <InputAddon>Produk</InputAddon>
               </Group>
-              {errors.minPurchase && (
+              {errors.minimum_order && (
                 <Text color={'red.500'}>
-                  {errors.minPurchase.message as string}
+                  {errors.minimum_order.message as string}
                 </Text>
               )}
             </Stack>
           </Box>
           <Box
             px={10}
-            py={1}
+            py={5}
             m="auto"
             width="100%"
-            h={220}
             bg="white"
             my={5}
             boxShadow="md"
             borderRadius="lg"
           >
-            <Text fontSize="2xl" mt={10} mb={5} fontWeight="bold">
-              Pengelolaan Produk
-            </Text>
-            <HStack gap="10" width="full">
-              <Box>
-                <Field label="Stock Produk">
-                  <Input
-                    placeholder="Masukan Jumlah stok"
-                    variant="outline"
-                    {...register('stock')}
-                    borderColor={errors.stock ? 'red.500' : 'gray.200'}
-                    width="350px"
-                  />
-                </Field>
-                {errors.stock && (
-                  <Text color={'red.500'}>
-                    {errors.stock.message as string}
-                  </Text>
-                )}
-              </Box>
-              <Box>
-                <Field label="SKU(Stock Keeping Unit)">
-                  <Input
-                    placeholder="Masukan SKU"
-                    variant="outline"
-                    {...register('sku')}
-                    borderColor={errors.sku ? 'red.500' : 'gray.200'}
-                    width="350px"
-                  />
-                </Field>
-                {errors.sku && (
-                  <Text color={'red.500'}>{errors.sku.message as string}</Text>
-                )}
-              </Box>
-            </HStack>
-          </Box>
-          <Box
-            px={10}
-            py={1}
-            m="auto"
-            width="100%"
-            h={350}
-            bg="white"
-            my={5}
-            boxShadow="md"
-            borderRadius="lg"
-          >
-            <Text fontSize="2xl" mt={10} mb={5} fontWeight="bold">
+            <Text fontSize="2xl" mt={5} mb={5} fontWeight="bold">
               Berat & Pengiriman
             </Text>
-            <Stack>
-              <Text fontSize="14px" mb={1} mt={2} fontWeight="500">
-                Berat Produk
-              </Text>
-              <Group attached>
-                <Input
-                  placeholder="Masukan berat produk"
-                  {...register('weight')}
-                  borderColor={errors.weight ? 'red.500' : 'gray.200'}
-                />
-                <InputAddon>Gram</InputAddon>
-              </Group>
-              {errors.weight && (
-                <Text color={'red.500'}>{errors.weight.message as string}</Text>
-              )}
-            </Stack>
             <HStack gap="20" width="100%" mt={5}>
               <Box>
                 <Text fontSize="14px" mb={1} mt={2} fontWeight="500">
                   Ukuran Produk
                 </Text>
-                <Group attached w={'120%'}>
+                <Group attached w={'100%'}>
                   <Input
                     placeholder="panjang"
                     {...register('length')}
@@ -400,7 +433,7 @@ export default function AddProductPage() {
                 )}
               </Box>
               <Box>
-                <Group attached w={'120%'} mt={8}>
+                <Group attached w={'100%'} mt={8}>
                   <Input placeholder="Lebar" {...register('width')} />
                   borderColor={errors.width ? 'red.500' : 'gray.200'}
                   <InputAddon>cm</InputAddon>
@@ -412,7 +445,7 @@ export default function AddProductPage() {
                 )}
               </Box>
               <Box>
-                <Group attached w={'120%'} mt={8}>
+                <Group attached w={'100%'} mt={8}>
                   <Input
                     placeholder="Tinggi"
                     {...register('height')}
@@ -444,7 +477,6 @@ export default function AddProductPage() {
             >
               <Box>
                 <Button
-                  type="submit"
                   bg={'white'}
                   color={'black'}
                   border={'1px solid gray'}
@@ -455,7 +487,6 @@ export default function AddProductPage() {
               </Box>
               <Box>
                 <Button
-                  type="submit"
                   width={'100px'}
                   bg={'white'}
                   color={'black'}

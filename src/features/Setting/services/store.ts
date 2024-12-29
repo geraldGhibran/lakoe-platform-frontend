@@ -4,6 +4,7 @@ import { TemplateSchema } from '../schemas/templateSchema';
 import { DeleteTemplateMessageSchema } from '../schemas/deleteTemplateMessageSchema';
 import { AddLocationSchema } from '../schemas/addLocationSchema';
 import { EditLocationSchema } from '../schemas/editLocationSchema';
+import { CourierDto } from '@/types/courier';
 
 export const getDetailStore = async (userId: number): Promise<Store> => {
   try {
@@ -29,6 +30,12 @@ export const updateStoreData = async (formData: FormData, userId: number) => {
   return response.data;
 };
 
+export const updateStoreCourierData = async (data: CourierDto) => {
+  const response = await API.put<Store>(`/store/courier/edit`, data);
+
+  return response.data;
+};
+
 export const getTemplateMessageByStoreId = async (storeId: number) => {
   const response = await API.get(`/templatemessage/${storeId}`);
   return response.data;
@@ -41,6 +48,11 @@ export const getLocationByStoreId = async (storeId: number) => {
 
 export const getLocationById = async (id: number) => {
   const response = await API.get(`/location/byId/${id}`);
+  return response.data;
+};
+
+export const getStoreCourierById = async () => {
+  const response = await API.get(`/biteship/couriers`);
   return response.data;
 };
 

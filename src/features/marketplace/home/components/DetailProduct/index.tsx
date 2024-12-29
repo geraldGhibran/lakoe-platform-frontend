@@ -1,27 +1,96 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { useState } from 'react';
-import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-import SwiperCore from 'swiper';
-import { Box, Button, Flex, Image, Table, Text } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { useCartStore } from '@/store/cart-store';
 import '@/styles/styes.css';
+import { Box, Button, Flex, Image, Table, Tabs, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import SwiperCore from 'swiper';
+import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import {
+  useGetProductDetail,
+  useSetCourierAndAreaId,
+} from '@/features/product/hooks/use-get-product-detail';
+import { toaster } from '@/components/ui/toaster-placement';
+import { Toaster } from '@/components/ui/toaster';
+
+interface VariantItemValue {
+  id: number;
+  name: string;
+  sku: string;
+  weight: number;
+  stock: number;
+  is_active: boolean;
+  price: number;
+  product_id: number;
+}
 
 export default function DetailProduct() {
+  const { name } = useParams();
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperCore | null>(null);
-  const [step, setStep] = useState<number>(1);
+  // const [activeVariantId, setActiveVariantId] = useState<number | null>(null);
+  // const [selectedPrice, setSelectedPrice] = useState<number | null>(null);
+  // const [selectedStock, setSelectedStock] = useState<number | null>(null);
 
-  function increment() {
-    setStep(step + 1);
-  }
+  const {
+    addItem,
+    quantity,
+    setTotalQuantity,
+    setProductImage,
+    setHeightProduct,
+    setLengthProduct,
+    setWidthProduct,
+    setDescription,
+    setStoreId,
+  } = useCartStore();
 
-  function decrement() {
-    if (step > 1) setStep(step - 1);
-  }
+  const { data: productDetail, isLoading } = useGetProductDetail(name ?? '');
+
+  const product =
+    productDetail && productDetail.length > 0 ? productDetail[0] : null;
+
+  useSetCourierAndAreaId(productDetail);
+
+  useEffect(() => {
+    if (product?.image?.[0]?.url) {
+      setProductImage(product.image[0].url);
+    }
+    if (product?.Height) {
+      setHeightProduct(product.Height);
+    }
+    if (product?.length) {
+      setLengthProduct(product.length);
+    }
+    if (product?.width) {
+      setWidthProduct(product.width);
+    }
+    if (product?.description) {
+      setDescription(product.description);
+    }
+    if (product?.store_id) {
+      setStoreId(product.store_id);
+    }
+  }, [
+    product,
+    setProductImage,
+    setHeightProduct,
+    setLengthProduct,
+    setWidthProduct,
+    setDescription,
+    setStoreId,
+  ]);
+
+  if (isLoading) return <Text>Loading...</Text>;
+  if (!productDetail || !productDetail.length)
+    return <Text>Produk tidak ditemukan.</Text>;
+
+  if (!product) return <Text>Detail produk tidak tersedia.</Text>;
 
   return (
     <Box padding="0 10px">
+      <Toaster />
+
       <Flex color="black">
-        <Box width="1/2" padding="20px" height="500px">
+        <Box width="1/2" padding="20px" height="80vh">
           <Swiper
             style={
               {
@@ -35,12 +104,9 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper2"
           >
-            {[...Array(10)].map((_, index) => (
-              <SwiperSlide className="rounded" key={index}>
-                <Image
-                  src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
-                  alt={`Slide ${index + 1}`}
-                />
+            {product.image.map((img: { id: number; url: string }) => (
+              <SwiperSlide key={img.id} className="rounded">
+                <Image src={img.url} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -54,12 +120,9 @@ export default function DetailProduct() {
             modules={[FreeMode, Navigation, Thumbs]}
             className="mySwiper"
           >
-            {[...Array(10)].map((_, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={`https://swiperjs.com/demos/images/nature-${index + 1}.jpg`}
-                  alt={`Thumbnail ${index + 1}`}
-                />
+            {product.image.map((img: { id: number; url: string }) => (
+              <SwiperSlide key={img.id}>
+                <Image src={img.url} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -68,8 +131,9 @@ export default function DetailProduct() {
         {/* Descriptions */}
         <Box gap="20px" padding="20px" w="full" display="flex" flexDir="column">
           <Text fontWeight="bold" fontSize="30px">
-            Sepatu mantap
+            {product.name} - {product.description}
           </Text>
+
           <Table.Root borderColor="">
             <Table.Body>
               <Table.Row bgColor="white">
@@ -80,112 +144,183 @@ export default function DetailProduct() {
                 >
                   Harga
                 </Table.Cell>
-                <Table.Cell borderBottom="1px solid gainsboro">
-                  Rp 123 - Rp 321
-                </Table.Cell>
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
                 <Table.Cell borderColor="gainsboro" fontWeight="medium" w="1/3">
-                  Pilih Warna
+                  Pilih Varian
                 </Table.Cell>
+
                 <Table.Cell borderColor="gainsboro">
-                  <Text mb="10px">2 Pilihan</Text>
-                  <Flex gap="20px">
-                    <Button
-                      _focus={{
-                        bgColor: 'red',
-                        color: 'white',
-                        border: '1px solid white',
-                      }}
-                      border="1px solid gray"
-                      bgColor="white"
-                      color="black"
-                      padding="0 20px"
+                  <Text mb="10px">
+                    {product.variant_Item_values.length} Pilihan
+                  </Text>
+                  <Flex wrap="wrap" gap="5px">
+                    <Tabs.Root
+                      unstyled
+                      variant="outline"
+                      lazyMount
+                      unmountOnExit
+                      defaultValue={`tab-${product.variant_Item_values[0]?.id || '0'}`}
                     >
-                      Merah
-                    </Button>
-                    <Button
-                      _focus={{
-                        bgColor: 'blue',
-                        color: 'white',
-                        border: '1px solid white',
-                      }}
-                      border="1px solid gray"
-                      bgColor="white"
-                      color="black"
-                      padding="0 20px"
-                    >
-                      Biru
-                    </Button>
-                  </Flex>
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row bgColor="white">
-                <Table.Cell
-                  borderColor="transparent"
-                  fontWeight="medium"
-                  w="1/3"
-                >
-                  Jumlah
-                </Table.Cell>
-                <Table.Cell borderBottom="1px solid gainsboro">
-                  <Flex gap="10px">
-                    <Button
-                      onClick={decrement}
-                      display="flex"
-                      justifyContent="center"
-                      bgColor="white"
-                      color="black"
-                      alignItems="center"
-                      border="1px solid gray"
-                      boxSizing="30px"
-                      rounded="sm"
-                    >
-                      -
-                    </Button>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      border="1px solid gainsboro"
-                      width="40px"
-                      rounded="sm"
-                    >
-                      {step}
-                    </Box>
-                    <Button
-                      onClick={increment}
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      bgColor="white"
-                      color="black"
-                      border="1px solid gray"
-                      boxSizing="30px"
-                      rounded="sm"
-                    >
-                      +
-                    </Button>
-                  </Flex>
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row bgColor="white">
-                <Table.Cell borderColor="transparent" w="1/3"></Table.Cell>
-                <Table.Cell borderColor="transparent" padding="20px 0">
-                  <Flex gap="10px">
-                    <Link to="checkout">
-                      <Button
-                        bgColor="white"
-                        color="black"
-                        border="1px solid gray"
-                        padding="0 20px"
+                      <Tabs.List
+                        width="full"
+                        display="flex"
+                        flexWrap="wrap"
+                        gap="10px"
                       >
-                        Beli Langsung
-                      </Button>
-                    </Link>
-                    <Button bgColor="#0080FF" color="white" padding="0 20px">
-                      + Keranjang
-                    </Button>
+                        {product.variant_Item_values.map(
+                          (variant: VariantItemValue) => (
+                            <Tabs.Trigger
+                              _selected={{ bgColor: 'gainsboro' }}
+                              as={Button}
+                              border="1px solid gray"
+                              key={variant.id}
+                              value={`tab-${variant.id}`}
+                            >
+                              {variant.name}
+                            </Tabs.Trigger>
+                          )
+                        )}
+                      </Tabs.List>
+                      {product.variant_Item_values.map(
+                        (variant: VariantItemValue) => (
+                          <>
+                            <Tabs.Content
+                              key={variant.id}
+                              value={`tab-${variant.id}`}
+                            >
+                              <div>
+                                <p>
+                                  <strong>SKU:</strong> {variant.sku}
+                                </p>
+                                <p>
+                                  <strong>Weight:</strong> {variant.weight}g
+                                </p>
+                                <p>
+                                  <strong>Stock:</strong> {variant.stock}
+                                </p>
+                                <p>
+                                  <strong>Price:</strong>{' '}
+                                  {variant.price.toLocaleString('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR',
+                                  })}
+                                </p>
+                                <p>
+                                  <strong>Status:</strong>{' '}
+                                  {variant.is_active ? 'Active' : 'Inactive'}
+                                </p>
+                                <Table.Row bgColor="white">
+                                  <Table.Cell
+                                    display="flex"
+                                    gap="10px"
+                                    borderBottom="1px solid gainsboro"
+                                  >
+                                    <Flex gap="10px">
+                                      <Button
+                                        display="flex"
+                                        justifyContent="center"
+                                        bgColor="white"
+                                        color="black"
+                                        alignItems="center"
+                                        border="1px solid gray"
+                                        boxSizing="30px"
+                                        rounded="sm"
+                                        onClick={() => {
+                                          setTotalQuantity(quantity - 1);
+                                        }}
+                                        disabled={quantity <= 0}
+                                      >
+                                        -
+                                      </Button>
+                                      <Box
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        border="1px solid gainsboro"
+                                        width="40px"
+                                        rounded="sm"
+                                      >
+                                        {quantity}
+                                      </Box>
+                                      <Button
+                                        onClick={() => {
+                                          setTotalQuantity(quantity + 1);
+                                        }}
+                                        display="flex"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        bgColor="white"
+                                        color="black"
+                                        border="1px solid gray"
+                                        boxSizing="30px"
+                                        rounded="sm"
+                                      >
+                                        +
+                                      </Button>
+                                    </Flex>
+                                    <Text>Tersedia {variant.stock} Stock</Text>
+                                  </Table.Cell>
+                                </Table.Row>
+                                <Table.Row bgColor="white">
+                                  <Table.Cell
+                                    borderColor="transparent"
+                                    w="1/3"
+                                  ></Table.Cell>
+                                  <Table.Cell
+                                    borderColor="transparent"
+                                    padding="20px 0"
+                                  >
+                                    <Flex gap="10px">
+                                      <Link to="/checkout">
+                                        <Button
+                                          onClick={() => {
+                                            addItem({
+                                              product: product,
+                                              variant,
+                                              quantity: 1,
+                                            });
+                                          }}
+                                          bgColor="white"
+                                          color="black"
+                                          border="1px solid gray"
+                                          padding="0 20px"
+                                        >
+                                          Beli Langsung
+                                        </Button>
+                                      </Link>
+                                      <Link to="/cart">
+                                        <Button
+                                          onClick={() => {
+                                            toaster.create({
+                                              title: 'Berhasil tambah ke cart',
+                                              type: 'success',
+                                              duration: 3000,
+                                              description:
+                                                'You have successfully logged in.',
+                                            });
+                                            addItem({
+                                              product: product,
+                                              variant,
+                                              quantity: quantity,
+                                            });
+                                          }}
+                                          bgColor="#0080FF"
+                                          color="white"
+                                          padding="0 20px"
+                                        >
+                                          + Keranjang
+                                        </Button>
+                                      </Link>
+                                    </Flex>
+                                  </Table.Cell>
+                                </Table.Row>
+                              </div>
+                            </Tabs.Content>
+                          </>
+                        )
+                      )}
+                    </Tabs.Root>
                   </Flex>
                 </Table.Cell>
               </Table.Row>

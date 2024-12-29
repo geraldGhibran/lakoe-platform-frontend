@@ -1,36 +1,27 @@
 import { Box, Button, Flex, Image, Input, Table, Text } from '@chakra-ui/react';
-import sepatuMerah from '@/assets/images/sepatu-merah.jpeg';
-import sepatuBiru from '@/assets/images/sepatu-biru.jpeg';
-import { LuTrash2 } from 'react-icons/lu';
-import { useState } from 'react';
-import { MdOutlineAttachMoney } from 'react-icons/md';
-import { IoIosArrowForward } from 'react-icons/io';
 import { FaRegCheckCircle } from 'react-icons/fa';
+import { IoIosArrowForward } from 'react-icons/io';
+import { LuTrash2 } from 'react-icons/lu';
+import { MdOutlineAttachMoney } from 'react-icons/md';
 
-import { Link } from 'react-router-dom';
+import { useCartStore } from '@/store/cart-store';
+import { Link, useNavigate } from 'react-router-dom';
+import { formatCurrency } from '@/features/add-other/format-currency';
 
 export default function Cart() {
-  const [step1, setStep1] = useState<number>(1);
-  const [step2, setStep2] = useState<number>(1);
+  const {
+    products,
+    decreaseQuantity,
+    increaseQuantity,
+    removeItem,
+    totalPrice,
+    productImage,
+  } = useCartStore();
+  const navigate = useNavigate();
 
   function test(e: { preventDefault: () => void }) {
     e.preventDefault();
-  }
-
-  function increment1() {
-    setStep1(step1 + 1);
-  }
-
-  function increment2() {
-    setStep2(step2 + 1);
-  }
-
-  function decrement1() {
-    if (step1 > 1) setStep1(step1 - 1);
-  }
-
-  function decrement2() {
-    if (step2 > 1) setStep2(step2 - 1);
+    navigate('/checkout');
   }
 
   return (
@@ -57,146 +48,76 @@ export default function Cart() {
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            <Table.Row
-              borderTop="1px solid gainsboro"
-              _hover={{ bgColor: 'gainsboro' }}
-              bgColor="white"
-            >
-              <Table.Cell padding="10px 20px">
-                <Flex gap="10px">
-                  <Image boxSize="100px" src={sepatuMerah} />
-                  <Box>
-                    <Text fontSize="20px">Sepatu mantap</Text>
-                    <Text color="gray" fontSize="15px">
-                      Merah
-                    </Text>
-                  </Box>
-                </Flex>
-              </Table.Cell>
-              <Table.Cell padding="20px" fontSize="20px" textAlign="start">
-                Rp 123
-              </Table.Cell>
-              <Table.Cell>
-                <Flex gap="10px" padding="10px" height="full" fontSize="20px">
-                  <Button
-                    display="flex"
-                    bgColor="white"
-                    justifyContent="center"
-                    alignItems="center"
-                    border="1px solid blue"
-                    rounded="sm"
-                    color="blue"
-                  >
-                    <LuTrash2 />
-                  </Button>
-                  <Button
-                    onClick={decrement1}
-                    display="flex"
-                    bgColor="white"
-                    color="black"
-                    justifyContent="center"
-                    alignItems="center"
-                    border="1px solid blue"
-                    rounded="sm"
-                  >
-                    -
-                  </Button>
-                  <Button
-                    display="flex"
-                    bgColor="white"
-                    color="black"
-                    alignItems="center"
-                    fontSize="15px"
-                    justifyContent="center"
-                    border="1px solid gray"
-                  >
-                    {step1}
-                  </Button>
-                  <Button
-                    onClick={increment1}
-                    display="flex"
-                    bgColor="white"
-                    color="black"
-                    justifyContent="center"
-                    alignItems="center"
-                    border="1px solid blue"
-                    rounded="sm"
-                  >
-                    +
-                  </Button>
-                </Flex>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row
-              borderTop="1px solid gainsboro"
-              _hover={{ bgColor: 'gainsboro' }}
-              bgColor="white"
-            >
-              <Table.Cell padding="10px 20px">
-                <Flex gap="10px">
-                  <Image boxSize="100px" src={sepatuBiru} />
-                  <Box>
-                    <Text fontSize="20px">Sepatu mantap</Text>
-                    <Text color="gray" fontSize="15px">
-                      Merah
-                    </Text>
-                  </Box>
-                </Flex>
-              </Table.Cell>
-              <Table.Cell padding="20px" fontSize="20px" textAlign="start">
-                Rp 123
-              </Table.Cell>
-              <Table.Cell>
-                <Flex gap="10px" padding="10px" height="full" fontSize="20px">
-                  <Button
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    bgColor="white"
-                    border="1px solid blue"
-                    rounded="sm"
-                    color="blue"
-                  >
-                    <LuTrash2 />
-                  </Button>
-                  <Button
-                    onClick={decrement2}
-                    display="flex"
-                    bgColor="white"
-                    color="black"
-                    justifyContent="center"
-                    alignItems="center"
-                    border="1px solid blue"
-                    rounded="sm"
-                  >
-                    -
-                  </Button>
-                  <Button
-                    display="flex"
-                    alignItems="center"
-                    fontSize="15px"
-                    bgColor="white"
-                    color="black"
-                    justifyContent="center"
-                    border="1px solid gray"
-                  >
-                    {step2}
-                  </Button>
-                  <Button
-                    onClick={increment2}
-                    display="flex"
-                    bgColor="white"
-                    color="black"
-                    justifyContent="center"
-                    alignItems="center"
-                    border="1px solid blue"
-                    rounded="sm"
-                  >
-                    +
-                  </Button>
-                </Flex>
-              </Table.Cell>
-            </Table.Row>
+            {products.map((item) => (
+              <Table.Row
+                borderTop="1px solid gainsboro"
+                _hover={{ bgColor: 'gainsboro' }}
+                bgColor="white"
+              >
+                <Table.Cell padding="10px 20px">
+                  <Flex gap="10px">
+                    <Image boxSize="100px" src={productImage} />
+                    <Box>
+                      <Text fontSize="20px">{item?.variant?.name}</Text>
+                    </Box>
+                  </Flex>
+                </Table.Cell>
+                <Table.Cell padding="20px" fontSize="20px" textAlign="start">
+                  {formatCurrency(item?.variant?.price * item?.quantity)}
+                </Table.Cell>
+                <Table.Cell>
+                  <Flex gap="10px" padding="10px" height="full" fontSize="20px">
+                    <Button
+                      onClick={() => removeItem(item?.variant?.id)}
+                      display="flex"
+                      bgColor="white"
+                      justifyContent="center"
+                      alignItems="center"
+                      border="1px solid blue"
+                      rounded="sm"
+                      color="blue"
+                    >
+                      <LuTrash2 />
+                    </Button>
+                    <Button
+                      onClick={() => decreaseQuantity(item?.variant?.id)}
+                      display="flex"
+                      bgColor="white"
+                      color="black"
+                      justifyContent="center"
+                      alignItems="center"
+                      border="1px solid blue"
+                      rounded="sm"
+                    >
+                      -
+                    </Button>
+                    <Button
+                      display="flex"
+                      bgColor="white"
+                      color="black"
+                      alignItems="center"
+                      fontSize="15px"
+                      justifyContent="center"
+                      border="1px solid gray"
+                    >
+                      {item?.quantity}
+                    </Button>
+                    <Button
+                      onClick={() => increaseQuantity(item?.variant?.id)}
+                      display="flex"
+                      bgColor="white"
+                      color="black"
+                      justifyContent="center"
+                      alignItems="center"
+                      border="1px solid blue"
+                      rounded="sm"
+                    >
+                      +
+                    </Button>
+                  </Flex>
+                </Table.Cell>
+              </Table.Row>
+            ))}
           </Table.Body>
         </Table.Root>
         <Flex
@@ -263,7 +184,7 @@ export default function Cart() {
                     Subtotal
                   </Table.ColumnHeader>
                   <Table.ColumnHeader textAlign="end" color="black">
-                    Rp 567
+                    {formatCurrency(totalPrice)}
                   </Table.ColumnHeader>
                 </Table.Row>
               </Table.Header>
@@ -275,7 +196,10 @@ export default function Cart() {
                   borderColor="red"
                 >
                   <Table.Cell py="10px">Total</Table.Cell>
-                  <Table.Cell textAlign="end">Rp 567</Table.Cell>
+                  <Table.Cell textAlign="end">
+                    {' '}
+                    {formatCurrency(totalPrice)}
+                  </Table.Cell>
                 </Table.Row>
               </Table.Body>
             </Table.Root>

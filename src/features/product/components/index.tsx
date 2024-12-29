@@ -1,13 +1,13 @@
-import { useAuthStore } from '@/store/auth';
-import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
+import { Box, Button, HStack, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import NotFoundCard from './notFound';
 import Header from './CardProduct/header';
 import CardProduct from './CardProduct/card';
-import { allProducts } from './CardProduct/dumy';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '@/styles/styes.css';
+import { useGetProductSeller } from '../hooks/use-get-product';
+import { Skeleton, SkeletonCircle } from '@/components/ui/skeleton';
 
 interface Product {
   id: number;
@@ -17,28 +17,40 @@ interface Product {
   stock: number;
   sku: string;
   Url: string;
-  image: string;
+  image: string | { url: string }[];
   isActive: boolean;
+  categories_id: number;
 }
 
 function ProductList() {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
-  console.log('user', user);
+  const { data: products = [], isLoading } = useGetProductSeller();
 
   const [productStates, setProductStates] = useState(
-    allProducts.map((product) => ({
+    products.map((product: Product) => ({
       id: product.id,
       isActive: product.isActive,
-      isChecked: false,
     }))
   );
 
+  useEffect(() => {
+    if (products.length > 0) {
+      setProductStates(
+        products.map((product: Product) => ({
+          id: product.id,
+          isActive: product.isActive,
+          isChecked: false,
+        }))
+      );
+    }
+  }, [products]);
+
   const handleCheckboxChange = (id: number, checked: boolean) => {
-    setProductStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === id ? { ...state, isChecked: checked } : state
-      )
+    setProductStates(
+      (prevStates: { id: number; isActive: boolean; isChecked?: boolean }[]) =>
+        prevStates.map((state) =>
+          state.id === id ? { ...state, isChecked: checked } : state
+        )
     );
   };
 
@@ -47,10 +59,11 @@ function ProductList() {
   const handleSwitchChange = (id: number, checked: boolean) => {
     setSwitchingProduct(id);
 
-    setProductStates((prevStates) =>
-      prevStates.map((state) =>
-        state.id === id ? { ...state, isActive: checked } : state
-      )
+    setProductStates(
+      (prevStates: { id: number; isActive: boolean; isChecked?: boolean }[]) =>
+        prevStates.map((state) =>
+          state.id === id ? { ...state, isActive: checked } : state
+        )
     );
 
     setTimeout(() => {
@@ -59,15 +72,17 @@ function ProductList() {
   };
 
   const handleSelectAll = (checked: boolean) => {
-    setProductStates((prevStates) =>
-      prevStates.map((state) => ({ ...state, isChecked: checked }))
+    setProductStates(
+      (prevStates: { id: number; isActive: boolean; isChecked?: boolean }[]) =>
+        prevStates.map((state) => ({ ...state, isChecked: checked }))
     );
   };
 
   const getFilteredProducts = (isActive: boolean): Product[] => {
-    return allProducts.filter((product) => {
+    return products.filter((product: Product) => {
       const productState = productStates.find(
-        (state) => state.id === product.id
+        (state: { id: number; isActive: boolean; isChecked?: boolean }) =>
+          state.id === product.id
       );
       return (
         productState?.isActive === isActive || product.id === switchingProduct
@@ -75,7 +90,33 @@ function ProductList() {
     });
   };
 
+  const [sortOrder, setSortOrder] = useState<string>('all');
+
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+    if (value === 'Terlama') {
+      products.sort((a: Product, b: Product) => a.id - b.id);
+    } else if (value === 'Terbaru') {
+      products.sort((a: Product, b: Product) => b.id - a.id);
+    } else if (value === 'Termahal') {
+      products.sort((a: Product, b: Product) => b.price - a.price);
+    } else if (value === 'Termurah') {
+      products.sort((a: Product, b: Product) => a.price - b.price);
+    }
+  };
+
   const renderProducts = (products: Product[]) => {
+    if (isLoading) {
+      return (
+        <HStack padding="50px" gap="5">
+          <SkeletonCircle size="12" />
+          <Stack flex="1">
+            <Skeleton height="5" />
+            <Skeleton height="5" width="80%" />
+          </Stack>
+        </HStack>
+      );
+    }
     if (products.length === 0) {
       return (
         <NotFoundCard>
@@ -84,9 +125,17 @@ function ProductList() {
       );
     }
 
-    return products.map((product) => {
+    const sortedProducts =
+      sortOrder === 'Terbaru'
+        ? [...products].sort((a, b) => b.id - a.id)
+        : sortOrder === 'Terlama'
+          ? [...products].sort((a, b) => a.id - b.id)
+          : products;
+
+    return sortedProducts.map((product) => {
       const productState = productStates.find(
-        (state) => state.id === product.id
+        (state: { id: number; isActive: boolean; isChecked?: boolean }) =>
+          state.id === product.id
       );
       return (
         <CardProduct
@@ -94,7 +143,11 @@ function ProductList() {
           id={product.id}
           name={product.name}
           description={product.description}
-          image={product.image}
+          image={
+            Array.isArray(product.image) && product.image.length > 0
+              ? product.image[0].url
+              : ''
+          }
           price={product.price}
           stock={product.stock}
           sku={product.sku}
@@ -111,7 +164,13 @@ function ProductList() {
   };
 
   return (
-    <Stack direction={'row'} bg={'#F4F4F5'} height={'100vh'}>
+    <Stack
+      direction={'row'}
+      bg={'#F4F4F5'}
+      position={'fixed'}
+      height={'90vh'}
+      width={'58%'}
+    >
       <Box
         bg={'white'}
         p={5}
@@ -135,11 +194,13 @@ function ProductList() {
             display={'flex'}
             justifyContent={'space-between'}
             alignItems={'center'}
+            zIndex={9}
           >
             <Text fontWeight={'bold'} fontSize={'2xl'}>
               Daftar Produk
             </Text>
             <Button
+              color="white"
               rounded={'full'}
               onClick={() => navigate('/add-product')}
               bgColor={'blue.500'}
@@ -190,46 +251,33 @@ function ProductList() {
               >
                 NonActive
               </Tabs.Trigger>
-            </Tabs.List>
-
-            <Tabs.Content value="all">
-              <Box
-                position="sticky"
-                top="60px"
-                zIndex="9"
-                borderBottom="1px solid #E6E6E6"
-                py={2}
+              <Tabs.Trigger
+                value="terbaru"
+                onClick={() => handleSortChange('Terbaru')}
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
               >
-                <Header onSelectAll={handleSelectAll} />
-              </Box>
-              {renderProducts(allProducts)}
+                Terbaru
+              </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content position="relative" value="all">
+              <Header
+                onSelectAll={handleSelectAll}
+                totalProducts={products.length}
+                handleSortChange={handleSortChange}
+              />
+
+              {renderProducts(products)}
             </Tabs.Content>
 
             <Tabs.Content value="active">
-              <Box
-                position="sticky"
-                top="60px"
-                bg="white"
-                zIndex="9"
-                borderBottom="1px solid #E6E6E6"
-                py={2}
-              >
-                <Header onSelectAll={handleSelectAll} />
-              </Box>
               {renderProducts(getFilteredProducts(true))}
             </Tabs.Content>
 
             <Tabs.Content value="nonactive">
-              <Box
-                position="sticky"
-                top="60px"
-                bg="white"
-                zIndex="9"
-                borderBottom="1px solid #E6E6E6"
-                py={2}
-              >
-                <Header onSelectAll={handleSelectAll} />
-              </Box>
               {renderProducts(getFilteredProducts(false))}
             </Tabs.Content>
           </Tabs.Root>

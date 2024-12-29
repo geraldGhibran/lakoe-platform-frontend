@@ -6,19 +6,21 @@ import Withdraw from '@/features/admin/withdraw/withdraw';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { AuthLayout } from '@/features/auth/layout';
-import { Dashboard } from '@/features/seller/dashboard';
-import { SellerLayout } from '@/features/seller/layout/seller-layout';
 import CartPage from '@/features/marketplace/home/pages/Cart';
-import CartTestPage from '@/features/marketplace/home/pages/CartTestPage';
+import Cart from '@/features/marketplace/home/components/Cart';
 import CheckoutPage from '@/features/marketplace/home/pages/Checkout';
 import DetailProductPage from '@/features/marketplace/home/pages/DetailProductPage';
 import OrderPage from '@/features/order/orderPage';
+import DetailOrder from '@/features/order/orderPage/detail-order';
 import ProductList from '@/features/product/components';
 import AddProductPage from '@/features/product/components/addProduct';
+import { Dashboard } from '@/features/seller/dashboard';
+import { SellerLayout } from '@/features/seller/layout/seller-layout';
+import PaymentMethod from '@/features/seller/payment-method';
+import ShipmentSeller from '@/features/seller/shipment';
 import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
-import Cart from '@/features/marketplace/home/components/Cart';
-import Checkout from '@/features/marketplace/home/components/Checkout';
+import { DetailSeller } from '@/features/admin/seller/detail-seller';
 
 export const router = createBrowserRouter([
   {
@@ -26,7 +28,7 @@ export const router = createBrowserRouter([
     element: <DetailProductPage />,
     children: [
       {
-        index: true,
+        path: '/product/detail/:name',
         element: <DetailProduct />,
       },
       {
@@ -35,7 +37,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'checkout',
-        element: <Checkout />,
+        element: <CheckoutPage />,
       },
     ],
   },
@@ -46,10 +48,6 @@ export const router = createBrowserRouter([
   {
     path: '/tester/cart',
     element: <CartPage />,
-  },
-  {
-    path: '/cart-test',
-    element: <CartTestPage />,
   },
   {
     path: '/checkout',
@@ -82,7 +80,16 @@ export const router = createBrowserRouter([
       },
       {
         path: 'seller',
-        element: <SellerInfo />,
+        children: [
+          {
+            index: true,
+            element: <SellerInfo />,
+          },
+          {
+            path: ':storeId',
+            element: <DetailSeller />,
+          },
+        ],
       },
     ],
   },
@@ -106,8 +113,20 @@ export const router = createBrowserRouter([
         element: <OrderPage />,
       },
       {
+        path: 'detail-order/:invoiceId',
+        element: <DetailOrder />,
+      },
+      {
         path: 'settings',
         element: <StoreSetting />,
+      },
+      {
+        path: 'pengiriman',
+        element: <ShipmentSeller />,
+      },
+      {
+        path: 'metode-pembayaran',
+        element: <PaymentMethod />,
       },
     ],
   },
