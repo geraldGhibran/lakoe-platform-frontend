@@ -26,6 +26,8 @@ interface CartStore extends Cart {
   increaseQuantity: (id: number) => void;
   decreaseQuantity: (id: number) => void;
   updateTotalPrice: () => void;
+  setTotalQuantityCart: () => void;
+  quantityCart: number;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -64,6 +66,7 @@ export const useCartStore = create<CartStore>()(
         });
         // Recalculate total price
         get().updateTotalPrice();
+        get().setTotalQuantityCart();
       },
       removeItem: (id) => {
         set((state) => {
@@ -75,6 +78,7 @@ export const useCartStore = create<CartStore>()(
         });
         // Recalculate total price
         get().updateTotalPrice();
+        get().setTotalQuantityCart();
       },
 
       removeAll: () => {
@@ -106,6 +110,7 @@ export const useCartStore = create<CartStore>()(
         });
         // Recalculate total price
         get().updateTotalPrice();
+        get().setTotalQuantityCart();
       },
       decreaseQuantity: (id) => {
         set((state) => {
@@ -124,7 +129,18 @@ export const useCartStore = create<CartStore>()(
         });
         // Recalculate total price
         get().updateTotalPrice();
+        get().setTotalQuantityCart();
       },
+      setTotalQuantityCart: () => {
+        const quantityCart = get().products.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+        set({
+          quantityCart,
+        });
+      },
+      quantityCart: 0,
       updateTotalPrice: () => {
         const totalPrice = get().products.reduce(
           (sum, item) => sum + item.variant.price * item.quantity,
