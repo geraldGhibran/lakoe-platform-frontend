@@ -6,11 +6,12 @@ import { Link, useParams } from 'react-router-dom';
 import SwiperCore from 'swiper';
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-// import { useGetDummyProduct } from '../../hooks/useGetDummyProduct';
 import {
   useGetProductDetail,
   useSetCourierAndAreaId,
 } from '@/features/product/hooks/use-get-product-detail';
+import { toaster } from '@/components/ui/toaster-placement';
+import { Toaster } from '@/components/ui/toaster';
 
 interface VariantItemValue {
   id: number;
@@ -84,10 +85,10 @@ export default function DetailProduct() {
 
   if (!product) return <Text>Detail produk tidak tersedia.</Text>;
 
-  console.log(product);
-
   return (
     <Box padding="0 10px">
+      <Toaster />
+
       <Flex color="black">
         <Box width="1/2" padding="20px" height="80vh">
           <Swiper
@@ -143,65 +144,36 @@ export default function DetailProduct() {
                 >
                   Harga
                 </Table.Cell>
-                {/* <Table.Cell borderBottom="1px solid gainsboro">
-                  Rp.{' '}
-                  {selectedPrice
-                    ? selectedPrice.toLocaleString('id-ID')
-                    : product.price.toLocaleString('id-ID')}
-                </Table.Cell> */}
               </Table.Row>
               <Table.Row borderBottom="1px solid gainsboro" bgColor="white">
                 <Table.Cell borderColor="gainsboro" fontWeight="medium" w="1/3">
                   Pilih Varian
                 </Table.Cell>
+
                 <Table.Cell borderColor="gainsboro">
                   <Text mb="10px">
                     {product.variant_Item_values.length} Pilihan
                   </Text>
                   <Flex wrap="wrap" gap="5px">
-                    {/* {product.variant_Item_values.length === 0 ? (
-                      <Text>Tidak ada variant item yang tersedia.</Text>
-                    ) : (
-                      product.variant_Item_values.map(
-                        (item: VariantItemValue) => (
-
-                          <>
-                            <Button
-                              key={item.id}
-                              border="1px solid gray"
-                              color={
-                                activeVariantId === item.id ? 'white' : 'black'
-                              }
-                              bgColor={
-                                activeVariantId === item.id ? 'gray' : 'White'
-                              }
-                              onClick={() => {
-                                setActiveVariantId(item.id);
-                                setSelectedPrice(item.price);
-                                setSelectedStock(item.stock);
-                              }}
-                            >
-                              {item.name}
-                            </Button>
-
-                           
-
-                          </>
-                        )
-                      )
-                    )} */}
-
-                    {/* <VariantTabs variantItems={product.variant_Item_values} /> */}
                     <Tabs.Root
+                      unstyled
                       variant="outline"
                       lazyMount
                       unmountOnExit
                       defaultValue={`tab-${product.variant_Item_values[0]?.id || '0'}`}
                     >
-                      <Tabs.List colorPalette={'blue'}>
+                      <Tabs.List
+                        width="full"
+                        display="flex"
+                        flexWrap="wrap"
+                        gap="10px"
+                      >
                         {product.variant_Item_values.map(
                           (variant: VariantItemValue) => (
                             <Tabs.Trigger
+                              _selected={{ bgColor: 'gainsboro' }}
+                              as={Button}
+                              border="1px solid gray"
                               key={variant.id}
                               value={`tab-${variant.id}`}
                             >
@@ -239,13 +211,6 @@ export default function DetailProduct() {
                                   {variant.is_active ? 'Active' : 'Inactive'}
                                 </p>
                                 <Table.Row bgColor="white">
-                                  <Table.Cell
-                                    borderColor="transparent"
-                                    fontWeight="medium"
-                                    w="1/3"
-                                  >
-                                    Jumlah
-                                  </Table.Cell>
                                   <Table.Cell
                                     display="flex"
                                     gap="10px"
@@ -294,9 +259,7 @@ export default function DetailProduct() {
                                         +
                                       </Button>
                                     </Flex>
-                                    {/* {selectedStock !== null
-                                    ? 'Tersedia : ' + selectedStock + ' Stock'
-                                    : 'Silahkan pilih variant'} */}
+                                    <Text>Tersedia {variant.stock} Stock</Text>
                                   </Table.Cell>
                                 </Table.Row>
                                 <Table.Row bgColor="white">
@@ -309,8 +272,15 @@ export default function DetailProduct() {
                                     padding="20px 0"
                                   >
                                     <Flex gap="10px">
-                                      <Link to="checkout">
+                                      <Link to="/checkout">
                                         <Button
+                                          onClick={() => {
+                                            addItem({
+                                              product: product,
+                                              variant,
+                                              quantity: 1,
+                                            });
+                                          }}
                                           bgColor="white"
                                           color="black"
                                           border="1px solid gray"
@@ -322,8 +292,15 @@ export default function DetailProduct() {
                                       <Link to="/cart">
                                         <Button
                                           onClick={() => {
+                                            toaster.create({
+                                              title: 'Berhasil tambah ke cart',
+                                              type: 'success',
+                                              duration: 3000,
+                                              description:
+                                                'You have successfully logged in.',
+                                            });
                                             addItem({
-                                              product: product, // Ensure you have the product object
+                                              product: product,
                                               variant,
                                               quantity: quantity,
                                             });
@@ -347,103 +324,6 @@ export default function DetailProduct() {
                   </Flex>
                 </Table.Cell>
               </Table.Row>
-              {/* <Table.Row bgColor="white">
-                <Table.Cell
-                  borderColor="transparent"
-                  fontWeight="medium"
-                  w="1/3"
-                >
-                  Jumlah
-                </Table.Cell>
-                <Table.Cell
-                  display="flex"
-                  gap="10px"
-                  borderBottom="1px solid gainsboro"
-                >
-                  <Flex gap="10px">
-                    <Button
-                      display="flex"
-                      justifyContent="center"
-                      bgColor="white"
-                      color="black"
-                      alignItems="center"
-                      border="1px solid gray"
-                      boxSizing="30px"
-                      rounded="sm"
-                      onClick={() => {
-                        setTotalQuantity(quantity - 1);
-                      }}
-                      disabled={quantity <= 0}
-                    >
-                      -
-                    </Button>
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      border="1px solid gainsboro"
-                      width="40px"
-                      rounded="sm"
-                    >
-                      {quantity}
-                    </Box>
-                    <Button
-                      
-                      onClick={() => {
-                        setTotalQuantity(quantity + 1);
-                      }}
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      bgColor="white"
-                      color="black"
-                      border="1px solid gray"
-                      boxSizing="30px"
-                      rounded="sm"
-                    >
-                      +
-                    </Button>
-                  </Flex>
-                  {selectedStock !== null
-                    ? 'Tersedia : ' + selectedStock + ' Stock'
-                    : 'Silahkan pilih variant'}
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row bgColor="white">
-                <Table.Cell borderColor="transparent" w="1/3"></Table.Cell>
-                <Table.Cell borderColor="transparent" padding="20px 0">
-                  <Flex gap="10px">
-                    <Link to="checkout">
-                      <Button
-                        bgColor="white"
-                        color="black"
-                        border="1px solid gray"
-                        padding="0 20px"
-                      >
-                        Beli Langsung
-                      </Button>
-                    </Link>
-                    <Link to="cart">
-                      <Button
-                        onClick={() => {
-                          if (product) {
-                            const quantity =
-                              products?.find((p) => p.product.id === product.id)
-                                ?.quantity || 0;
-                            if (quantity >= (selectedStock ?? Infinity)) {
-                              addItem({ product, quantity: selectedStock ?? 1 });
-                            } else {
-                              addItem({ product, quantity: quantity });
-                            }
-                          }
-                        }}
-                        bgColor="#0080FF" color="white" padding="0 20px">
-                        + Keranjang
-                      </Button>
-                    </Link>
-                  </Flex>
-                </Table.Cell>
-              </Table.Row> */}
             </Table.Body>
           </Table.Root>
         </Box>

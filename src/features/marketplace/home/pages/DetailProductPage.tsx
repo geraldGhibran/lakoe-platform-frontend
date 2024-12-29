@@ -4,8 +4,28 @@ import { BsHandbag } from 'react-icons/bs';
 import { BsPerson } from 'react-icons/bs';
 import { IoIosArrowBack } from 'react-icons/io';
 import '@/styles/styes.css';
+import { useCartStore } from '@/store/cart-store';
+import { useEffect } from 'react';
 
 export default function DetailProductPage() {
+  const {
+    quantityCart,
+    setTotalQuantityCart,
+    increaseQuantity,
+    decreaseQuantity,
+    quantity,
+  } = useCartStore();
+
+  useEffect(() => {
+    setTotalQuantityCart();
+  }, [
+    setTotalQuantityCart,
+    quantityCart,
+    increaseQuantity,
+    decreaseQuantity,
+    quantity,
+  ]);
+
   return (
     <Box
       className="hide-scrollbar"
@@ -58,7 +78,7 @@ export default function DetailProductPage() {
                 color="white"
                 right="0"
               >
-                1
+                {quantityCart}
               </Box>
               <BsHandbag />
             </Button>

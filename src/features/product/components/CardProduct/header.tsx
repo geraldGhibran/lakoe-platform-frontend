@@ -39,11 +39,26 @@ const sortCollectionDummy = createListCollection({
 
 interface HeaderProps {
   onSelectAll: (checked: boolean) => void;
+  totalProducts: number;
+  handleSortChange: (value: string) => void;
 }
 
-export default function Header({ onSelectAll }: HeaderProps) {
+export default function Header({
+  onSelectAll,
+  totalProducts,
+  handleSortChange,
+}: HeaderProps) {
   return (
-    <Box w={'100%'} bgColor={'white'} mt={'-39px'} py={5}>
+    <Box
+      zIndex="dropdown"
+      w={'100%'}
+      bgColor="white"
+      px="20px"
+      border="1px solid gainsboro"
+      position="sticky"
+      top="40px"
+      py={5}
+    >
       <HStack direction={'row'} mt={5}>
         <InputGroup
           startElement={
@@ -82,6 +97,7 @@ export default function Header({ onSelectAll }: HeaderProps) {
                 <SelectItem
                   item={sort}
                   key={sort.value}
+                  onClick={() => handleSortChange(sort.label)}
                   _selected={{ color: 'blue.500' }}
                 >
                   {sort.label}
@@ -99,7 +115,7 @@ export default function Header({ onSelectAll }: HeaderProps) {
       >
         <Box>
           <Text fontSize={'lg'} fontWeight={'bold'}>
-            5 Produk
+            {totalProducts} Produk
           </Text>
         </Box>
         <Box>

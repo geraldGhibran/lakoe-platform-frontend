@@ -7,12 +7,12 @@ export interface CustomerDetails {
   receiver_longitude: number;
   receiver_latitude: number;
   receiver_district: string;
-  longitude: number;
-  latitude: number;
-  city_district: string;
-  subdistrict: string;
-  store_id: number;
-  province: string;
+  longitude?: number;
+  latitude?: number;
+  city_district?: string;
+  subdistrict?: string;
+  store_id?: number;
+  province?: string;
 }
 
 export interface Item {

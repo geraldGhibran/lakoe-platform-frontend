@@ -18,7 +18,7 @@ export default function DeliveryMethod({
   rates,
 }: {
   onSubmit: () => void;
-  rates: { pricing: { pricing: Pricing[] } };
+  rates: Pricing[];
 }) {
   const { setRatesCourier, setIsSelected, setCost } = useCostRateStore();
 
@@ -69,13 +69,14 @@ export default function DeliveryMethod({
             </Box>
 
             <Flex flexDir="column" gap="10px">
-              {rates?.pricing?.pricing?.map((rate) => (
+              {rates?.map((rate, index) => (
                 <>
                   <RadioGroup
                     display="flex"
                     flexDir="column"
                     defaultValue="1"
                     variant="subtle"
+                    key={index}
                     colorPalette="blue"
                   >
                     <DialogTrigger asChild>

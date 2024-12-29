@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Tabs, Text } from '@chakra-ui/react';
+import { Box, Button, HStack, Stack, Tabs, Text } from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import NotFoundCard from './notFound';
@@ -7,6 +7,7 @@ import CardProduct from './CardProduct/card';
 import { useState, useEffect } from 'react';
 import '@/styles/styes.css';
 import { useGetProductSeller } from '../hooks/use-get-product';
+import { Skeleton, SkeletonCircle } from '@/components/ui/skeleton';
 
 interface Product {
   id: number;
@@ -18,6 +19,7 @@ interface Product {
   Url: string;
   image: string | { url: string }[];
   isActive: boolean;
+  categories_id: number;
 }
 
 function ProductList() {
@@ -88,9 +90,32 @@ function ProductList() {
     });
   };
 
+  const [sortOrder, setSortOrder] = useState<string>('all');
+
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+    if (value === 'Terlama') {
+      products.sort((a: Product, b: Product) => a.id - b.id);
+    } else if (value === 'Terbaru') {
+      products.sort((a: Product, b: Product) => b.id - a.id);
+    } else if (value === 'Termahal') {
+      products.sort((a: Product, b: Product) => b.price - a.price);
+    } else if (value === 'Termurah') {
+      products.sort((a: Product, b: Product) => a.price - b.price);
+    }
+  };
+
   const renderProducts = (products: Product[]) => {
     if (isLoading) {
-      return <Text>Loading...</Text>;
+      return (
+        <HStack padding="50px" gap="5">
+          <SkeletonCircle size="12" />
+          <Stack flex="1">
+            <Skeleton height="5" />
+            <Skeleton height="5" width="80%" />
+          </Stack>
+        </HStack>
+      );
     }
     if (products.length === 0) {
       return (
@@ -100,7 +125,14 @@ function ProductList() {
       );
     }
 
-    return products.map((product) => {
+    const sortedProducts =
+      sortOrder === 'Terbaru'
+        ? [...products].sort((a, b) => b.id - a.id)
+        : sortOrder === 'Terlama'
+          ? [...products].sort((a, b) => a.id - b.id)
+          : products;
+
+    return sortedProducts.map((product) => {
       const productState = productStates.find(
         (state: { id: number; isActive: boolean; isChecked?: boolean }) =>
           state.id === product.id
@@ -168,6 +200,7 @@ function ProductList() {
               Daftar Produk
             </Text>
             <Button
+              color="white"
               rounded={'full'}
               onClick={() => navigate('/add-product')}
               bgColor={'blue.500'}
@@ -218,41 +251,33 @@ function ProductList() {
               >
                 NonActive
               </Tabs.Trigger>
-            </Tabs.List>
-            <Tabs.Content value="all">
-              <Box
-                position="sticky"
-                top="60px"
-                zIndex="9"
-                borderBottom="1px solid #E6E6E6"
-                py={2}
+              <Tabs.Trigger
+                value="terbaru"
+                onClick={() => handleSortChange('Terbaru')}
+                _selected={{
+                  borderBottomColor: '#0086B4',
+                  color: '#0086B4',
+                }}
+                borderBottom="4px solid transparent"
               >
-                <Header onSelectAll={handleSelectAll} />
-              </Box>
+                Terbaru
+              </Tabs.Trigger>
+            </Tabs.List>
+            <Tabs.Content position="relative" value="all">
+              <Header
+                onSelectAll={handleSelectAll}
+                totalProducts={products.length}
+                handleSortChange={handleSortChange}
+              />
+
               {renderProducts(products)}
             </Tabs.Content>
 
             <Tabs.Content value="active">
-              <Box
-                position="sticky"
-                top="60px"
-                bg="white"
-                zIndex="9"
-                borderBottom="1px solid #E6E6E6"
-                py={2}
-              ></Box>
               {renderProducts(getFilteredProducts(true))}
             </Tabs.Content>
 
             <Tabs.Content value="nonactive">
-              <Box
-                position="sticky"
-                top="60px"
-                bg="white"
-                zIndex="9"
-                borderBottom="1px solid #E6E6E6"
-                py={2}
-              ></Box>
               {renderProducts(getFilteredProducts(false))}
             </Tabs.Content>
           </Tabs.Root>
