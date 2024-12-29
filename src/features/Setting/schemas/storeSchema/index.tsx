@@ -5,4 +5,5 @@ export const StoreSchema = z.object({
   slogan: z.string().min(1, { message: 'Slogan toko wajib diisi' }),
   description: z.string().min(1, { message: 'Deskripsi toko wajib diisi' }),
   logo_img: z.any().optional(),
+  phone: z.string().min(1, { message: 'Nomor telepon wajib diisi' }),
 });

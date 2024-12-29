@@ -17,4 +17,5 @@ export interface Store {
   bankAccount?: BankAccount;
   products?: Product[];
   user: UserType;
+  phone: string;
 }
