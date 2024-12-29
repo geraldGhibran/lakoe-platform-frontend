@@ -46,10 +46,10 @@ export default function PaymentMethod() {
       name: 'Full Name',
       category: accountData ? accountData.acc_name : '',
     },
-    { id: 2, name: 'Bank Name', category: accountData ? accountData.bank : '' },
+    { id: 2, name: 'Bank', category: accountData ? accountData.bank : '' },
     {
       id: 3,
-      name: 'Account Number',
+      name: 'No Rekening',
       category: accountData ? accountData.acc_number : '',
     },
   ];
