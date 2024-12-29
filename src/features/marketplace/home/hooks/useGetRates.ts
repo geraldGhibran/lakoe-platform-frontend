@@ -12,7 +12,7 @@ import { useCartStore } from '@/store/cart-store';
 export const useGetRates = () => {
   const queryClient = useQueryClient();
 
-  const [rates, setRates] = useState([]);
+  const [rates, setRates] = useState();
 
   const { destinationAreaId, originAreaId, couriers } = useRatesStore();
   const { height, length, width, products, description } = useCartStore();
@@ -108,7 +108,7 @@ export const useGetRates = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const rates = await getRatesAsync(data as RatesSchema);
-      return setRates(rates);
+      return setRates(rates?.pricing);
     } catch (error) {
       console.error(error);
     }
