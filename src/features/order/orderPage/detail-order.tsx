@@ -7,20 +7,15 @@ import {
   AccordionRoot,
 } from '@/components/ui/accordion';
 import {
-  TimelineConnector,
-  TimelineContent,
-  TimelineDescription,
-  TimelineItem,
-  TimelineRoot,
-  TimelineTitle,
-} from '@/components/ui/timeline';
-import {
   ClipboardIconButton,
   ClipboardRoot,
   ClipboardInput,
 } from '@/components/ui/clipboard';
 import { useLocation } from 'react-router-dom';
 import TrackingModal from '../component/orderItem/modal-tracking';
+import { useGetInvoicesId } from '../hooks/use-get-invoices-id';
+import { formatCurrency } from '@/features/add-other/format-currency';
+import TrackingLayout from '../component/orderItem/tracking-layout';
 
 const getStatusMessage = (status: string) => {
   switch (status.toUpperCase()) {
@@ -29,13 +24,8 @@ const getStatusMessage = (status: string) => {
         bgColor: 'yellow',
         message: (
           <>
-            Pesanan akan dibatalkan bila pembayaran tidak dilakukan sampai
-            <Text as={'span'} fontWeight={500}>
-              {' '}
-              10 Agustus 2023 - 00:00 WIB.
-            </Text>{' '}
-            Silakan tunggu sampai pembayaran terkonfirmasi sebelum mengirimkan
-            barang.
+            Pesanan akan dibatalkan bila pembayaran tidak dilakukan Silakan
+            tunggu sampai pembayaran terkonfirmasi sebelum mengirimkan barang.
           </>
         ),
       };
@@ -112,10 +102,12 @@ const getStatusMessage = (status: string) => {
 };
 
 export default function DetailOrder() {
+  const { data } = useGetInvoicesId();
   const location = useLocation();
   const status = location.state?.status || 'UNKNOWN';
   const productName = location.state.productName || {};
   const { bgColor, message } = getStatusMessage(status);
+
   return (
     <Box>
       <HStack my={2}>
@@ -166,73 +158,7 @@ export default function DetailOrder() {
                     Sembunyikan
                   </AccordionItemTrigger>
                   <AccordionItemContent mx={2}>
-                    <Box
-                      border={'1px solid #E6E6E6'}
-                      rounded={'md'}
-                      width={'500px'}
-                      p={10}
-                    >
-                      <TimelineRoot maxW="400px">
-                        <TimelineItem>
-                          <TimelineConnector bgColor={'cyan.100'}>
-                            <Box
-                              borderRadius={'full'}
-                              bgColor={'cyan.500'}
-                              width={'10px'}
-                              height={'10px'}
-                            ></Box>
-                          </TimelineConnector>
-                          <TimelineContent>
-                            <TimelineTitle>Pesanan Diproses</TimelineTitle>
-                            <TimelineDescription>
-                              13th May 2021
-                            </TimelineDescription>
-                            <Text textStyle="sm">
-                              We shipped your product via <strong>FedEx</strong>{' '}
-                              and it should arrive within 3-5 business days.
-                            </Text>
-                          </TimelineContent>
-                        </TimelineItem>
-
-                        <TimelineItem>
-                          <TimelineConnector bgColor={'gray.100'}>
-                            <Box
-                              borderRadius={'full'}
-                              bgColor={'gray.300'}
-                              width={'10px'}
-                              height={'10px'}
-                            ></Box>
-                          </TimelineConnector>
-                          <TimelineContent>
-                            <TimelineTitle textStyle="sm">
-                              Pembayaran Terverifikasi
-                            </TimelineTitle>
-                            <TimelineDescription>
-                              18th May 2021
-                            </TimelineDescription>
-                          </TimelineContent>
-                        </TimelineItem>
-
-                        <TimelineItem>
-                          <TimelineConnector bgColor={'gray.100'}>
-                            <Box
-                              borderRadius={'full'}
-                              bgColor={'gray.300'}
-                              width={'10px'}
-                              height={'10px'}
-                            ></Box>
-                          </TimelineConnector>
-                          <TimelineContent>
-                            <TimelineTitle textStyle="sm">
-                              Pesanan Dibuat
-                            </TimelineTitle>
-                            <TimelineDescription>
-                              20th May 2021, 10:30am
-                            </TimelineDescription>
-                          </TimelineContent>
-                        </TimelineItem>
-                      </TimelineRoot>
-                    </Box>
+                    <TrackingLayout />
                   </AccordionItemContent>
                 </AccordionItem>
               </AccordionRoot>
@@ -253,8 +179,17 @@ export default function DetailOrder() {
               Tanggal
             </Text>
           </HStack>
-          <Text fontSize={'sm'} color={'gray'}>
-            09 Agustus 2023 - 19:43 WIB
+          <Text fontSize="sm" color="gray.500">
+            {data?.invoice?.Product?.[0]?.createdAt
+              ? new Date(data.invoice.Product[0].createdAt).toLocaleDateString(
+                  'id-ID',
+                  {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  }
+                )
+              : 'Tanggal tidak tersedia'}
           </Text>
         </HStack>
         <HStack justifyContent={'space-between'} my={2}>
@@ -269,11 +204,11 @@ export default function DetailOrder() {
               Invoice
             </Text>
           </HStack>
-          <ClipboardRoot value="INV/20230809/MPL/00000239">
+          <ClipboardRoot value={data?.invoice.invoice_id}>
             <HStack>
               <ClipboardIconButton me="-5" bgColor={'transparent'} />
               <ClipboardInput
-                value="INV/20230809/MPL/00000239"
+                value={data?.invoice.invoice_id}
                 border="none"
                 w={'215px'}
                 readOnly={true}
@@ -299,7 +234,7 @@ export default function DetailOrder() {
           <HStack>
             <Icon icon="logos:whatsapp-icon" width={25} height={25} />
             <Text fontSize={'sm'} color={'gray'}>
-              Faisal Yulianto
+              {data?.invoice.receiver_name}
             </Text>
           </HStack>
         </HStack>
@@ -325,16 +260,16 @@ export default function DetailOrder() {
         >
           <HStack>
             <Image
-              src="/cardImage/Rectangle 40352.png"
+              src={data?.invoice?.Product?.[0]?.image?.[0].url}
               width={20}
               height={20}
             ></Image>
             <Box>
-              <Text fontWeight={500}>
-                CREWNECK BASIC - BLACK | sweter polos hoodie polos crewneck - S
+              <Text fontWeight={500} mb={2}>
+                {productName}
               </Text>
               <Text fontSize={'sm'} color={'gray'}>
-                1 x Rp 150.000
+                1 x {formatCurrency(data?.invoice?.amount)}
               </Text>
             </Box>
           </HStack>
@@ -343,7 +278,9 @@ export default function DetailOrder() {
             <Text fontSize={'sm'} color={'gray'}>
               Total Belanja
             </Text>
-            <Text fontWeight={500}>Rp 180.000</Text>
+            <Text fontWeight={500}>
+              {formatCurrency(data?.invoice?.total_amount)}
+            </Text>
           </VStack>
         </HStack>
       </Box>
@@ -383,19 +320,17 @@ export default function DetailOrder() {
           <VStack alignItems={'flex-start'} flex="1">
             <Box>
               <Text fontSize={'sm'} fontWeight={500}>
-                JNE - Reguler
+                {data?.invoice?.Courier?.courier_code}
               </Text>
             </Box>
             <Box>
               <Text fontSize={'sm'} color={'gray'}>
-                -
+                {data?.invoice?.Courier?.resi}
               </Text>
             </Box>
             <Box>
               <Text fontSize={'sm'} color={'gray'}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad in
-                recusandae vitae, quos quam repellendus dolorem ullam eius totam
-                quaerat?
+                {data?.invoice?.receiver_address}
               </Text>
             </Box>
           </VStack>
@@ -415,21 +350,17 @@ export default function DetailOrder() {
         </HStack>
         <HStack my={1} mx={10} justifyContent="space-between">
           <Text color={'gray'} fontSize={'sm'}>
-            Total Harga ( 1 barang )
+            Harga 1 Barang
           </Text>
-          <Text fontWeight={500}>Rp 180.000</Text>
+          <Text fontWeight={500}>{formatCurrency(data?.invoice?.amount)}</Text>
         </HStack>
         <HStack my={1} mx={10} justifyContent="space-between">
           <Text color={'gray'} fontSize={'sm'}>
-            Total Ongkos Kirim ( 10Kg )
+            Ongkos kirim
           </Text>
-          <Text fontWeight={500}>Rp 180.000</Text>
-        </HStack>
-        <HStack my={1} mx={10} justifyContent="space-between">
-          <Text color={'gray'} fontSize={'sm'}>
-            Diskon
+          <Text fontWeight={500}>
+            {formatCurrency(data?.invoice?.courier_price)}
           </Text>
-          <Text fontWeight={500}>Rp 0</Text>
         </HStack>
         <HStack
           my={1}
@@ -441,11 +372,15 @@ export default function DetailOrder() {
           <Text color={'gray'} fontSize={'sm'}>
             Biaya Pelayanan
           </Text>
-          <Text fontWeight={500}>Rp 0</Text>
+          <Text fontWeight={500}>
+            {formatCurrency(data?.invoice?.service_charge)}
+          </Text>
         </HStack>
         <HStack my={1} mx={10} justifyContent="space-between">
-          <Text fontWeight={500}>Diskon</Text>
-          <Text fontWeight={500}>Rp 190.000</Text>
+          <Text fontWeight={500}>Total Harga</Text>
+          <Text fontWeight={500}>
+            {formatCurrency(data?.invoice?.total_amount)}
+          </Text>
         </HStack>
       </Box>
     </Box>

@@ -91,6 +91,16 @@ export default function StoreInformation() {
             {errors.slogan && (
               <Text color={'red.500'}>{errors.slogan.message as string}</Text>
             )}
+            <Field label="Phone">
+              <Input
+                defaultValue={storeDetail.slogan}
+                placeholder="No HP"
+                {...register('phone')}
+              ></Input>
+            </Field>
+            {errors.phone && (
+              <Text color={'red.500'}>{errors.phone.message as string}</Text>
+            )}
           </Box>
           <Box w={'50%'}>
             <Field label="Deskripsi">
@@ -138,13 +148,7 @@ export default function StoreInformation() {
           >
             {imagePreview ? (
               <>
-                <Image
-                  src={imagePreview}
-                  alt="Preview"
-                  objectFit="cover"
-                  w="100%"
-                  h="100%"
-                />
+                <Image src={imagePreview} objectFit="cover" w="100%" h="100%" />
                 <Box
                   position="absolute"
                   bottom={29}
@@ -166,8 +170,11 @@ export default function StoreInformation() {
               </>
             ) : (
               <Image
-                src={storeDetail.logo_img}
-                alt="Preview"
+                src={
+                  storeDetail.logo_img
+                    ? storeDetail.logo_img
+                    : 'https://www.svgrepo.com/show/530571/conversation.svg'
+                }
                 objectFit="cover"
                 w="100%"
                 h="100%"

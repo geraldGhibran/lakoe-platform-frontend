@@ -167,9 +167,10 @@ function ProductList() {
     <Stack
       direction={'row'}
       bg={'#F4F4F5'}
-      position={'fixed'}
-      height={'90vh'}
-      width={'58%'}
+      // position={'fixed'}
+      overflowY="auto"
+      height="100vh"
+      width="full"
     >
       <Box
         bg={'white'}
@@ -200,6 +201,7 @@ function ProductList() {
               Daftar Produk
             </Text>
             <Button
+              zIndex="base"
               color="white"
               rounded={'full'}
               onClick={() => navigate('/add-product')}
@@ -250,17 +252,6 @@ function ProductList() {
                 borderBottom="4px solid transparent"
               >
                 NonActive
-              </Tabs.Trigger>
-              <Tabs.Trigger
-                value="terbaru"
-                onClick={() => handleSortChange('Terbaru')}
-                _selected={{
-                  borderBottomColor: '#0086B4',
-                  color: '#0086B4',
-                }}
-                borderBottom="4px solid transparent"
-              >
-                Terbaru
               </Tabs.Trigger>
             </Tabs.List>
             <Tabs.Content position="relative" value="all">

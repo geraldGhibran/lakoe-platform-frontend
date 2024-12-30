@@ -340,14 +340,14 @@ export default function VariantComponent({
                 </Switch>
               </HStack>
               <HStack gap="2" width="full">
-                <Box>
-                  <Field label="Harga">
-                    <Group attached>
+                <Box width="full">
+                  <Field width="full" label="Harga">
+                    <Group width="full" attached>
                       <InputAddon>Rp</InputAddon>
                       <Input
                         placeholder={`Masukan Harga untuk ${combination}`}
                         variant="outline"
-                        width="350px"
+                        width="full"
                         value={combinationData[combination]?.price || ''}
                         onChange={(e) =>
                           handleCombinationChange(
@@ -360,12 +360,12 @@ export default function VariantComponent({
                     </Group>
                   </Field>
                 </Box>
-                <Box>
+                <Box w="full">
                   <Field label="Stok Produk">
                     <Input
                       placeholder={`Masukan Stok untuk ${combination}`}
                       variant="outline"
-                      width="410px"
+                      width="full"
                       value={combinationData[combination]?.stock || ''}
                       onChange={(e) =>
                         handleCombinationChange(
@@ -379,12 +379,12 @@ export default function VariantComponent({
                 </Box>
               </HStack>
               <HStack gap="2" width="full" my={4}>
-                <Box>
-                  <Field label="SKU (Stock Keeping Unit)">
+                <Box width="full">
+                  <Field width="full" label="SKU (Stock Keeping Unit)">
                     <Input
                       placeholder={`Masukan SKU untuk ${combination}`}
                       variant="outline"
-                      width="395px"
+                      width="full"
                       value={combinationData[combination]?.sku || ''}
                       onChange={(e) =>
                         handleCombinationChange(
@@ -396,13 +396,13 @@ export default function VariantComponent({
                     />
                   </Field>
                 </Box>
-                <Box>
-                  <Field label="Berat Produk">
-                    <Group attached>
+                <Box width="full">
+                  <Field width="full" label="Berat Produk">
+                    <Group width="full" attached>
                       <Input
                         placeholder={`Masukan Berat untuk ${combination}`}
                         variant="outline"
-                        width="350px"
+                        width="full"
                         value={combinationData[combination]?.weight || ''}
                         onChange={(e) =>
                           handleCombinationChange(

@@ -1,4 +1,4 @@
-import { Box, Stack, Tabs, Text } from '@chakra-ui/react';
+import { Box, Stack, Tabs, Spinner, Text } from '@chakra-ui/react';
 import { useState } from 'react';
 import HeaderMenu from '../component/headerMenu';
 import OrderItem, { Order } from '../component/orderItem';
@@ -16,7 +16,19 @@ export default function OrderPage() {
   };
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Spinner color="colorPalette.600" />
+        <Text color="colorPalette.600">Loading...</Text>
+      </Box>
+    );
   }
 
   if (error) {

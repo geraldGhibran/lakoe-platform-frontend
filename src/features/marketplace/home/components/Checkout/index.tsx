@@ -4,6 +4,7 @@ import {
   AccordionItemTrigger,
   AccordionRoot,
 } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 import { ColorModeButton } from '@/components/ui/color-mode';
 import { Field } from '@/components/ui/field';
 import {
@@ -15,6 +16,8 @@ import {
 } from '@/components/ui/select';
 import { formatCurrency } from '@/features/add-other/format-currency';
 import { useCartStore } from '@/store/cart-store';
+import { useCostRateStore } from '@/store/cost-rate';
+import { AllFields, useCustomerDetailStore } from '@/store/customer-detail';
 import { usePinpoint } from '@/store/pinpoint';
 import { useRatesStore } from '@/store/rates';
 import {
@@ -31,21 +34,16 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
-import { IoIosArrowForward } from 'react-icons/io';
 import { LuMapPin, LuMapPinOff } from 'react-icons/lu';
-import { MdOutlineAttachMoney } from 'react-icons/md';
 import { Link } from 'react-router-dom';
+import { useCheckout } from '../../hooks/use-checkout';
 import { useShipmentAddress } from '../../hooks/use-shipment-address';
 import { useGetRates } from '../../hooks/useGetRates';
 import { getAreaId } from '../../services/rates';
 import DeliveryMethod from '../Form/deliveryMethod';
 import PopUpLocation from './popUpLocation';
-import { useEffect } from 'react';
-import { useCostRateStore } from '@/store/cost-rate';
-import { useCheckout } from '../../hooks/use-checkout';
-import { Button } from '@/components/ui/button';
-import { AllFields, useCustomerDetailStore } from '@/store/customer-detail';
 
 export default function CheckoutPages() {
   const { totalPrice, products, productImage } = useCartStore();
@@ -467,7 +465,9 @@ export default function CheckoutPages() {
                 rounded="0"
                 bgColor={isSelected ? 'gray.200' : '#fee2e2'}
               >
-                List Product
+                <Box py="20px">
+                  <DeliveryMethod onSubmit={onSubmit} rates={rates ?? []} />
+                </Box>
               </AccordionItemTrigger>
               {products.map((item) => (
                 <>
@@ -569,11 +569,7 @@ export default function CheckoutPages() {
                     fontWeight="light"
                     gap="20px"
                     bgColor="#F9FAFB"
-                  >
-                    <Box py="20px">
-                      <DeliveryMethod onSubmit={onSubmit} rates={rates ?? []} />
-                    </Box>
-                  </AccordionItemContent>
+                  ></AccordionItemContent>
                 </AccordionItem>
               </AccordionRoot>
             </AccordionItem>
@@ -584,7 +580,7 @@ export default function CheckoutPages() {
         <Box gap="20px" display="flex" flexDir="column" width="2/6">
           <Flex gap="20px" flexDir="column">
             <Link to="">
-              <Flex
+              {/* <Flex
                 rounded="lg"
                 cursor="pointer"
                 fontWeight="bold"
@@ -604,7 +600,7 @@ export default function CheckoutPages() {
                 </Box>
                 <Text>Gunakan / Masukan Voucer</Text>
                 <IoIosArrowForward />
-              </Flex>
+              </Flex> */}
             </Link>
 
             {/* Total Pembayaran */}
@@ -657,7 +653,7 @@ export default function CheckoutPages() {
               </Table.Root>
             </Box>
             {/* Catatan */}
-            <Box
+            {/* <Box
               border="1px solid blue"
               rounded="lg"
               display="flex"
@@ -684,7 +680,7 @@ export default function CheckoutPages() {
                   0 / 150
                 </Text>
               </Field>
-            </Box>
+            </Box> */}
           </Flex>
           <form onSubmit={onSubmitCheckout}>
             <Button

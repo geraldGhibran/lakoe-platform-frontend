@@ -2,6 +2,7 @@ import { formatCurrency } from '@/features/add-other/format-currency';
 import { Box, Image, Stack, Text } from '@chakra-ui/react';
 // import { useNavigate } from 'react-router-dom';
 import ConfirmOrder from './confirmOrder';
+import { useNavigate } from 'react-router-dom';
 
 interface Image {
   id: number;
@@ -32,59 +33,48 @@ export default function OrderItem({
   Product,
   total_amount,
 }: Order) {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const productName = Product[0]?.name;
   const productImageUrl = Product[0]?.image[0]?.url;
 
   const getStatusStyles = (status: string) => {
     switch (status.toUpperCase()) {
-      case 'UNPAID':
-        return { bgColor: '#E8C600', actionText: 'Hubungi Pembeli' };
       case 'PAID':
-        return { bgColor: '#4CAF50', actionText: 'Proses Pesanan' };
-      case 'PROCESS':
-        return { bgColor: '#2196F3', actionText: 'Kabari Pembeli' };
+        return {
+          bgColor: '#4CAF50',
+          display: 'flex',
+          actionText: 'Proses Pesanan',
+        };
       case 'WAIT_TO_PICKUP':
         return {
           bgColor: '#FF9800',
+          display: 'none',
           actionText: 'Lihat Rincian Pembelian',
           isNavigate: true,
         };
       case 'DELIVERING':
         return {
           bgColor: '#FF9800',
+          display: 'none',
           actionText: 'Lihat Rincian Pembelian',
           isNavigate: true,
         };
-      case 'DELIVERED':
-        return { bgColor: '#9E9E9E', actionText: 'Hubungi Pembeli' };
-      case 'CANCELED':
-        return { bgColor: '#EA3829', actionText: 'Hubungi Pembeli' };
       default:
-        return { bgColor: '#E6E6E6', actionText: 'Tidak Diketahui' };
+        return {
+          bgColor: '#E6E6E6',
+          display: 'none',
+          actionText: 'Tidak Diketahui',
+        };
     }
   };
 
-  const {
-    bgColor,
-    actionText,
-    //  isNavigate
-  } = getStatusStyles(status);
+  const { bgColor, actionText, display } = getStatusStyles(status);
 
-  // const handleNavigate = () => {
-  //   navigate(`/detail-order/${invoice_id}`, {
-  //     state: { status, invoice_id, productName, id },
-  //   });
-  // };
-
-  // const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   event.stopPropagation();
-  //   if (isNavigate) {
-  //     handleNavigate();
-  //   } else {
-  //     alert('Aksi lainnya sesuai status');
-  //   }
-  // };
+  const handleNavigate = () => {
+    navigate(`/detail-order/${invoice_id}`, {
+      state: { status, invoice_id, productName, id },
+    });
+  };
 
   return (
     <Box
@@ -94,9 +84,10 @@ export default function OrderItem({
       borderRadius={'5px'}
       mt={5}
       cursor="pointer"
-      // onClick={handleNavigate}
+      onClick={handleNavigate}
     >
       <Stack
+        pos="relative"
         direction={'row'}
         justifyContent={'space-between'}
         borderBottom={'3px solid #E6E6E6'}
@@ -116,7 +107,9 @@ export default function OrderItem({
             {invoice_id}
           </Text>
         </Box>
-        <ConfirmOrder text={actionText} id={id} />
+        <Box pos="absolute" right="0">
+          <ConfirmOrder text={actionText} id={id} display={display} />
+        </Box>
         {/* <Button
           borderRadius={'100px'}
           bg={'white'}

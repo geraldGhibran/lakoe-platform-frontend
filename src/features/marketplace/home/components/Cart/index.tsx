@@ -168,7 +168,7 @@ export default function Cart() {
               >
                 <MdOutlineAttachMoney color="blue" />
               </Box>
-              <Text>Gunakan / Masukan Voucer</Text>
+              <Text>Tagihan</Text>
               <IoIosArrowForward />
             </Flex>
           </Link>

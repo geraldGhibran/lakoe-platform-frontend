@@ -3,6 +3,8 @@ import { useAuthStore } from '@/store/auth';
 import { Box, Flex } from '@chakra-ui/react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { AddSeller } from '../adds/add1';
+import Hamburger from '@/components/hamburger';
+import { ColorModeButton } from '@/components/ui/color-mode';
 
 export function SellerLayout() {
   const { user, token } = useAuthStore();
@@ -23,7 +25,12 @@ export function SellerLayout() {
       height="100%"
       width="100%"
     >
-      <Box overflow="hidden" width="1/3">
+      <Box
+        bgColor="white"
+        display={{ base: 'none', lg: 'flex' }}
+        overflow="hidden"
+        width="1/3"
+      >
         <SideBar />
       </Box>
 
@@ -32,9 +39,15 @@ export function SellerLayout() {
         border="1px solid"
         borderColor="#E6E6E6"
         height="50px"
+        display="flex"
+        px="20px"
+        alignItems="center"
         width="100%"
         bgColor="white"
-      ></Box>
+      >
+        <Hamburger />
+        <ColorModeButton />
+      </Box>
 
       <Box
         mt="50px"
@@ -52,7 +65,7 @@ export function SellerLayout() {
         <Outlet />
       </Box>
 
-      <Box width="1/3">
+      <Box display={{ base: 'none', lg: 'block' }} width="1/3">
         <AddSeller />
       </Box>
     </Flex>

@@ -8,10 +8,35 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import API from '@/libs/axios';
 import { Button, HStack } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
+import { useAccountStore } from '@/store/rekId';
+import { toaster } from '@/components/ui/toaster-placement';
 
 export default function DeleteRekening() {
+  const rekId = useAccountStore((state) => state.accountId);
+  const handleDelete = async () => {
+    if (!rekId) {
+      alert('Rekening ID tidak ditemukan');
+      return;
+    }
+
+    try {
+      await API.delete(`/bank/${rekId}`);
+      toaster.create({
+        title: 'rekening Message deleted',
+        type: 'success',
+        duration: 3000,
+        description: 'Your rekening has been deleted successfully.',
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting rekening:', error);
+      alert('Gagal menghapus rekening.');
+    }
+  };
+
   return (
     <HStack wrap="wrap" gap="4">
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
@@ -42,7 +67,12 @@ export default function DeleteRekening() {
               </Button>
             </DialogActionTrigger>
             <DialogActionTrigger width="1/2">
-              <Button width="full" bgColor="red" color="white">
+              <Button
+                width="full"
+                bgColor="red"
+                color="white"
+                onClick={() => handleDelete()}
+              >
                 Delete
               </Button>
             </DialogActionTrigger>

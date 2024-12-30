@@ -45,33 +45,37 @@ export default function VariantModal() {
             Pilih Semua Variant
           </Button>
           <HStack gap={5} mt={5}>
-            <Box>
+            <Box width="full">
               <Box fontWeight={'600'} pb={1}>
                 Harga
               </Box>
-              <Group attached>
+              <Group width="full" attached>
                 <InputAddon>Rp</InputAddon>
-                <Input placeholder="masukan harga satuan barang" w={'400px'} />
+                <Input
+                  width="full"
+                  placeholder="masukan harga satuan barang"
+                  w={'full'}
+                />
               </Group>
             </Box>
-            <Box>
+            <Box width="full">
               <Field label="Nama produk">
-                <Input placeholder="masukan nama produk" w={'335px'} />
+                <Input placeholder="masukan nama produk" w={'full'} />
               </Field>
             </Box>
           </HStack>
           <HStack gap={5} mt={5}>
-            <Box>
+            <Box width="full">
               <Field label="SKU (Stock Keeping Unit)">
-                <Input placeholder="masukan SKU" w={'440px'} />
+                <Input placeholder="masukan SKU" w={'full'} />
               </Field>
             </Box>
-            <Box>
-              <Box fontWeight={'600'} pb={1}>
+            <Box width="full">
+              <Box fontWeight={'full'} pb={1}>
                 Berat
               </Box>
-              <Group attached>
-                <Input placeholder="masukan nama produk" w={'280px'} />
+              <Group width="full" attached>
+                <Input placeholder="masukan nama produk" w={'full'} />
                 <InputAddon>gram</InputAddon>
               </Group>
             </Box>
