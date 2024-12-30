@@ -1,15 +1,7 @@
-import { Box, Text } from '@chakra-ui/react';
-import {
-  TimelineConnector,
-  TimelineContent,
-  TimelineDescription,
-  TimelineItem,
-  TimelineRoot,
-  TimelineTitle,
-} from '@/components/ui/timeline';
+import { Box } from '@chakra-ui/react';
+import { useEffect } from 'react';
 import { useGetInvoicesId } from '../../hooks/use-get-invoices-id';
 import { useGetTracking } from '../../hooks/use-get-tracking';
-import { useEffect } from 'react';
 import { TrackingType } from '../../services/tracking';
 
 export default function TrackingLayout() {
@@ -22,7 +14,7 @@ export default function TrackingLayout() {
     service,
   };
 
-  const { getTrackingAsync, tracking, setTracking } =
+  const { getTrackingAsync, setTracking } =
     useGetTracking(trackingData);
 
   useEffect(() => {
