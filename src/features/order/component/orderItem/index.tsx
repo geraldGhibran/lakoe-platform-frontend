@@ -84,7 +84,6 @@ export default function OrderItem({
       borderRadius={'5px'}
       mt={5}
       cursor="pointer"
-      onClick={handleNavigate}
     >
       <Stack
         pos="relative"
@@ -120,7 +119,11 @@ export default function OrderItem({
           {actionText}
         </Button> */}
       </Stack>
-      <Stack direction={'row'} justifyContent={'space-between'}>
+      <Stack
+        direction={'row'}
+        justifyContent={'space-between'}
+        onClick={handleNavigate}
+      >
         <Stack direction={'row'}>
           <Image src={productImageUrl} w={'70px'} h={'80px'} mt={2}></Image>
           <Box p={2}>
