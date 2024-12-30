@@ -43,7 +43,7 @@ export default function TrackingLayout() {
   return (
     <>
       <Box border={'1px solid #E6E6E6'} rounded={'md'} width={'500px'} p={10}>
-        <TimelineRoot maxW="400px">
+        {/* <TimelineRoot maxW="400px">
           {tracking?.history?.map((event, index) => {
             const isCompleted =
               index <=
@@ -75,7 +75,7 @@ export default function TrackingLayout() {
               </TimelineItem>
             );
           })}
-        </TimelineRoot>
+        </TimelineRoot> */}
       </Box>
     </>
   );
