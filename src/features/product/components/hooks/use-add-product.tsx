@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import API from '@/libs/axios';
 import { toaster } from '@/components/ui/toaster-placement';
 import { useAuthStore } from '@/store/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface ProductFormData {
   name: string;
@@ -167,6 +168,7 @@ const useAddProduct = () => {
       setFiles((prevFiles) => [...prevFiles, ...Array.from(selectedFiles)]);
     }
   };
+  const navigate = useNavigate();
 
   const handleRemoveImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
@@ -184,6 +186,7 @@ const useAddProduct = () => {
         description: 'Product successfully submitted!',
         duration: 3000,
       });
+      navigate('/products');
     },
     onError: (error: Error) => {
       toaster.create({

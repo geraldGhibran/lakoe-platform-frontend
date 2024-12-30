@@ -18,8 +18,10 @@ import {
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Box, HStack, Text } from '@chakra-ui/react';
+import { useGetInvoicesId } from '../../hooks/use-get-invoices-id';
 
 const TrackingModal = () => {
+  const { data } = useGetInvoicesId();
   const [open, setOpen] = useState(false);
   return (
     <DialogRoot lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
@@ -39,7 +41,7 @@ const TrackingModal = () => {
                 Kurir
               </Text>
               <Text fontSize={'sm'} fontWeight={500}>
-                JNE - Reguler
+                {data?.invoice?.Courier?.courier_code} - Reguler
               </Text>
               <HStack>
                 <Text fontSize={'sm'} color={'gray.500'} pt={2}>
@@ -48,13 +50,13 @@ const TrackingModal = () => {
                 <Icon icon="iconoir:copy" />
               </HStack>
               <Text fontSize={'sm'} fontWeight={500}>
-                657657575756
+                {data?.invoice?.Courier?.resi}
               </Text>
               <Text fontSize={'sm'} color={'gray.500'} pt={2}>
                 Pengirim
               </Text>
               <Text fontSize={'sm'} fontWeight={500}>
-                Bakulan Store
+                {data?.invoice?.store?.name}
               </Text>
             </Box>
             <Box p={5}>
@@ -62,14 +64,16 @@ const TrackingModal = () => {
                 Penerima
               </Text>
               <Text fontSize={'sm'} fontWeight={500}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. At
-                quisquam recusandae officiis aliquam.
+                {data?.invoice.receiver_name}
+              </Text>
+              <Text fontSize={'sm'} color={'gray'}>
+                {data?.invoice?.receiver_address}
               </Text>
             </Box>
           </HStack>
           <HStack>
             <Text>Status :</Text>
-            <Text fontWeight={500}>Dalam Proses Pengiriman</Text>
+            <Text fontWeight={500}>{data?.invoice?.status}</Text>
           </HStack>
           <Box border={'1px solid #E6E6E6'} rounded={'md'} p={10} my={2}>
             <TimelineRoot maxW="400px">
