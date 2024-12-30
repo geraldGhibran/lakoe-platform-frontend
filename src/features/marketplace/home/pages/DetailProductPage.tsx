@@ -1,11 +1,10 @@
-import { Box, Button, Flex } from '@chakra-ui/react';
-import { Link, Outlet } from 'react-router-dom';
-import { BsHandbag } from 'react-icons/bs';
-import { BsPerson } from 'react-icons/bs';
-import { IoIosArrowBack } from 'react-icons/io';
-import '@/styles/styes.css';
+import { ColorModeButton } from '@/components/ui/color-mode';
 import { useCartStore } from '@/store/cart-store';
+import '@/styles/styes.css';
+import { Box, Button, Flex } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { BsHandbag } from 'react-icons/bs';
+import { Link, Outlet } from 'react-router-dom';
 
 export default function DetailProductPage() {
   const {
@@ -54,7 +53,7 @@ export default function DetailProductPage() {
             padding="10px"
             bgColor="white"
           >
-            <IoIosArrowBack /> All Products
+            {/* <IoIosArrowBack /> All Products */}
           </Button>
         </Link>
         <Flex alignItems="center" gap="10px" justify="center">
@@ -83,16 +82,9 @@ export default function DetailProductPage() {
               <BsHandbag />
             </Button>
           </Link>
-          <Link to="">
-            <Button
-              bgColor="white"
-              color="black"
-              _hover={{ bgColor: 'gainsboro' }}
-              position="relative"
-            >
-              <BsPerson />
-            </Button>
-          </Link>
+          {/* <Link to=""> */}
+          <ColorModeButton />
+          {/* </Link> */}
         </Flex>
       </Box>
       <Box className="hide-scrollbar" height="85vh" overflowY="auto">

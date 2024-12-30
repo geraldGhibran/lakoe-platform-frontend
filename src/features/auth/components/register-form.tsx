@@ -3,12 +3,13 @@ import { Box, Flex, Image, Input, Stack, Text } from '@chakra-ui/react';
 import { Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterForm } from '../hooks/use-register';
+import file from '@/assets/images/register.svg';
 
 export function RegisterForm() {
   const navigate = useNavigate();
   const { control, onSubmit, errors, isSubmitting } = useRegisterForm();
   return (
-    <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+    <Flex color="black" bgColor="white" height="100vh">
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
         <Box p={'125px 0px'}>
           <Box p={'40px'} h={'350px'} w={'400px'} borderRadius={'10px'}>
@@ -88,6 +89,8 @@ export function RegisterForm() {
                   loading={isSubmitting}
                   type="submit"
                   borderRadius={'10px'}
+                  bgColor="green"
+                  color="white"
                 >
                   Register
                 </Button>
@@ -110,14 +113,8 @@ export function RegisterForm() {
         </Box>
       </Flex>
       <Flex flex={1}>
-        <Image
-          alt={'Login Image'}
-          objectFit={'cover'}
-          src={
-            'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?q=80&w=1494&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          }
-        />
+        <Image alt={'Login Image'} objectFit={'cover'} src={file} />
       </Flex>
-    </Stack>
+    </Flex>
   );
 }

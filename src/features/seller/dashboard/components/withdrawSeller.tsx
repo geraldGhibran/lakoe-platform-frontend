@@ -54,7 +54,7 @@ export default function WithdrawSeller() {
     <HStack wrap="wrap" gap="4">
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
         <DialogTrigger width="full" asChild>
-          <Button _active={{ shadow: 'xs' }} shadow="sm" bgColor="yellow.300">
+          <Button _active={{ shadow: 'xs' }} shadow="sm" bgColor="blue.500">
             Withdraw
           </Button>
         </DialogTrigger>

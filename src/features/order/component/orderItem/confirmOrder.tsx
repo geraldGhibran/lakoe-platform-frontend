@@ -12,11 +12,13 @@ import 'leaflet/dist/leaflet.css';
 import { useAcceptPaid } from '../../hooks/use-get-invoices';
 
 export default function ConfirmOrder({
+  display,
   text,
   id,
 }: {
   text: string;
   id: number | undefined;
+  display: string;
 }) {
   const { mutateAsync: acceptPaid } = useAcceptPaid();
   return (
@@ -24,6 +26,8 @@ export default function ConfirmOrder({
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
         <DialogTrigger asChild>
           <Button
+            display={display}
+            _hover={{ bgColor: 'gainsboro' }}
             borderRadius={'100px'}
             bg={'white'}
             color={'black'}
