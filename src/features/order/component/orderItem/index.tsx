@@ -2,6 +2,7 @@ import { formatCurrency } from '@/features/add-other/format-currency';
 import { Box, Image, Stack, Text } from '@chakra-ui/react';
 // import { useNavigate } from 'react-router-dom';
 import ConfirmOrder from './confirmOrder';
+import { useNavigate } from 'react-router-dom';
 
 interface Image {
   id: number;
@@ -32,7 +33,7 @@ export default function OrderItem({
   Product,
   total_amount,
 }: Order) {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const productName = Product[0]?.name;
   const productImageUrl = Product[0]?.image[0]?.url;
 
@@ -69,20 +70,11 @@ export default function OrderItem({
 
   const { bgColor, actionText, display } = getStatusStyles(status);
 
-  // const handleNavigate = () => {
-  //   navigate(`/detail-order/${invoice_id}`, {
-  //     state: { status, invoice_id, productName, id },
-  //   });
-  // };
-
-  // const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   event.stopPropagation();
-  //   if (isNavigate) {
-  //     handleNavigate();
-  //   } else {
-  //     alert('Aksi lainnya sesuai status');
-  //   }
-  // };
+  const handleNavigate = () => {
+    navigate(`/detail-order/${invoice_id}`, {
+      state: { status, invoice_id, productName, id },
+    });
+  };
 
   return (
     <Box
@@ -92,7 +84,7 @@ export default function OrderItem({
       borderRadius={'5px'}
       mt={5}
       cursor="pointer"
-      // onClick={handleNavigate}
+      onClick={handleNavigate}
     >
       <Stack
         pos="relative"
