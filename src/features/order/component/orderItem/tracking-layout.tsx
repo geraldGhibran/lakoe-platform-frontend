@@ -14,8 +14,7 @@ export default function TrackingLayout() {
     service,
   };
 
-  const { getTrackingAsync, setTracking } =
-    useGetTracking(trackingData);
+  const { getTrackingAsync, setTracking } = useGetTracking(trackingData);
 
   useEffect(() => {
     if (resi && service) {

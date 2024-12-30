@@ -1,17 +1,15 @@
 import { toaster } from '@/components/ui/toaster-placement';
-import { useAuthStore } from '@/store/auth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { deleteLocation } from '../services/store';
 import { useGetLocationById } from './useGetLocationById';
-import { useState } from 'react';
 
 interface IdType {
   id: number;
 }
 
 export const useDeleteLocationStore = (id: number) => {
-  const { user } = useAuthStore();
   const { data: locationStore } = useGetLocationById(id);
 
   const queryClient = useQueryClient();
@@ -28,7 +26,7 @@ export const useDeleteLocationStore = (id: number) => {
 
       onSuccess: async () => {
         await queryClient.refetchQueries({
-          queryKey: ['locationStore', user?.store?.id],
+          queryKey: ['locationStore'],
           exact: true,
         });
 
