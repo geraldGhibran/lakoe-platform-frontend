@@ -41,7 +41,7 @@ const MyChart: React.FC = () => {
       {
         label: 'Jumlah Status',
         data: Object.values(invoiceStatusCounts ?? {}),
-        backgroundColor: '#FDE047',
+        backgroundColor: '#3B82F6',
         borderColor: 'red',
         borderWidth: 0,
       },
