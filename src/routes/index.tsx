@@ -21,6 +21,7 @@ import ShipmentSeller from '@/features/seller/shipment';
 import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
 import { DetailSeller } from '@/features/admin/seller/detail-seller';
+import PageNotFound from '@/components/not-found';
 
 export const router = createBrowserRouter([
   {
@@ -132,6 +133,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <div>CHeck lagi url nya WOI !!!!!</div>,
+    element: <PageNotFound />,
   },
 ]);

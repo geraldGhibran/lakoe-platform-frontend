@@ -3,6 +3,7 @@ import { Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSigninForm } from '../hooks/use-login';
 import { Button } from '@/components/ui/button';
+import file from '@/assets/images/login.svg';
 
 export function LoginForm() {
   const navigate = useNavigate();
@@ -10,13 +11,13 @@ export function LoginForm() {
   const { control, onSubmit, errors, isSubmitting } = useSigninForm();
 
   return (
-    <Stack minH={'100vh'} direction={{ base: 'column', md: 'row' }}>
+    <Flex height="100vh" bgColor="white">
       <Flex p={8} flex={1} align={'center'} justify={'center'}>
         <Box py="125px">
           <Box py="40px" h="350px" w="400px" borderRadius="10px">
-            <form onSubmit={onSubmit}>
+            <form style={{ color: 'black' }} onSubmit={onSubmit}>
               <Stack gap={4}>
-                <Text fontSize="4xl" fontWeight="bold">
+                <Text color="black" fontSize="4xl" fontWeight="bold">
                   Login
                 </Text>
                 <Controller
@@ -65,6 +66,8 @@ export function LoginForm() {
                   </Text>
                 )}
                 <Button
+                  bgColor="blue"
+                  color="white"
                   loading={isSubmitting}
                   type="submit"
                   borderRadius="10px"
@@ -73,7 +76,7 @@ export function LoginForm() {
                 </Button>
               </Stack>
             </form>
-            <Text mt="10px">
+            <Text color="black" mt="10px">
               Don't have an account?{' '}
               <Text
                 as="span"
@@ -89,14 +92,8 @@ export function LoginForm() {
         </Box>
       </Flex>
       <Flex flex={1}>
-        <Image
-          alt={'Login Image'}
-          objectFit={'cover'}
-          src={
-            'https://images.unsplash.com/photo-1532310456006-ddaf275c93cd?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-          }
-        />
+        <Image alt={'Login Image'} objectFit={'cover'} src={file} />
       </Flex>
-    </Stack>
+    </Flex>
   );
 }
