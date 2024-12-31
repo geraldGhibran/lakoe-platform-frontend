@@ -6,6 +6,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  Spinner,
   StatLabel,
   StatRoot,
   StatValueText,
@@ -53,7 +54,20 @@ export default function Withdraw() {
     }
   };
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Spinner color="colorPalette.600" />
+        <Text color="colorPalette.600">Loading...</Text>
+      </Box>
+    );
 
   return (
     <>

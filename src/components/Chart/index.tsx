@@ -1,4 +1,5 @@
 import { useSellerData } from '@/features/seller/hooks';
+import { Box, Spinner, Text } from '@chakra-ui/react';
 import {
   BarElement,
   CategoryScale,
@@ -24,7 +25,20 @@ ChartJS.register(
 const MyChart: React.FC = () => {
   const { data: sellerData, isLoading, error } = useSellerData();
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Spinner color="colorPalette.600" />
+        <Text color="colorPalette.600">Loading...</Text>
+      </Box>
+    );
   if (error) return <p>Error: {error.message}</p>;
 
   const invoiceStatusCounts = sellerData?.invoices.reduce(
