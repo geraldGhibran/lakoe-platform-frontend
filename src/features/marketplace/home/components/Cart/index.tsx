@@ -25,25 +25,42 @@ export default function Cart() {
   }
 
   return (
-    <form onSubmit={test} className="formulir">
+    <form
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+      onSubmit={test}
+      className="formulir"
+    >
       <Box
         overflow="hidden"
         rounded="2xl"
         border="1px solid gainsboro"
-        width="3/4"
+        width="full"
         pb="10px"
       >
         <Table.Root size="sm" unstyled width="full">
           <Table.Header>
-            <Table.Row bgColor="white">
-              <Table.ColumnHeader padding="20px" color="black">
+            <Table.Row fontWeight="bold" bgColor="white">
+              <Table.ColumnHeader
+                textAlign="start"
+                padding="20px"
+                color="black"
+              >
                 Product
               </Table.ColumnHeader>
               <Table.ColumnHeader padding="20px" color="black">
-                Harga
+                Variant
               </Table.ColumnHeader>
               <Table.ColumnHeader padding="20px" color="black">
-                Jumlah
+                Quantity
+              </Table.ColumnHeader>
+              <Table.ColumnHeader padding="20px" color="black">
+                Remove
+              </Table.ColumnHeader>
+              <Table.ColumnHeader padding="20px" color="black">
+                Harga
               </Table.ColumnHeader>
             </Table.Row>
           </Table.Header>
@@ -55,30 +72,36 @@ export default function Cart() {
                 bgColor="white"
               >
                 <Table.Cell padding="10px 20px">
-                  <Flex gap="10px">
+                  <Flex gap="20px">
                     <Image boxSize="100px" src={productImage} />
-                    <Box>
-                      <Text fontSize="20px">{item?.variant?.name}</Text>
+                    <Box
+                      display="flex"
+                      flexDir="column"
+                      justifyContent="center"
+                    >
+                      <Text fontSize="20px" fontWeight="medium">
+                        {item?.product?.name}
+                      </Text>
+                      <Text fontSize="sm" color="gray">
+                        {item?.product?.description}
+                      </Text>
                     </Box>
                   </Flex>
                 </Table.Cell>
-                <Table.Cell padding="20px" fontSize="20px" textAlign="start">
-                  {formatCurrency(item?.variant?.price * item?.quantity)}
+                <Table.Cell padding="10px 20px">
+                  <Text textAlign="center" fontSize="20px">
+                    {item?.variant?.name}
+                  </Text>
                 </Table.Cell>
+
                 <Table.Cell>
-                  <Flex gap="10px" padding="10px" height="full" fontSize="20px">
-                    <Button
-                      onClick={() => removeItem(item?.variant?.id)}
-                      display="flex"
-                      bgColor="white"
-                      justifyContent="center"
-                      alignItems="center"
-                      border="1px solid blue"
-                      rounded="sm"
-                      color="blue"
-                    >
-                      <LuTrash2 />
-                    </Button>
+                  <Flex
+                    justify="center"
+                    gap="10px"
+                    padding="10px"
+                    height="full"
+                    fontSize="20px"
+                  >
                     <Button
                       onClick={() => decreaseQuantity(item?.variant?.id)}
                       display="flex"
@@ -116,6 +139,22 @@ export default function Cart() {
                     </Button>
                   </Flex>
                 </Table.Cell>
+                <Table.Cell padding="20px" fontSize="20px" textAlign="center">
+                  <Button
+                    onClick={() => removeItem(item?.variant?.id)}
+                    bgColor="red"
+                    border="1px solid gray"
+                    rounded="sm"
+                    color="white"
+                  >
+                    <LuTrash2 />
+                  </Button>
+                </Table.Cell>
+                <Table.Cell padding="20px" fontSize="20px" textAlign="start">
+                  <Text textAlign="center">
+                    {formatCurrency(item?.variant?.price * item?.quantity)}
+                  </Text>
+                </Table.Cell>
               </Table.Row>
             ))}
           </Table.Body>
@@ -149,7 +188,7 @@ export default function Cart() {
         </Flex>
       </Box>
 
-      <Box gap="20px" display="flex" flexDir="column" width="1/4">
+      <Box gap="20px" display="flex" flexDir="column" width="full">
         <Flex rounded="lg" border="1px solid blue" flexDir="column">
           <Link to="">
             <Flex

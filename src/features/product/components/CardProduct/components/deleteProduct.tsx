@@ -13,16 +13,17 @@ import { Icon } from '@iconify/react';
 import { useDeleteProduct } from '../../hooks/use-delete-product';
 
 export default function DeleteProduct({ id }: { id: number }) {
-  const { mutateAsync: deleteProductById } = useDeleteProduct();
+  const { mutateAsync: deleteProductById, isPending } = useDeleteProduct();
   return (
     <HStack wrap="wrap" gap="4">
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
         <DialogTrigger width="full" asChild>
           <Button
             _active={{ shadow: 'xs' }}
+            _hover={{ bgColor: 'red.400' }}
             rounded="full"
             border="1px solid gray"
-            bgColor="red"
+            bgColor={isPending ? 'red.400' : 'red'}
           >
             <Icon icon="pajamas:remove" width={'20px'} height={'20px'} />
             Delete

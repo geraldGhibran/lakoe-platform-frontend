@@ -37,7 +37,6 @@ import {
 import { useEffect } from 'react';
 import { FaArrowRight } from 'react-icons/fa6';
 import { LuMapPin, LuMapPinOff } from 'react-icons/lu';
-import { Link } from 'react-router-dom';
 import { useCheckout } from '../../hooks/use-checkout';
 import { useShipmentAddress } from '../../hooks/use-shipment-address';
 import { useGetRates } from '../../hooks/useGetRates';
@@ -152,13 +151,226 @@ export default function CheckoutPages() {
   });
 
   return (
-    <Box padding="10px 100px" pb="100px">
-      <Text fontSize="30px" fontWeight="medium" mb="20px">
+    <Box padding="10px 100px">
+      <Text pos="sticky" top="0" fontSize="30px" fontWeight="medium" mb="20px">
         Checkout <ColorModeButton />
       </Text>
       <Flex gap="20px">
+        {/* Ringkasan Pembayaran */}
+        <Box
+          className="hide-scrollbar"
+          gap="20px"
+          pos="sticky"
+          top="70px"
+          overflowY="auto"
+          height="70vh"
+          display="flex"
+          flexDir="column"
+          width="1/2"
+        >
+          <Flex gap="20px" flexDir="column">
+            {/* Metode Pembayaran */}
+            <AccordionRoot
+              border={isSelected ? '1px solid gray' : '1px solid red'}
+              rounded="lg"
+              collapsible
+              defaultValue={['b']}
+              variant="enclosed"
+            >
+              <AccordionItem bgColor="white" value="a">
+                <AccordionItemTrigger
+                  padding="20px"
+                  cursor="pointer"
+                  rounded="0"
+                  bgColor={isSelected ? 'gray.200' : '#fee2e2'}
+                >
+                  <Box py="20px">
+                    <DeliveryMethod onSubmit={onSubmit} rates={rates ?? []} />
+                  </Box>
+                </AccordionItemTrigger>
+                {products.map((item) => (
+                  <>
+                    <AccordionItemContent
+                      display="flex"
+                      flexDir="column"
+                      fontSize="20px"
+                      gap="20px"
+                      bgColor="white"
+                    >
+                      <Flex gap="15px">
+                        <Image boxSize="100px" src={productImage} />
+                        <Box fontSize="20px" display="flex" flexDir="column">
+                          <Text>{item?.variant.name}</Text>
+                          <Text color="gray" fontSize="15px">
+                            {item?.variant.name} - {item?.quantity} barang ({' '}
+                            {item?.variant.weight}
+                            g)
+                          </Text>
+                          <Text fontWeight="medium">{item?.variant.price}</Text>
+                        </Box>
+                      </Flex>
+                    </AccordionItemContent>
+                  </>
+                ))}
+
+                {isSelected && (
+                  <Box p="30px">
+                    <Flex
+                      justify="space-between"
+                      padding="20px"
+                      rounded="md"
+                      border={'1px solid blue'}
+                      width="full"
+                      bgColor={'white'}
+                    >
+                      <Flex color="gray" alignItems="center" gap="10px">
+                        <HStack wrap="wrap" gap="4">
+                          <DialogRoot
+                            placement="center"
+                            motionPreset="slide-in-bottom"
+                          >
+                            <Button
+                              fontSize="14px"
+                              fontWeight="medium"
+                              color="blue"
+                              height="30px"
+                              bgColor="white"
+                              padding="20px"
+                              border="1px solid blue"
+                              variant="outline"
+                            >
+                              {ratesCourier.courier_name}
+                            </Button>
+                            <Text fontSize="12px" fontWeight="normal" px="10px">
+                              {ratesCourier.courier_name}
+                            </Text>
+                            <Text fontSize="12px" fontWeight="normal" px="10px">
+                              {ratesCourier.duration}
+                            </Text>
+                            <Text
+                              fontSize="12px"
+                              fontWeight="extrabold"
+                              color="black"
+                              px="10px"
+                            >
+                              {formatCurrency(ratesCourier.price)}
+                            </Text>
+                          </DialogRoot>
+                        </HStack>
+                      </Flex>
+                    </Flex>
+                  </Box>
+                )}
+
+                <AccordionRoot
+                  borderColor="transparent"
+                  rounded="lg"
+                  collapsible
+                  defaultValue={['b']}
+                  variant="enclosed"
+                >
+                  <AccordionItem bgColor="white" value="a">
+                    <AccordionItemTrigger
+                      cursor="pointer"
+                      padding="20px"
+                      rounded="0"
+                    >
+                      <Flex width="full" justify="space-between">
+                        <Text color="gray">Total</Text>
+                        {formatCurrency(totalPrice)}
+                      </Flex>
+                    </AccordionItemTrigger>
+                    <AccordionItemContent
+                      display="flex"
+                      flexDir="column"
+                      padding="20px"
+                      rounded="md"
+                      fontWeight="light"
+                      gap="20px"
+                      bgColor="#F9FAFB"
+                    ></AccordionItemContent>
+                  </AccordionItem>
+                </AccordionRoot>
+              </AccordionItem>
+            </AccordionRoot>
+
+            {/* Total Pembayaran */}
+            <Box
+              border="1px solid blue"
+              bgColor="#E5F2FF"
+              rounded="lg"
+              display="flex"
+              padding="20px"
+              flexDir="column"
+            >
+              <Text fontSize="20px" fontWeight="bold" py="8px">
+                Ringkasan Pesanan
+              </Text>
+              <Table.Root size="sm" unstyled>
+                <Table.Header>
+                  <Table.Row bgColor="#E5F2FF">
+                    <Table.ColumnHeader textAlign="start" color="gray">
+                      Total Harga (1)
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader color="gray" textAlign="end">
+                      {formatCurrency(totalPrice)}
+                    </Table.ColumnHeader>
+                  </Table.Row>
+                  <Table.Row bgColor="#E5F2FF">
+                    <Table.ColumnHeader py="5px" textAlign="start" color="gray">
+                      Biaya Pengiriman
+                    </Table.ColumnHeader>
+                    <Table.ColumnHeader color="gray" textAlign="end">
+                      {formatCurrency(cost)}
+                    </Table.ColumnHeader>
+                  </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                  <Table.Row
+                    fontSize="20px"
+                    fontWeight="bold"
+                    bgColor="#E5F2FF"
+                    borderTop="1px solid gainsboro"
+                    borderBottom="transparent"
+                  >
+                    <Table.Cell py="5px" color="gray">
+                      Total
+                    </Table.Cell>
+                    <Table.Cell textAlign="end">
+                      {formatCurrency(totalPrice + cost)}
+                    </Table.Cell>
+                  </Table.Row>
+                </Table.Body>
+              </Table.Root>
+            </Box>
+            <form onSubmit={onSubmitCheckout}>
+              <Button
+                type="submit"
+                _active={{ shadow: 'sm' }}
+                shadow="md"
+                color="white"
+                loading={isGettingCheckout}
+                bgColor="blue"
+              >
+                <Text>Pilih Pembayaran</Text>
+                <FaArrowRight />
+              </Button>
+            </form>
+          </Flex>
+        </Box>
+
         {/* Formulir */}
-        <Box display="flex" flexDir="column" gap="20px" width="4/6">
+        <Box
+          className="hide-scrollbar"
+          display="flex"
+          pos="sticky"
+          top="70px"
+          overflowY="auto"
+          height="70vh"
+          flexDir="column"
+          gap="20px"
+          width="1/2"
+        >
           {/* Status Checkout */}
           <Flex borderBottom="1px solid gainsboro">
             <Box
@@ -450,251 +662,6 @@ export default function CheckoutPages() {
               </Flex>
             </Field>
           </Flex>
-          {/* Metode Pembayaran */}
-          <AccordionRoot
-            border={isSelected ? '1px solid gray' : '1px solid red'}
-            rounded="lg"
-            collapsible
-            defaultValue={['b']}
-            variant="enclosed"
-          >
-            <AccordionItem bgColor="white" value="a">
-              <AccordionItemTrigger
-                padding="20px"
-                cursor="pointer"
-                rounded="0"
-                bgColor={isSelected ? 'gray.200' : '#fee2e2'}
-              >
-                <Box py="20px">
-                  <DeliveryMethod onSubmit={onSubmit} rates={rates ?? []} />
-                </Box>
-              </AccordionItemTrigger>
-              {products.map((item) => (
-                <>
-                  <AccordionItemContent
-                    display="flex"
-                    flexDir="column"
-                    fontSize="20px"
-                    gap="20px"
-                    bgColor="white"
-                  >
-                    <Flex gap="15px">
-                      <Image boxSize="100px" src={productImage} />
-                      <Box fontSize="20px" display="flex" flexDir="column">
-                        <Text>{item?.variant.name}</Text>
-                        <Text color="gray" fontSize="15px">
-                          {item?.variant.name} - {item?.quantity} barang ({' '}
-                          {item?.variant.weight}
-                          g)
-                        </Text>
-                        <Text fontWeight="medium">{item?.variant.price}</Text>
-                      </Box>
-                    </Flex>
-                  </AccordionItemContent>
-                </>
-              ))}
-
-              {isSelected && (
-                <Box p="30px">
-                  <Flex
-                    justify="space-between"
-                    padding="20px"
-                    rounded="md"
-                    border={'1px solid blue'}
-                    width="full"
-                    bgColor={'white'}
-                  >
-                    <Flex color="gray" alignItems="center" gap="10px">
-                      <HStack wrap="wrap" gap="4">
-                        <DialogRoot
-                          placement="center"
-                          motionPreset="slide-in-bottom"
-                        >
-                          <Button
-                            fontSize="14px"
-                            fontWeight="medium"
-                            color="blue"
-                            height="30px"
-                            bgColor="white"
-                            padding="20px"
-                            border="1px solid blue"
-                            variant="outline"
-                          >
-                            {ratesCourier.courier_name}
-                          </Button>
-                          <Text fontSize="12px" fontWeight="normal" px="10px">
-                            {ratesCourier.courier_name}
-                          </Text>
-                          <Text fontSize="12px" fontWeight="normal" px="10px">
-                            {ratesCourier.duration}
-                          </Text>
-                          <Text
-                            fontSize="12px"
-                            fontWeight="extrabold"
-                            color="black"
-                            px="10px"
-                          >
-                            {formatCurrency(ratesCourier.price)}
-                          </Text>
-                        </DialogRoot>
-                      </HStack>
-                    </Flex>
-                  </Flex>
-                </Box>
-              )}
-
-              <AccordionRoot
-                borderColor="transparent"
-                rounded="lg"
-                collapsible
-                defaultValue={['b']}
-                variant="enclosed"
-              >
-                <AccordionItem bgColor="white" value="a">
-                  <AccordionItemTrigger
-                    cursor="pointer"
-                    padding="20px"
-                    rounded="0"
-                  >
-                    <Flex width="full" justify="space-between">
-                      <Text color="gray">Total</Text>
-                      {formatCurrency(totalPrice)}
-                    </Flex>
-                  </AccordionItemTrigger>
-                  <AccordionItemContent
-                    display="flex"
-                    flexDir="column"
-                    padding="20px"
-                    rounded="md"
-                    fontWeight="light"
-                    gap="20px"
-                    bgColor="#F9FAFB"
-                  ></AccordionItemContent>
-                </AccordionItem>
-              </AccordionRoot>
-            </AccordionItem>
-          </AccordionRoot>
-        </Box>
-
-        {/* Ringkasan Pembayaran */}
-        <Box gap="20px" display="flex" flexDir="column" width="2/6">
-          <Flex gap="20px" flexDir="column">
-            <Link to="">
-              {/* <Flex
-                rounded="lg"
-                cursor="pointer"
-                fontWeight="bold"
-                alignItems="center"
-                padding="15px"
-                gap="10px"
-                border="1px solid black"
-              >
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  border="1px solid blue"
-                  rounded="full"
-                >
-                  <MdOutlineAttachMoney color="blue" />
-                </Box>
-                <Text>Gunakan / Masukan Voucer</Text>
-                <IoIosArrowForward />
-              </Flex> */}
-            </Link>
-
-            {/* Total Pembayaran */}
-            <Box
-              border="1px solid blue"
-              bgColor="#E5F2FF"
-              rounded="lg"
-              display="flex"
-              padding="20px"
-              flexDir="column"
-            >
-              <Text fontSize="20px" fontWeight="bold" py="8px">
-                Ringkasan Pesanan
-              </Text>
-              <Table.Root size="sm" unstyled>
-                <Table.Header>
-                  <Table.Row bgColor="#E5F2FF">
-                    <Table.ColumnHeader textAlign="start" color="gray">
-                      Total Harga (1)
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(totalPrice)}
-                    </Table.ColumnHeader>
-                  </Table.Row>
-                  <Table.Row bgColor="#E5F2FF">
-                    <Table.ColumnHeader py="5px" textAlign="start" color="gray">
-                      Biaya Pengiriman
-                    </Table.ColumnHeader>
-                    <Table.ColumnHeader color="gray" textAlign="end">
-                      {formatCurrency(cost)}
-                    </Table.ColumnHeader>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  <Table.Row
-                    fontSize="20px"
-                    fontWeight="bold"
-                    bgColor="#E5F2FF"
-                    borderTop="1px solid gainsboro"
-                    borderBottom="transparent"
-                  >
-                    <Table.Cell py="5px" color="gray">
-                      Total
-                    </Table.Cell>
-                    <Table.Cell textAlign="end">
-                      {formatCurrency(totalPrice + cost)}
-                    </Table.Cell>
-                  </Table.Row>
-                </Table.Body>
-              </Table.Root>
-            </Box>
-            {/* Catatan */}
-            {/* <Box
-              border="1px solid blue"
-              rounded="lg"
-              display="flex"
-              gap="20px"
-              padding="30px"
-              flexDir="column"
-            >
-              <Flex gap="10px" fontSize="20px" fontWeight="bold">
-                Catatan <Text color="gray">(Pilihan)</Text>
-              </Flex>
-              <Field position="relative" required>
-                <Textarea
-                  border="1px solid gray"
-                  minHeight="100px"
-                  padding="10px"
-                  placeholder="Tulis catatan / instruksi pesananmu"
-                />
-                <Text
-                  fontSize="12px"
-                  position="absolute"
-                  right="0"
-                  bottom="-20px"
-                >
-                  0 / 150
-                </Text>
-              </Field>
-            </Box> */}
-          </Flex>
-          <form onSubmit={onSubmitCheckout}>
-            <Button
-              type="submit"
-              _active={{ shadow: 'sm' }}
-              shadow="md"
-              color="white"
-              loading={isGettingCheckout}
-              bgColor="blue"
-            >
-              <Text>Pilih Pembayaran</Text>
-              <FaArrowRight />
-            </Button>
-          </form>
         </Box>
       </Flex>
     </Box>

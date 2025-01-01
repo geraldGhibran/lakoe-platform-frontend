@@ -1,0 +1,266 @@
+[
+  {
+    "id": 2,
+    "name": "Fashion"
+  },
+  {
+    "id": 3,
+    "name": "Pria"
+  },
+  {
+    "id": 4,
+    "name": "Baju"
+  },
+  {
+    "id": 5,
+    "name": "Celana"
+  },
+  {
+    "id": 6,
+    "name": "Sepatu"
+  },
+  {
+    "id": 7,
+    "name": "Wanita"
+  },
+  {
+    "id": 8,
+    "name": "Baju"
+  },
+  {
+    "id": 9,
+    "name": "Celana"
+  },
+  {
+    "id": 10,
+    "name": "Sepatu"
+  },
+  {
+    "id": 11,
+    "name": "Elektronik"
+  },
+  {
+    "id": 12,
+    "name": "Handphone"
+  },
+  {
+    "id": 13,
+    "name": "Smartphone"
+  },
+  {
+    "id": 14,
+    "name": "Aksesoris"
+  },
+  {
+    "id": 15,
+    "name": "Smartwatch"
+  },
+  {
+    "id": 16,
+    "name": "Laptop"
+  },
+  {
+    "id": 17,
+    "name": "Gaming"
+  },
+  {
+    "id": 18,
+    "name": "Ultrabook"
+  },
+  {
+    "id": 19,
+    "name": "2-in-1"
+  },
+  {
+    "id": 20,
+    "name": "Peralatan Rumah Tangga"
+  },
+  {
+    "id": 21,
+    "name": "Furniture"
+  },
+  {
+    "id": 22,
+    "name": "Kursi"
+  },
+  {
+    "id": 23,
+    "name": "Meja"
+  },
+  {
+    "id": 24,
+    "name": "Lemari"
+  },
+  {
+    "id": 25,
+    "name": "Peralatan Dapur"
+  },
+  {
+    "id": 26,
+    "name": "Alat Masak"
+  },
+  {
+    "id": 27,
+    "name": "Peralatan Makan"
+  },
+  {
+    "id": 28,
+    "name": "Blender"
+  },
+  {
+    "id": 29,
+    "name": "Pencahayaan"
+  },
+  {
+    "id": 30,
+    "name": "Lampu Meja"
+  },
+  {
+    "id": 31,
+    "name": "Lampu Gantung"
+  },
+  {
+    "id": 32,
+    "name": "Lampu Dinding"
+  },
+  {
+    "id": 33,
+    "name": "Makanan & Minuman"
+  },
+  {
+    "id": 34,
+    "name": "Makanan"
+  },
+  {
+    "id": 35,
+    "name": "Makanan Ringan"
+  },
+  {
+    "id": 36,
+    "name": "Makanan Beku"
+  },
+  {
+    "id": 37,
+    "name": "Cemilan"
+  },
+  {
+    "id": 38,
+    "name": "Minuman"
+  },
+  {
+    "id": 39,
+    "name": "Minuman Dingin"
+  },
+  {
+    "id": 40,
+    "name": "Minuman Panas"
+  },
+  {
+    "id": 41,
+    "name": "Alkohol"
+  },
+  {
+    "id": 42,
+    "name": "Kesehatan & Kecantikan"
+  },
+  {
+    "id": 43,
+    "name": "Perawatan Kulit"
+  },
+  {
+    "id": 44,
+    "name": "Pelembab"
+  },
+  {
+    "id": 45,
+    "name": "Sunscreen"
+  },
+  {
+    "id": 46,
+    "name": "Serum"
+  },
+  {
+    "id": 47,
+    "name": "Makeup"
+  },
+  {
+    "id": 48,
+    "name": "Lipstik"
+  },
+  {
+    "id": 49,
+    "name": "Maskara"
+  },
+  {
+    "id": 50,
+    "name": "Foundation"
+  },
+  {
+    "id": 51,
+    "name": "Perawatan Rambut"
+  },
+  {
+    "id": 52,
+    "name": "Shampoo"
+  },
+  {
+    "id": 53,
+    "name": "Conditioner"
+  },
+  {
+    "id": 54,
+    "name": "Hair Oil"
+  },
+  {
+    "id": 55,
+    "name": "Olahraga & Outdoor"
+  },
+  {
+    "id": 56,
+    "name": "Peralatan Olahraga"
+  },
+  {
+    "id": 57,
+    "name": "Sepakbola"
+  },
+  {
+    "id": 58,
+    "name": "Basket"
+  },
+  {
+    "id": 59,
+    "name": "Golf"
+  },
+  {
+    "id": 60,
+    "name": "Peralatan Camping"
+  },
+  {
+    "id": 61,
+    "name": "Tenda"
+  },
+  {
+    "id": 62,
+    "name": "Sleeping Bag"
+  },
+  {
+    "id": 63,
+    "name": "Lampu Camping"
+  },
+  {
+    "id": 64,
+    "name": "Sepatu Olahraga"
+  },
+  {
+    "id": 65,
+    "name": "Sepatu Lari"
+  },
+  {
+    "id": 66,
+    "name": "Sepatu Bola"
+  },
+  {
+    "id": 67,
+    "name": "Sepatu Hiking"
+  }
+]

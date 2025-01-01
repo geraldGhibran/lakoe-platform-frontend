@@ -175,6 +175,39 @@ function ProductList() {
     });
   };
 
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+
+  const handleCategoryChange = (categoryId: number | null) => {
+    setSelectedCategory(categoryId);
+  };
+
+  const filteredProducts = products.filter(
+    (product: Product) =>
+      (selectedCategory === null ||
+        product.categories_id === selectedCategory) &&
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const [showNotFound, setShowNotFound] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (filteredProducts.length === 0) {
+      const timer = setTimeout(() => {
+        setShowNotFound(true);
+      }, 5000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowNotFound(false);
+    }
+  }, [filteredProducts]);
+
+  // return (
   const { user } = useAuthStore();
 
   const { data: infoStore } = useGetStoreDetail(Number(user?.id));
@@ -293,11 +326,18 @@ function ProductList() {
             <Tabs.Content position="relative" value="all">
               <Header
                 onSelectAll={handleSelectAll}
-                totalProducts={products.length}
+                totalProducts={filteredProducts.length}
                 handleSortChange={handleSortChange}
+                onSearchChange={handleSearchChange}
+                onCategoryChange={handleCategoryChange}
               />
-
-              {renderProducts(products)}
+              {showNotFound ? (
+                <NotFoundCard>
+                  <Text>Tidak ada produk yang ditemukan.</Text>
+                </NotFoundCard>
+              ) : (
+                renderProducts(filteredProducts)
+              )}
             </Tabs.Content>
 
             <Tabs.Content value="active">

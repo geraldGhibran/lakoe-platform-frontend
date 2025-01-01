@@ -1,12 +1,7 @@
-import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Box, Button, Image, Stack, Text } from '@chakra-ui/react';
-// import ActionMenu from '../modal/action-menu';
-import ChangeStock from '../modal/stock';
-import ChangePrice from '../modal/price';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
-// import DeleteConfirmMenu from '../modal/delete-menu';
 import DeleteProduct from './components/deleteProduct';
 
 interface CardProductProps {
@@ -32,8 +27,8 @@ export default function CardProduct(props: CardProductProps) {
     sku,
     Url,
     isActive,
-    isChecked,
-    onCheckboxChange,
+    // isChecked,
+    // onCheckboxChange,
     onSwitchChange,
   } = props;
 
@@ -53,6 +48,7 @@ export default function CardProduct(props: CardProductProps) {
         marginTop={3}
       >
         <Stack
+          pos="relative"
           display={'flex'}
           direction={'row'}
           border={'1px solid #E6E6E6'}
@@ -70,8 +66,6 @@ export default function CardProduct(props: CardProductProps) {
               <Text>SKU: 0{sku}</Text>
             </Box>
             <Box display={'flex'} direction={'row'} gap={2} marginY={2}>
-              <ChangePrice name={name} />
-              <ChangeStock name={name} />
               <Button
                 rounded={'full'}
                 bg={'white'}
@@ -81,6 +75,7 @@ export default function CardProduct(props: CardProductProps) {
                 onClick={handleButtonClick}
               >
                 <Icon icon="system-uicons:chain" />
+                Detail Product
                 {Url}
               </Button>
               <DeleteProduct id={props.id} />
@@ -92,14 +87,18 @@ export default function CardProduct(props: CardProductProps) {
             justifyContent={'space-between'}
             gap={2}
           >
-            <Checkbox
+            {/* <Checkbox
               colorPalette={'blue'}
               checked={isChecked}
               onChange={(e) =>
                 onCheckboxChange((e.target as HTMLInputElement).checked)
               }
-            />
+            /> */}
             <Switch
+              pos="absolute"
+              bottom="0"
+              right="0"
+              margin="30px"
               size={'lg'}
               colorPalette={'blue'}
               checked={isActive}
