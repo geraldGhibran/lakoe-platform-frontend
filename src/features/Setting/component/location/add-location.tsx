@@ -58,28 +58,28 @@ const AddLocation = () => {
 
   const provinsiCollection = createListCollection({
     items: provinsi.map((prov) => ({
-      label: prov.nama,
+      label: prov.name,
       value: prov.id,
     })),
   });
 
   const kabupatenCollection = createListCollection({
     items: kabupaten.map((kab) => ({
-      label: kab.nama,
+      label: kab.name,
       value: Number(kab.id),
     })),
   });
 
   const kecamatanCollection = createListCollection({
     items: kecamatan.map((kab) => ({
-      label: kab.nama,
+      label: kab.name,
       value: kab.id,
     })),
   });
 
   const kelurahanCollection = createListCollection({
     items: kelurahan.map((kab) => ({
-      label: kab.nama,
+      label: kab.name,
       value: kab.id,
     })),
   });
