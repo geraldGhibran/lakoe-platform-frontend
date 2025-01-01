@@ -1,12 +1,12 @@
 import { toaster } from '@/components/ui/toaster-placement';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { getTracking, TrackingType } from '../services/tracking';
+import { getTracking, Tracking, TrackingType } from '../services/tracking';
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 
 export const useGetTracking = (data: TrackingType) => {
-  const [tracking, setTracking] = useState();
+  const [tracking, setTracking] = useState<Tracking | null>(null);
   const queryClient = useQueryClient();
 
   const location = useLocation();

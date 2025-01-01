@@ -45,7 +45,7 @@ export default function OrderPage() {
           variant="plain"
           width={'100%'}
         >
-          <Text fontWeight={'bold'} fontSize={'2xl'}>
+          <Text fontWeight={'bold'} fontSize={'2xl'} mb={5}>
             Daftar Pesanan
           </Text>
           <Tabs.List display={'flex'} w={'100%'}>
@@ -62,7 +62,7 @@ export default function OrderPage() {
               fontSize={'xs'}
               borderBottom="4px solid transparent"
             >
-              Semua
+              All
             </Tabs.Trigger>
             <Tabs.Trigger
               value="second"
@@ -80,7 +80,7 @@ export default function OrderPage() {
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'30px'}
+                w={'20px'}
               >
                 {''}
                 {filterOrders('UNPAID').length > 0 &&
@@ -104,7 +104,7 @@ export default function OrderPage() {
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'30px'}
+                w={'20px'}
               >
                 {''}
                 {filterOrders('PAID').length > 0 &&
@@ -128,7 +128,7 @@ export default function OrderPage() {
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'30px'}
+                w={'20px'}
               >
                 {''}
                 {filterOrders('PROCESS').length > 0 &&
@@ -152,13 +152,13 @@ export default function OrderPage() {
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'40px'}
+                w={'20px'}
               >
                 {''}
                 {filterOrders('WAIT_TO_PICKUP').length > 0 &&
                   `${filterOrders('WAIT_TO_PICKUP').length}`}
               </Box>
-              WAIT_TO_PICKUP
+              WAIT TO PICKUP
             </Tabs.Trigger>
             <Tabs.Trigger
               value="sixth"
@@ -176,7 +176,7 @@ export default function OrderPage() {
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'30px'}
+                w={'20px'}
               >
                 {''}
                 {filterOrders('DELIVERING').length > 0 &&
@@ -200,7 +200,8 @@ export default function OrderPage() {
                 bgColor={'#0086B4'}
                 color={'white'}
                 borderRadius={'50%'}
-                w={'30px'}
+                w={'20px'}
+                h={'20px'}
               >
                 {''}
                 {filterOrders('DELIVERED').length > 0 &&

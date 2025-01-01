@@ -7,18 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  TimelineConnector,
-  TimelineContent,
-  TimelineDescription,
-  TimelineItem,
-  TimelineRoot,
-  TimelineTitle,
-} from '@/components/ui/timeline';
 import { useState } from 'react';
 import { Icon } from '@iconify/react';
 import { Box, HStack, Text } from '@chakra-ui/react';
 import { useGetInvoicesId } from '../../hooks/use-get-invoices-id';
+import TrackingLayout from './tracking-layout';
 
 const TrackingModal = () => {
   const { data } = useGetInvoicesId();
@@ -75,62 +68,7 @@ const TrackingModal = () => {
             <Text>Status :</Text>
             <Text fontWeight={500}>{data?.invoice?.status}</Text>
           </HStack>
-          <Box border={'1px solid #E6E6E6'} rounded={'md'} p={10} my={2}>
-            <TimelineRoot maxW="400px">
-              <TimelineItem>
-                <TimelineConnector bgColor={'cyan.100'}>
-                  <Box
-                    borderRadius={'full'}
-                    bgColor={'cyan.500'}
-                    width={'10px'}
-                    height={'10px'}
-                  ></Box>
-                </TimelineConnector>
-                <TimelineContent>
-                  <TimelineTitle>Pesanan Diproses</TimelineTitle>
-                  <TimelineDescription>13th May 2021</TimelineDescription>
-                  <Text textStyle="sm">
-                    We shipped your product via <strong>FedEx</strong> and it
-                    should arrive within 3-5 business days.
-                  </Text>
-                </TimelineContent>
-              </TimelineItem>
-
-              <TimelineItem>
-                <TimelineConnector bgColor={'gray.100'}>
-                  <Box
-                    borderRadius={'full'}
-                    bgColor={'gray.300'}
-                    width={'10px'}
-                    height={'10px'}
-                  ></Box>
-                </TimelineConnector>
-                <TimelineContent>
-                  <TimelineTitle textStyle="sm">
-                    Pembayaran Terverifikasi
-                  </TimelineTitle>
-                  <TimelineDescription>18th May 2021</TimelineDescription>
-                </TimelineContent>
-              </TimelineItem>
-
-              <TimelineItem>
-                <TimelineConnector bgColor={'gray.100'}>
-                  <Box
-                    borderRadius={'full'}
-                    bgColor={'gray.300'}
-                    width={'10px'}
-                    height={'10px'}
-                  ></Box>
-                </TimelineConnector>
-                <TimelineContent>
-                  <TimelineTitle textStyle="sm">Pesanan Dibuat</TimelineTitle>
-                  <TimelineDescription>
-                    20th May 2021, 10:30am
-                  </TimelineDescription>
-                </TimelineContent>
-              </TimelineItem>
-            </TimelineRoot>
-          </Box>
+          <TrackingLayout />
         </DialogBody>
         <DialogCloseTrigger />
       </DialogContent>
