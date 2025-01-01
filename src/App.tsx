@@ -1,10 +1,14 @@
-import { Button } from '@/components/Button/Button';
+import { RouterProvider } from 'react-router-dom';
+import { Providers } from './provider';
+import { router } from './routes';
+import { Toaster } from './components/ui/toaster';
 
 function App() {
   return (
-    <div>
-      <Button label="Click me" onClick={() => {}} />
-    </div>
+    <Providers>
+      <Toaster />
+      <RouterProvider router={router} />
+    </Providers>
   );
 }
 
