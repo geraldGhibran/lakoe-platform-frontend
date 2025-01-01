@@ -36,7 +36,7 @@ export const useHandleEditProfile = () => {
       slogan: storeDetail?.slogan || '',
       description: storeDetail?.description || '',
       logo_img: [],
-      phone: storeDetail?.phone || '',
+      phone: user?.phone || '',
     },
   });
 
@@ -47,6 +47,7 @@ export const useHandleEditProfile = () => {
 
         formData.append('name', data.name);
         formData.append('slogan', data?.slogan || '');
+        formData.append('phone', data?.phone || '');
         if (data.description) formData.append('description', data.description);
 
         if (data.logo_img?.[0]) formData.append('logo_img', data.logo_img[0]);
@@ -111,6 +112,7 @@ export const useHandleEditProfile = () => {
 
   const onSubmit = handleSubmit((data) => {
     updateStoreDataAsync(data as Store);
+    console.log(data);
   });
 
   return {

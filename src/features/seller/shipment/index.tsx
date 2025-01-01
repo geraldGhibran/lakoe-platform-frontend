@@ -14,6 +14,7 @@ import { Box, Flex, Image, Text } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import { useEffect } from 'react';
 import { useEditShipmentStoreById } from './hooks/use-edit-shipment';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const switchOptions = [
   {
@@ -98,15 +99,21 @@ export default function ShipmentSeller() {
 
   const { data: courierStore } = useGetStoreDetail(Number(user?.id));
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const fetchCouriers = async () => {
       if (courierStore?.couriers.length === 0) {
-        await getStoreCourierById();
+        const result = await getStoreCourierById();
+        if (result) {
+          navigate(location.pathname, { replace: true });
+        }
       }
     };
 
     fetchCouriers();
-  }, [courierStore]);
+  }, [courierStore, location.pathname, navigate]);
 
   return (
     <Box bgColor="white">

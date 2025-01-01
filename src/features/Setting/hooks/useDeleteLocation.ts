@@ -38,6 +38,14 @@ export const useDeleteLocationStore = (id: number) => {
         });
         setIsOpen(false);
       },
+      onMutate: async () => {
+        toaster.create({
+          title: 'Deleted',
+          type: 'Loading...',
+          duration: 3000,
+          description: 'Your location is being deleted.',
+        });
+      },
       onError: (error: Error) => {
         toaster.create({
           title: 'Error deleting Location',

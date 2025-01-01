@@ -47,6 +47,14 @@ export const useDeleteTemplateMessage = (id: number) => {
       });
       setIsOpen(false);
     },
+    onMutate: async () => {
+      toaster.create({
+        title: 'Template Message being deleted',
+        type: 'Loading...',
+        duration: 3000,
+        description: 'Your template message is being deleted.',
+      });
+    },
     onError: (error: Error) => {
       toaster.create({
         title: 'Error deleting Template Message',

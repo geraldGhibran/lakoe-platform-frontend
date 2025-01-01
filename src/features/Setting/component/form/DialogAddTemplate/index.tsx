@@ -17,13 +17,33 @@ import {
   Textarea,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Controller } from 'react-hook-form';
 export default function DialogAddTemplate() {
   const { onClose } = useDisclosure();
   const ref = useRef<HTMLInputElement>(null);
-  const { onSubmit, control, errors, isCreatingTemplateMessage } =
+  const { onSubmit, control, errors, isCreatingTemplateMessage, setValue } =
     useAddTemplateMessage();
+
+  const [message, setMessage] = useState('');
+
+  // Define placeholder values
+  const nama_customer = '{{nama_customer}}';
+  const nama_produk = '{{nama_produk}}';
+  const nama_toko = '{{nama_toko}}';
+
+  const handleButtonClick = (placeholder: string) => {
+    const valueToInsert =
+      placeholder === '{{nama_customer}}'
+        ? nama_customer
+        : placeholder === '{{nama_produk}}'
+          ? nama_produk
+          : placeholder === '{{nama_toko}}'
+            ? nama_toko
+            : '';
+
+    setMessage((prevMessage) => prevMessage + ' ' + valueToInsert);
+  };
   return (
     <DialogRoot initialFocusEl={() => ref.current}>
       <DialogTrigger asChild>
@@ -84,27 +104,30 @@ export default function DialogAddTemplate() {
               </Field>
               <Field label="Detail Isi Pesan">
                 <HStack>
-                  <Text
+                  <Button
                     border={'1px solid #E6E6E6'}
                     p={1}
                     borderRadius={'100px'}
+                    onClick={() => handleButtonClick('{{nama_customer}}')}
                   >
                     Nama Customer
-                  </Text>
-                  <Text
+                  </Button>
+                  <Button
                     border={'1px solid #E6E6E6'}
                     p={1}
                     borderRadius={'100px'}
+                    onClick={() => handleButtonClick('{{nama_produk}}')}
                   >
                     Nama Produk
-                  </Text>
-                  <Text
+                  </Button>
+                  <Button
                     border={'1px solid #E6E6E6'}
                     p={1}
                     borderRadius={'100px'}
+                    onClick={() => handleButtonClick('{{nama_toko}}')}
                   >
                     Nama Toko
-                  </Text>
+                  </Button>
                 </HStack>
                 <Controller
                   name="message"
@@ -113,9 +136,14 @@ export default function DialogAddTemplate() {
                     <Textarea
                       {...field}
                       {...fieldState}
+                      value={message}
                       placeholder="Detail Isi Pesan"
                       variant="outline"
                       h={'120px'}
+                      onChange={(e) => {
+                        setValue('message', message);
+                        setMessage(e.target.value);
+                      }}
                     />
                   )}
                 />

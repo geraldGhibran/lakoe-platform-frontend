@@ -1,15 +1,13 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { productSchema } from '../schemas/addProductSchema/index';
-import { useState } from 'react';
-import { useEffect } from 'react';
-import useCategoryStore from '../../../../store/categories';
-import { createListCollection } from '@chakra-ui/react';
-import { useMutation } from '@tanstack/react-query';
-import API from '@/libs/axios';
 import { toaster } from '@/components/ui/toaster-placement';
+import API from '@/libs/axios';
 import { useAuthStore } from '@/store/auth';
-import { useNavigate } from 'react-router-dom';
+import { createListCollection } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import useCategoryStore from '../../../../store/categories';
+import { productSchema } from '../schemas/addProductSchema/index';
 
 interface ProductFormData {
   name: string;
@@ -168,7 +166,6 @@ const useAddProduct = () => {
       setFiles((prevFiles) => [...prevFiles, ...Array.from(selectedFiles)]);
     }
   };
-  const navigate = useNavigate();
 
   const handleRemoveImage = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
@@ -186,7 +183,15 @@ const useAddProduct = () => {
         description: 'Product successfully submitted!',
         duration: 3000,
       });
-      navigate('/products');
+      window.location.href = '/products';
+    },
+    onMutate: () => {
+      toaster.create({
+        title: 'Loading...',
+        type: 'loading',
+        description: 'Product is being submitted...',
+        duration: 3000,
+      });
     },
     onError: (error: Error) => {
       toaster.create({
