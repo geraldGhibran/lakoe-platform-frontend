@@ -250,6 +250,9 @@ export default function DetailProduct() {
                                 <Tabs.Trigger
                                   _selected={{ bgColor: 'gainsboro' }}
                                   as={Button}
+                                  bgColor="white"
+                                  fontWeight="normal"
+                                  color="black"
                                   border="1px solid gray"
                                   key={variant.id}
                                   value={`tab-${variant.id}`}
