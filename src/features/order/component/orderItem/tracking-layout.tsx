@@ -1,7 +1,15 @@
-import { Box } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { Box, Text } from '@chakra-ui/react';
+import {
+  TimelineConnector,
+  TimelineContent,
+  TimelineDescription,
+  TimelineItem,
+  TimelineRoot,
+  TimelineTitle,
+} from '@/components/ui/timeline';
 import { useGetInvoicesId } from '../../hooks/use-get-invoices-id';
 import { useGetTracking } from '../../hooks/use-get-tracking';
+import { useEffect } from 'react';
 import { TrackingType } from '../../services/tracking';
 
 export default function TrackingLayout() {
@@ -14,7 +22,8 @@ export default function TrackingLayout() {
     service,
   };
 
-  const { getTrackingAsync, setTracking } = useGetTracking(trackingData);
+  const { getTrackingAsync, tracking, setTracking } =
+    useGetTracking(trackingData);
 
   useEffect(() => {
     if (resi && service) {
@@ -33,8 +42,8 @@ export default function TrackingLayout() {
 
   return (
     <>
-      <Box border={'1px solid #E6E6E6'} rounded={'md'} width={'500px'} p={10}>
-        {/* <TimelineRoot maxW="400px">
+      <Box border={'1px solid #E6E6E6'} rounded={'md'} p={10}>
+        <TimelineRoot maxW="400px">
           {tracking?.history?.map((event, index) => {
             const isCompleted =
               index <=
@@ -66,7 +75,7 @@ export default function TrackingLayout() {
               </TimelineItem>
             );
           })}
-        </TimelineRoot> */}
+        </TimelineRoot>
       </Box>
     </>
   );
