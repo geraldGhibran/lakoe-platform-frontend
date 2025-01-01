@@ -18,8 +18,8 @@ import {
 } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { Field } from '@/components/ui/field';
-import DeleteConfirm from '../modal/delete-confirm';
-import NonactiveConfirm from '../modal/nonactive-confirm';
+// import DeleteConfirm from '../modal/delete-confirm';
+// import NonactiveConfirm from '../modal/nonactive-confirm';
 
 const categoryCollectionDummy = createListCollection({
   items: [
@@ -41,12 +41,14 @@ interface HeaderProps {
   onSelectAll: (checked: boolean) => void;
   totalProducts: number;
   handleSortChange: (value: string) => void;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Header({
-  onSelectAll,
+  // onSelectAll,
   totalProducts,
   handleSortChange,
+  onSearchChange,
 }: HeaderProps) {
   return (
     <Box
@@ -70,7 +72,7 @@ export default function Header({
           }
           width="35%"
         >
-          <Input placeholder="Cari Pesanan" />
+          <Input placeholder="Cari Pesanan" onChange={onSearchChange} />
         </InputGroup>
         <Box width={'35%'}>
           <SelectRoot multiple collection={categoryCollectionDummy} size="sm">
@@ -118,7 +120,7 @@ export default function Header({
             {totalProducts} Produk
           </Text>
         </Box>
-        <Box>
+        {/* <Box>
           <Stack direction={'row'} gap={1}>
             <Box
               border={'1px solid #E6E6E6'}
@@ -139,7 +141,7 @@ export default function Header({
               />
             </Flex>
           </Stack>
-        </Box>
+        </Box> */}
       </Stack>
     </Box>
   );
