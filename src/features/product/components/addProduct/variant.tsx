@@ -16,7 +16,6 @@ import { Switch } from '@/components/ui/switch';
 import { Field } from '@/components/ui/field';
 import AddVariant from '../modal/add-variant';
 import DeleteVariant from '../modal/delete-variant';
-import VariantMassEditModal from '../modal/variant';
 
 type Variant = {
   name: string;
@@ -311,12 +310,7 @@ export default function VariantComponent({
                     Kamu dapat mengatur harga stok dan SKU sekaligus
                   </Text>
                 </Box>
-                <Box>
-                  <VariantMassEditModal
-                    combinationData={combinationData}
-                    setCombinationData={setCombinationData}
-                  />
-                </Box>
+                <Box></Box>
               </Stack>
             </>
           </>

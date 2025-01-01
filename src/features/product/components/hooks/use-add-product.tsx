@@ -187,8 +187,6 @@ const useAddProduct = () => {
     },
     onMutate: () => {
       toaster.create({
-        title: 'Loading...',
-        type: 'loading',
         description: 'Product is being submitted...',
         duration: 3000,
       });

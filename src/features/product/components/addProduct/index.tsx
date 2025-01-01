@@ -497,16 +497,7 @@ export default function AddProductPage() {
               justifyContent={'space-between'}
               width="100%"
             >
-              <Box>
-                <Button
-                  bg={'white'}
-                  color={'black'}
-                  border={'1px solid gray'}
-                  borderRadius={'100px'}
-                >
-                  Preview Halaman Checkout
-                </Button>
-              </Box>
+              <Box></Box>
               <Box>
                 <Button
                   width={'100px'}
