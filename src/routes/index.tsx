@@ -22,12 +22,17 @@ import { createBrowserRouter } from 'react-router-dom';
 import DetailProduct from '@/features/marketplace/home/components/DetailProduct';
 import { DetailSeller } from '@/features/admin/seller/detail-seller';
 import PageNotFound from '@/components/not-found';
+import ThankYouPage from '@/features/marketplace/home/success/success';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <DetailProductPage />,
     children: [
+      {
+        path: '/success',
+        element: <ThankYouPage />,
+      },
       {
         path: '/product/detail/:name',
         element: <DetailProduct />,
