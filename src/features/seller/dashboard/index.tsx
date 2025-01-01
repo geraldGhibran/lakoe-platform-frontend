@@ -1,4 +1,4 @@
-import { Box, Flex, Text } from '@chakra-ui/react';
+import { Box, Flex, Text, Spinner } from '@chakra-ui/react';
 import { MdCrisisAlert } from 'react-icons/md';
 import { Table } from '@chakra-ui/react';
 import { TbHistoryToggle } from 'react-icons/tb';
@@ -15,7 +15,20 @@ export const Dashboard = () => {
 
   const withdraws = useWithdraws();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Spinner color="colorPalette.600" />
+        <Text color="colorPalette.600">Loading...</Text>
+      </Box>
+    );
   if (isError) return <div>Error: {error?.message}</div>;
 
   return (

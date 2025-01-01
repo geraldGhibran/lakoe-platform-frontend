@@ -23,9 +23,7 @@ export default function ActionMenu(props: Props) {
             bg={'white'}
             color={'black'}
             border={'1px solid black'}
-          >
-            ...
-          </Button>
+          ></Button>
         </PopoverTrigger>
         <PopoverContent left={'80px'} width={'200px'} mt={2}>
           <PopoverBody>

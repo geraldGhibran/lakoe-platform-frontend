@@ -1,11 +1,13 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Box, Button, Image, Stack, Text } from '@chakra-ui/react';
-import ActionMenu from '../modal/action-menu';
+// import ActionMenu from '../modal/action-menu';
 import ChangeStock from '../modal/stock';
 import ChangePrice from '../modal/price';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
+// import DeleteConfirmMenu from '../modal/delete-menu';
+import DeleteProduct from './components/deleteProduct';
 
 interface CardProductProps {
   id: number;
@@ -81,7 +83,7 @@ export default function CardProduct(props: CardProductProps) {
                 <Icon icon="system-uicons:chain" />
                 {Url}
               </Button>
-              <ActionMenu name={name} />
+              <DeleteProduct id={props.id} />
             </Box>
           </Box>
           <Stack

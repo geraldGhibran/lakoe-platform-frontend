@@ -1,4 +1,4 @@
-import { Box, Flex, Table, Text } from '@chakra-ui/react';
+import { Box, Flex, Table, Text, Spinner } from '@chakra-ui/react';
 import CreateRekening from './components/createRekening';
 import EditRekening from './components/editRekening';
 import DeleteRekening from './components/deleteRekening';
@@ -37,7 +37,19 @@ export default function PaymentMethod() {
   console.log('Rekening Account Data:', rekAccount);
   const setAccountId = useAccountStore((state) => state.setAccountId);
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Spinner color="colorPalette.600" />
+        <Text color="colorPalette.600">Loading...</Text>
+      </Box>
+    );
   }
   const accountData = rekAccount?.length > 0 ? rekAccount[0] : null;
   const items = [

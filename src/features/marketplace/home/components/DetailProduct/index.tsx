@@ -1,6 +1,14 @@
 import { useCartStore } from '@/store/cart-store';
 import '@/styles/styes.css';
-import { Box, Button, Flex, Image, Tabs, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Flex,
+  Image,
+  Spinner,
+  Tabs,
+  Text,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import SwiperCore from 'swiper';
@@ -13,6 +21,7 @@ import {
 import { toaster } from '@/components/ui/toaster-placement';
 import { Toaster } from '@/components/ui/toaster';
 import { formatCurrency } from '@/features/add-other/format-currency';
+import file from '@/assets/images/product-not-found.jpeg';
 
 interface VariantItemValue {
   id: number;
@@ -80,9 +89,33 @@ export default function DetailProduct() {
     setStoreId,
   ]);
 
-  if (isLoading) return <Text>Loading...</Text>;
+  if (isLoading)
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Spinner color="colorPalette.600" />
+        <Text color="colorPalette.600">Loading...</Text>
+      </Box>
+    );
   if (!productDetail || !productDetail.length)
-    return <Text>Produk tidak ditemukan.</Text>;
+    return (
+      <Box
+        display="flex"
+        flexDir="column"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+        colorPalette="teal"
+      >
+        <Image src={file} />
+      </Box>
+    );
 
   if (!product) return <Text>Detail produk tidak tersedia.</Text>;
 
