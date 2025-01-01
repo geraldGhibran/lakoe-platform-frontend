@@ -169,8 +169,17 @@ function ProductList() {
     setSearchTerm(event.target.value);
   };
 
-  const filteredProducts = products.filter((product: Product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+
+  const handleCategoryChange = (categoryId: number | null) => {
+    setSelectedCategory(categoryId);
+  };
+
+  const filteredProducts = products.filter(
+    (product: Product) =>
+      (selectedCategory === null ||
+        product.categories_id === selectedCategory) &&
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const [showNotFound, setShowNotFound] = useState<boolean>(false);
@@ -282,6 +291,7 @@ function ProductList() {
                 totalProducts={filteredProducts.length}
                 handleSortChange={handleSortChange}
                 onSearchChange={handleSearchChange}
+                onCategoryChange={handleCategoryChange}
               />
               {showNotFound ? (
                 <NotFoundCard>

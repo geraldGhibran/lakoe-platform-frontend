@@ -4,11 +4,9 @@ import {
   createListCollection,
   HStack,
   Text,
-  Flex,
   Input,
   Stack,
 } from '@chakra-ui/react';
-import { Checkbox } from '@/components/ui/checkbox';
 import {
   SelectContent,
   SelectItem,
@@ -18,16 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Icon } from '@iconify/react';
 import { Field } from '@/components/ui/field';
-// import DeleteConfirm from '../modal/delete-confirm';
-// import NonactiveConfirm from '../modal/nonactive-confirm';
-
-const categoryCollectionDummy = createListCollection({
-  items: [
-    { label: 'Baju', value: 'Baju' },
-    { label: 'Celana', value: 'Celana' },
-    { label: 'Sepatu', value: 'Sepatu' },
-  ],
-});
+import categoriesData from '@/data/categories.json';
 const sortCollectionDummy = createListCollection({
   items: [
     { label: 'Terbaru', value: 'Terbaru' },
@@ -42,6 +31,7 @@ interface HeaderProps {
   totalProducts: number;
   handleSortChange: (value: string) => void;
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onCategoryChange: (value: number | null) => void;
 }
 
 export default function Header({
@@ -49,6 +39,7 @@ export default function Header({
   totalProducts,
   handleSortChange,
   onSearchChange,
+  onCategoryChange,
 }: HeaderProps) {
   return (
     <Box
@@ -74,17 +65,31 @@ export default function Header({
         >
           <Input placeholder="Cari Pesanan" onChange={onSearchChange} />
         </InputGroup>
-        <Box width={'35%'}>
-          <SelectRoot multiple collection={categoryCollectionDummy} size="sm">
+        <Box display="flex" width={'35%'}>
+          <SelectRoot
+            pos="relative"
+            collection={createListCollection({
+              items: categoriesData.map((cat) => ({
+                label: cat.name,
+                value: cat.id,
+              })),
+            })}
+            size="sm"
+            onValueChange={(details) =>
+              onCategoryChange(Number(details.value[0]))
+            }
+          >
             <SelectTrigger>
               <SelectValueText placeholder="Semua Kategori" />
             </SelectTrigger>
-            <SelectContent>
-              {categoryCollectionDummy.items.map((data) => (
-                <Flex gap="3" margin="4px">
-                  <Checkbox border="2px solid #B1B1B1" colorPalette="blue" />
-                  {data.label}
-                </Flex>
+            <SelectContent pos="relative" height="40vh">
+              {categoriesData.map((category) => (
+                <SelectItem
+                  key={category.id}
+                  item={{ label: category.name, value: category.id }}
+                >
+                  {category.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </SelectRoot>
@@ -120,28 +125,6 @@ export default function Header({
             {totalProducts} Produk
           </Text>
         </Box>
-        {/* <Box>
-          <Stack direction={'row'} gap={1}>
-            <Box
-              border={'1px solid #E6E6E6'}
-              borderRadius={'full'}
-              p={2}
-              w={'38px'}
-            >
-              <DeleteConfirm quantity={5} />
-            </Box>
-            <NonactiveConfirm quantity={5} />
-            <Flex gap="2" alignItems="center">
-              Pilih Semua
-              <Checkbox
-                colorPalette={'blue'}
-                onChange={(e) =>
-                  onSelectAll((e.target as HTMLInputElement).checked)
-                }
-              />
-            </Flex>
-          </Stack>
-        </Box> */}
       </Stack>
     </Box>
   );
