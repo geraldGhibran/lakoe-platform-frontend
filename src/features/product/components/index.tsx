@@ -1,4 +1,14 @@
-import { Box, Button, HStack, Stack, Tabs, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  HStack,
+  Stack,
+  Tabs,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { Icon } from '@iconify/react';
 import { useNavigate } from 'react-router-dom';
 import NotFoundCard from './notFound';
@@ -8,6 +18,8 @@ import { useState, useEffect } from 'react';
 import '@/styles/styes.css';
 import { useGetProductSeller } from '../hooks/use-get-product';
 import { Skeleton, SkeletonCircle } from '@/components/ui/skeleton';
+import { useAuthStore } from '@/store/auth';
+import { useGetStoreDetail } from '@/features/Setting/hooks/useGetStoreDetail';
 
 interface Product {
   id: number;
@@ -163,11 +175,35 @@ function ProductList() {
     });
   };
 
-  return (
+  const { user } = useAuthStore();
+
+  const { data: infoStore } = useGetStoreDetail(Number(user?.id));
+
+  const handleRedirect = () => {
+    navigate('/settings');
+  };
+
+  return infoStore?.Locations.length === 0 ||
+    infoStore?.courier.length === 0 ? (
+    <Center h="100vh" bg="gray.50">
+      <VStack gap={6} textAlign="center">
+        <Box>
+          <Heading size="lg" color="red.500">
+            Oops!
+          </Heading>
+          <Text mt={4} fontSize="lg" color="gray.600">
+            Please fill in your store information to proceed.
+          </Text>
+        </Box>
+        <Button colorScheme="teal" size="lg" onClick={handleRedirect}>
+          Fill Store Information
+        </Button>
+      </VStack>
+    </Center>
+  ) : (
     <Stack
       direction={'row'}
       bg={'#F4F4F5'}
-      // position={'fixed'}
       overflowY="auto"
       height="100vh"
       width="full"

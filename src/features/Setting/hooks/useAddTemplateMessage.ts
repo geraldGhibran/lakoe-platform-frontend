@@ -15,6 +15,7 @@ export const useAddTemplateMessage = () => {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<TemplateSchema>({
     resolver: zodResolver(templateSchema),
@@ -48,6 +49,14 @@ export const useAddTemplateMessage = () => {
 
       reset();
     },
+    onMutate: async () => {
+      toaster.create({
+        title: 'Template Message being created',
+        type: 'Loading...',
+        duration: 3000,
+        description: 'Your template message is being created.',
+      });
+    },
     onError: (error: Error) => {
       toaster.create({
         title: 'Error creating Template Message',
@@ -67,5 +76,6 @@ export const useAddTemplateMessage = () => {
     errors,
     control,
     onSubmit,
+    setValue,
   };
 };

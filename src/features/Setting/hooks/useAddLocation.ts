@@ -13,22 +13,22 @@ import { addLocationStore } from '../services/store';
 
 interface Provinsi {
   id: number;
-  nama: string;
+  name: string;
 }
 
 interface Kabupaten {
   id: number;
-  nama: string;
+  name: string;
 }
 
 interface Kecamatan {
   id: number;
-  nama: string;
+  name: string;
 }
 
 interface Kelurahan {
   id: number;
-  nama: string;
+  name: string;
 }
 interface PostalCode {
   code: number;
@@ -158,6 +158,14 @@ export const useAddLocation = () => {
       setIsOpen(false);
       reset();
     },
+    onMutate: async () => {
+      toaster.create({
+        title: 'Template Message being created',
+        type: 'Loading...',
+        duration: 3000,
+        description: 'Your template message is being created.',
+      });
+    },
     onError: (error: Error) => {
       toaster.create({
         title: 'Error creating New Location',
@@ -178,9 +186,9 @@ export const useAddLocation = () => {
     const fetchProvinsi = async () => {
       try {
         const response = await axios.get(
-          'https://dev.farizdotid.com/api/daerahindonesia/provinsi'
+          'https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json'
         );
-        const data = response.data.provinsi || [];
+        const data = response.data || [];
         setProvinsi(data);
       } catch (error) {
         console.error('Error fetching provinsi:', error);
@@ -199,9 +207,9 @@ export const useAddLocation = () => {
 
       try {
         const response = await axios.get(
-          `https://dev.farizdotid.com/api/daerahindonesia/kota?id_provinsi=${selectedProvinsi}`
+          `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinsi}.json`
         );
-        const data = response.data.kota_kabupaten || [];
+        const data = response.data || [];
         setKabupaten(data);
       } catch (error) {
         console.error('Error fetching kabupaten:', error);
@@ -221,9 +229,9 @@ export const useAddLocation = () => {
 
       try {
         const response = await axios.get(
-          `https://dev.farizdotid.com/api/daerahindonesia/kecamatan?id_kota=${selectedKabupaten}`
+          `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedKabupaten}.json`
         );
-        const data = response.data.kecamatan || [];
+        const data = response.data || [];
         setKecamatan(data);
       } catch (error) {
         console.error('Error fetching kabupaten:', error);
@@ -243,9 +251,9 @@ export const useAddLocation = () => {
 
       try {
         const response = await axios.get(
-          `https://dev.farizdotid.com/api/daerahindonesia/kelurahan?id_kecamatan=${selectedKecamatan}`
+          `https://www.emsifa.com/api-wilayah-indonesia/api/villages/${selectedKecamatan}.json`
         );
-        const data = response.data.kelurahan || [];
+        const data = response.data || [];
         setKelurahan(data);
       } catch (error) {
         console.error('Error fetching kabupaten:', error);
@@ -269,8 +277,7 @@ export const useAddLocation = () => {
         );
         const data = response.data.data || [];
         setPostalCodes(data);
-      } catch (error) {
-        console.error('Error fetching postal code:', error);
+      } catch {
         setPostalCodes([]);
       }
     };
