@@ -133,6 +133,8 @@ export default function DetailOrder() {
               px={2}
               bgColor={bgColor}
               rounded={'md'}
+              fontWeight={600}
+              color={'black'}
               width={'fit-content'}
             >
               {status}
@@ -142,11 +144,7 @@ export default function DetailOrder() {
             </Text>
             <Box>
               <AccordionRoot collapsible unstyled>
-                <AccordionItem
-                  key={'sembunyikan'}
-                  value={'sembunyikan'}
-                  width={'200px'}
-                >
+                <AccordionItem key={'sembunyikan'} value={'sembunyikan'}>
                   <AccordionItemTrigger
                     display="flex"
                     alignItems="end"
@@ -158,7 +156,9 @@ export default function DetailOrder() {
                     Sembunyikan
                   </AccordionItemTrigger>
                   <AccordionItemContent mx={2}>
-                    <TrackingLayout />
+                    <Box w={'100%'}>
+                      <TrackingLayout />
+                    </Box>
                   </AccordionItemContent>
                 </AccordionItem>
               </AccordionRoot>
