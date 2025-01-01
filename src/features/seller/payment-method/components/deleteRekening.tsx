@@ -8,36 +8,47 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import API from '@/libs/axios';
 import { Button, HStack } from '@chakra-ui/react';
 import 'leaflet/dist/leaflet.css';
 import { useAccountStore } from '@/store/rekId';
 import { toaster } from '@/components/ui/toaster-placement';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import API from '@/libs/axios';
 
 export default function DeleteRekening() {
   const rekId = useAccountStore((state) => state.accountId);
-  const handleDelete = async () => {
-    if (!rekId) {
-      alert('Rekening ID tidak ditemukan');
-      return;
-    }
-
-    try {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      if (!rekId) throw new Error('Rekening ID tidak ditemukan');
       await API.delete(`/bank/${rekId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['rekAccount'] });
       toaster.create({
-        title: 'rekening Message deleted',
+        title: 'Rekening Deleted',
         type: 'success',
         duration: 3000,
         description: 'Your rekening has been deleted successfully.',
       });
-      window.location.reload();
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Error deleting rekening:', error);
-      alert('Gagal menghapus rekening.');
-    }
+      toaster.create({
+        title: 'Delete Failed',
+        type: 'error',
+        duration: 3000,
+        description: 'Failed to delete rekening. Please try again.',
+      });
+    },
+  });
+
+  const handleDelete = () => {
+    mutation.mutate();
   };
 
   return (
+    // jirlah
     <HStack wrap="wrap" gap="4">
       <DialogRoot placement="center" motionPreset="slide-in-bottom">
         <DialogTrigger width="full" asChild>
@@ -71,7 +82,7 @@ export default function DeleteRekening() {
                 width="full"
                 bgColor="red"
                 color="white"
-                onClick={() => handleDelete()}
+                onClick={handleDelete}
               >
                 Delete
               </Button>

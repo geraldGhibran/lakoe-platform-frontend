@@ -10,6 +10,8 @@ import {
   HStack,
   Image,
   Flex,
+  Spinner,
+  VStack,
 } from '@chakra-ui/react';
 import { Field } from '@/components/ui/field';
 import VariantComponent from './variant';
@@ -50,10 +52,30 @@ export default function AddProductPage() {
     setSelectedSubSubcategory,
     categoryCollection,
     updateVariantsAndCombination,
+    isPending,
   } = useAddProduct();
   return (
     <Stack direction="row">
       <Box bg="gray.100" minH="270vh" w="100%">
+        {isPending && (
+          <Box
+            position="fixed"
+            top="0"
+            left="0"
+            w="100vw"
+            h="100vh"
+            bg="rgba(0, 0, 0, 0.5)"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            zIndex="1000"
+          >
+            <VStack gap={4} color="white">
+              <Spinner size="xl" color="white" />
+              <Text fontSize="lg">Loading...</Text>
+            </VStack>
+          </Box>
+        )}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box
             px={10}

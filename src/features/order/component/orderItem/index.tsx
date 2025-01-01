@@ -3,6 +3,8 @@ import { Box, Image, Stack, Text } from '@chakra-ui/react';
 // import { useNavigate } from 'react-router-dom';
 import ConfirmOrder from './confirmOrder';
 import { useNavigate } from 'react-router-dom';
+import ContactBuyer from './contact-buyer';
+import { Store } from '@/types/store';
 
 interface Image {
   id: number;
@@ -23,7 +25,11 @@ export interface Order {
   status: string;
   courier_price: number;
   invoice_id: string;
+  store: Store;
+  receiver_phone: string;
   Product: Product[];
+  receiver_name: string;
+  receiver_items: Product[];
 }
 
 export default function OrderItem({
@@ -32,6 +38,9 @@ export default function OrderItem({
   invoice_id,
   Product,
   total_amount,
+  receiver_phone,
+  receiver_name,
+  store,
 }: Order) {
   const navigate = useNavigate();
   const productName = Product[0]?.name;
@@ -50,6 +59,13 @@ export default function OrderItem({
           bgColor: '#FF9800',
           display: 'none',
           actionText: 'Lihat Rincian Pembelian',
+          isNavigate: true,
+        };
+      case 'PROCESS':
+        return {
+          bgColor: '#FF9810',
+          display: 'flex',
+          actionText: 'Hubungi Pembeli',
           isNavigate: true,
         };
       case 'DELIVERING':
@@ -106,9 +122,29 @@ export default function OrderItem({
             {invoice_id}
           </Text>
         </Box>
-        <Box pos="absolute" right="0">
-          <ConfirmOrder text={actionText} id={id} display={display} />
-        </Box>
+        {status === 'PAID' && (
+          <>
+            <Box pos="absolute" right="0">
+              <ConfirmOrder text={actionText} id={id} display={display} />
+            </Box>
+          </>
+        )}
+
+        {status === 'PROCESS' && (
+          <>
+            <Box pos="absolute" right="0">
+              <ContactBuyer
+                text={actionText}
+                receiver_phone={receiver_phone}
+                display={display}
+                receiver_name={receiver_name}
+                Product={Product}
+                store={store}
+              />
+            </Box>
+          </>
+        )}
+
         {/* <Button
           borderRadius={'100px'}
           bg={'white'}

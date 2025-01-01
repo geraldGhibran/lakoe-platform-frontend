@@ -63,6 +63,7 @@ export default function DetailProduct() {
   useEffect(() => {
     if (product?.image?.[0]?.url) {
       setProductImage(product.image[0].url);
+      setTotalQuantity(product.minimum_order);
     }
     if (product?.Height) {
       setHeightProduct(product.Height);
@@ -87,6 +88,7 @@ export default function DetailProduct() {
     setWidthProduct,
     setDescription,
     setStoreId,
+    setTotalQuantity,
   ]);
 
   if (isLoading)
@@ -284,7 +286,7 @@ export default function DetailProduct() {
                                   onClick={() => {
                                     setTotalQuantity(quantity - 1);
                                   }}
-                                  disabled={quantity <= 0}
+                                  disabled={quantity <= product?.minimum_order}
                                 >
                                   -
                                 </Button>

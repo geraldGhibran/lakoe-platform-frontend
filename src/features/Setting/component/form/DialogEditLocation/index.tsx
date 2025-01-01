@@ -61,29 +61,29 @@ const DialogEditLocation = ({ id }: { id: number }) => {
 
   const provinsiCollection = createListCollection({
     items: provinsi.map((prov) => ({
-      label: prov.nama,
+      label: prov.name,
       value: prov.id.toString(),
     })),
   });
 
   const kabupatenCollection = createListCollection({
     items: kabupaten.map((kab) => ({
-      label: kab.nama,
+      label: kab.name,
       value: kab.id,
     })),
   });
 
   const kecamatanCollection = createListCollection({
     items: kecamatan.map((kab) => ({
-      label: kab.nama,
+      label: kab.name,
       value: kab.id,
     })),
   });
 
   const kelurahanCollection = createListCollection({
     items: kelurahan.map((kab) => ({
-      label: kab.nama,
-      value: kab.nama,
+      label: kab.name,
+      value: kab.name,
     })),
   });
 

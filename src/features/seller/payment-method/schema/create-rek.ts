@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-const CreateformSchema = z.object({
+export const CreateformSchema = z.object({
   acc_name: z.string().min(1, 'Full Name is required'),
   bank: z.string().min(1, 'Bank Name is required'),
   acc_number: z
@@ -11,5 +11,3 @@ const CreateformSchema = z.object({
     })
     .transform((val) => parseInt(val, 10)),
 });
-
-export default CreateformSchema;

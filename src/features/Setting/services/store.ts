@@ -7,13 +7,8 @@ import { EditLocationSchema } from '../schemas/editLocationSchema';
 import { CourierDto } from '@/types/courier';
 
 export const getDetailStore = async (userId: number): Promise<Store> => {
-  try {
-    const response = await API.get(`/store/${userId}`);
-    return response.data as Store;
-  } catch (error) {
-    console.error('Error in getDetailUser:', error);
-    throw error;
-  }
+  const response = await API.get(`/store/${userId}`);
+  return response.data as Store;
 };
 
 export const updateStoreData = async (formData: FormData, userId: number) => {
