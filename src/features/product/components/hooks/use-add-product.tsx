@@ -237,6 +237,8 @@ const useAddProduct = () => {
 
   return {
     register,
+    ...mutation,
+    isLoading: mutation.status === 'pending',
     handleSubmit,
     errors,
     isVariantTypeCreate,
