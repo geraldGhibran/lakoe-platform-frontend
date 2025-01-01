@@ -163,11 +163,33 @@ function ProductList() {
     });
   };
 
+  const [searchTerm, setSearchTerm] = useState<string>('');
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredProducts = products.filter((product: Product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const [showNotFound, setShowNotFound] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (filteredProducts.length === 0) {
+      const timer = setTimeout(() => {
+        setShowNotFound(true);
+      }, 5000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowNotFound(false);
+    }
+  }, [filteredProducts]);
+
   return (
     <Stack
       direction={'row'}
       bg={'#F4F4F5'}
-      // position={'fixed'}
       overflowY="auto"
       height="100vh"
       width="full"
@@ -257,11 +279,17 @@ function ProductList() {
             <Tabs.Content position="relative" value="all">
               <Header
                 onSelectAll={handleSelectAll}
-                totalProducts={products.length}
+                totalProducts={filteredProducts.length}
                 handleSortChange={handleSortChange}
+                onSearchChange={handleSearchChange}
               />
-
-              {renderProducts(products)}
+              {showNotFound ? (
+                <NotFoundCard>
+                  <Text>Tidak ada produk yang ditemukan.</Text>
+                </NotFoundCard>
+              ) : (
+                renderProducts(filteredProducts)
+              )}
             </Tabs.Content>
 
             <Tabs.Content value="active">
