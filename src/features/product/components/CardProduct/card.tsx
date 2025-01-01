@@ -1,4 +1,4 @@
-import { Checkbox } from '@/components/ui/checkbox';
+// import { Checkbox } from '@/components/ui/checkbox';
 import { Switch } from '@/components/ui/switch';
 import { Box, Button, Image, Stack, Text } from '@chakra-ui/react';
 // import ActionMenu from '../modal/action-menu';
@@ -32,8 +32,8 @@ export default function CardProduct(props: CardProductProps) {
     sku,
     Url,
     isActive,
-    isChecked,
-    onCheckboxChange,
+    // isChecked,
+    // onCheckboxChange,
     onSwitchChange,
   } = props;
 
@@ -53,6 +53,7 @@ export default function CardProduct(props: CardProductProps) {
         marginTop={3}
       >
         <Stack
+          pos="relative"
           display={'flex'}
           direction={'row'}
           border={'1px solid #E6E6E6'}
@@ -92,14 +93,18 @@ export default function CardProduct(props: CardProductProps) {
             justifyContent={'space-between'}
             gap={2}
           >
-            <Checkbox
+            {/* <Checkbox
               colorPalette={'blue'}
               checked={isChecked}
               onChange={(e) =>
                 onCheckboxChange((e.target as HTMLInputElement).checked)
               }
-            />
+            /> */}
             <Switch
+              pos="absolute"
+              bottom="0"
+              right="0"
+              margin="30px"
               size={'lg'}
               colorPalette={'blue'}
               checked={isActive}
