@@ -13,10 +13,10 @@ import { Icon } from '@iconify/react';
 import { useState, useEffect, useCallback } from 'react';
 import { Tag } from '@/components/ui/tag';
 import { Switch } from '@/components/ui/switch';
-import VariantModal from '../modal/variant';
 import { Field } from '@/components/ui/field';
 import AddVariant from '../modal/add-variant';
 import DeleteVariant from '../modal/delete-variant';
+import VariantMassEditModal from '../modal/variant';
 
 type Variant = {
   name: string;
@@ -312,7 +312,10 @@ export default function VariantComponent({
                   </Text>
                 </Box>
                 <Box>
-                  <VariantModal />
+                  <VariantMassEditModal
+                    combinationData={combinationData}
+                    setCombinationData={setCombinationData}
+                  />
                 </Box>
               </Stack>
             </>
